@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Note
-from .models import Skill
+from werkzeug.security import generate_password_hash
+from .models import Note, Skill, OpenAiApiKey
 from . import db
 import json
 
@@ -32,6 +32,16 @@ def home():
                     db.session.add(new_skill)
                     db.session.commit()
                     flash('Skill added!', category='success')
+        elif 'api_key' in request.form:
+            key = request.form.get('api_key')
+            if len(key) < 1:
+                flash('api_key is too short!', category='error')
+            else:
+                new_api_key = OpenAiApiKey(user_id=current_user.id, key=generate_password_hash(
+                    key, method='sha256'))
+                db.session.add(new_api_key)
+                db.session.commit()
+                flash('Api Key Added!', category='success')
                     
     return render_template("home.html", user=current_user)
 
