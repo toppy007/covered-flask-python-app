@@ -14,6 +14,41 @@
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       crossorigin="anonymous"
     />
+    <link 
+      rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css"
+      crossorigin="anonymous"
+    />
+    
+    <style>
+      .bootstrap-tagsinput input {
+        color: orange; 
+      }
+    
+      /* Style for newly added tags */
+      .bootstrap-tagsinput .tag {
+        background-color: orange;
+        color: white;
+        margin-right: 2px; /* Add some spacing between tags */
+      }
+
+      /* Remove default list styles and display the list items inline */
+      .list-skill-flush {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: inline;
+      }
+    
+      /* Style the skill tags */
+      .list-skill-flush .skill-tag {
+        display: inline-block;
+        margin-right: 4px; /* Add some spacing between tags */
+        padding: 4px 10px;
+        border-radius: 2px;
+        color: orange; /* Set the text color to white for better visibility */
+      }
+    </style>
 
     <title>{% block title %}Home{% endblock %}</title>
   </head>
@@ -74,17 +109,29 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js"
+    ></script>
       {% block javascript %}
-          <script type="text/javascript">
-            function deleteNote(noteId) {
-        fetch("/delete-note", {
-          method: "POST",
-          body: JSON.stringify({ noteId: noteId }),
-        }).then((_res) => {
-          window.location.href = "/";
-        });
-        }
-    </script>
-    {% endblock %}
+        <script type="text/javascript">
+          function deleteNote(noteId) {
+            fetch("/delete-note", {
+              method: "POST",
+              body: JSON.stringify({ noteId: noteId }),
+            }).then((_res) => {
+              window.location.href = "/";
+            });
+          }
+
+          function deleteSkill(skillId) {
+            fetch("/delete-skill", {
+              method: "POST",
+              body: JSON.stringify({ skillId: skillId }),
+            }).then((_res) => {
+              window.location.href = "/";
+            });
+          }
+        </script>
+
+      {% endblock %}
   </body>
 </html>

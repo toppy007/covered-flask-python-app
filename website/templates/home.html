@@ -1,6 +1,8 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">Notes</h1>
+    <h1 align="left">Personal Statement</h1>
+    
+    <h3 align="left">Add notes to include in your personal statement</h3>
     <ul class="list-group list-group-flush" id="notes">
       {% for note in user.notes %}
       <li class="list-group-item">
@@ -11,11 +13,34 @@
       </li>
       {% endfor %}
     </ul>
+    
     <form method="POST">
       <textarea name="note" id="note" class="form-control"></textarea>
       <br />
-      <div align="center">
-        <button type="submit" class="btn btn-primary">Add Note</button>
+      <div align="left">
+        <button type="submit" class="btn btn-primary">Add Statement Note</button>
       </div>
     </form>
+    
+    <h3 align="left">Add core skill to the personal statement</h3>
+
+    <ul class="list-group list-skill-flush" id="skills">
+      {% for skill in user.skills %}
+      <li class="list-group-item skill-tag">
+        {{ skill.data }}
+        <button type="button" class="close" onClick="deleteSkill({{ skill.id }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <form method="POST">
+      <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here" data-role="tagsinput">
+      <br />
+      <div align="left">
+          <button type="submit" class="btn btn-primary">Add Core Skill</button>
+      </div>
+    </form>
+
     {% endblock %}
