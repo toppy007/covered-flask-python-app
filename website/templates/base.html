@@ -28,6 +28,7 @@
       /* Style for newly added tags */
       .bootstrap-tagsinput .tag {
         background-color: orange;
+        padding: 4px 10px;
         color: white;
         margin-right: 2px; /* Add some spacing between tags */
       }
@@ -126,6 +127,15 @@
             fetch("/delete-skill", {
               method: "POST",
               body: JSON.stringify({ skillId: skillId }),
+            }).then((_res) => {
+              window.location.href = "/";
+            });
+          }
+
+          function deleteApiKey(api_keyId) {
+            fetch("/delete-api_key", {
+              method: "POST",
+              body: JSON.stringify({ api_keyId: api_keyId }),
             }).then((_res) => {
               window.location.href = "/";
             });

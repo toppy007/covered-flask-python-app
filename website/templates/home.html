@@ -3,18 +3,36 @@
     <br />
     <h1 align="left">Profile</h1>
     <br />
-    <h3 align="left">OpenAI Key</h3>
+    <h3 align="left">OpenAI Access Parameters</h3>
     <br />
+
+    {% if not user.api_keys %}
     <form method="POST">
       <h5 align="left">Upload Api Key</h5>
       <div class="form-group">
-        <input type="password" class="form-control" id="api_key" name="api_key" placeholder="Enter API Key"/>
+        <input type="text" class="form-control" id="api_key" name="api_key" placeholder="Enter API Key"/>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    {% else %}
+    <h5 align="left">API Key</h5>
+    <ul class="list-group list-group-flush" id="notes">
+      {% for api_key in user.api_keys %}
+      <li class="list-group-item">
+        Your OpenAI API Key {# Add your custom text here #}
+        <button type="button" class="close" onClick="deleteApiKey({{ api_key.id }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  
     <br />
+
     <h3 align="left">Personal Statement Section</h3>
     <br />
+
     <h5 align="left">Add notes to include in your personal statement</h5>
     <ul class="list-group list-group-flush" id="notes">
       {% for note in user.notes %}

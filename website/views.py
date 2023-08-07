@@ -68,3 +68,15 @@ def delete_skill():
             db.session.commit()
 
     return jsonify({})
+
+@views.route('/delete-api_key', methods=['POST'])
+def delete_api_key():  
+    api_key = json.loads(request.data)
+    api_keyId = api_key['api_keyId']
+    api_key = OpenAiApiKey.query.get(api_keyId)
+    if api_key:
+        if api_key.user_id == current_user.id:
+            db.session.delete(api_key)
+            db.session.commit()
+
+    return jsonify({})
