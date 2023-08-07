@@ -9,7 +9,7 @@ views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
-def home():
+def profile():
     if request.method == 'POST':
         if 'note' in request.form:
             note = request.form.get('note')
@@ -43,7 +43,12 @@ def home():
                 db.session.commit()
                 flash('Api Key Added!', category='success')
                     
-    return render_template("home.html", user=current_user)
+    return render_template("profile.html", user=current_user)
+
+@views.route('/generate', methods=['GET', 'POST'])
+@login_required
+def generate():
+    return render_template("generate.html", user=current_user)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  

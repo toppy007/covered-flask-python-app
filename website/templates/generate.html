@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Generate{% endblock %}
+
+{% block content %}
+<br />
+<h3 align="center">Create Job Advertisement</h3>
+<br />
+
+<form method="POST">
+  <div class="form-group">
+    <label for="job_ad">Job Advertisement</label>
+    <textarea
+      class="form-control"
+      id="job_ad"
+      name="job_ad"
+      rows="8"
+      placeholder="Enter job advertisement content"
+    ></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit Advertisement</button>
+</form>
+{% endblock %}
