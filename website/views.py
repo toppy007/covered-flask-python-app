@@ -51,7 +51,8 @@ def generate():
     if request.method == 'POST':  # Check if the request is a POST request
         print(request.form)
         selected_skills = request.form.get('selectedSkills')
-        
+        print("skills")
+        print(selected_skills)
         user_id = current_user.id
 
         api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()

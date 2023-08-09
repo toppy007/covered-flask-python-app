@@ -29,7 +29,7 @@
         </select>
     </div>
     <div>
-        <input type="hidden" id="selectedSkillsInput" name="selectedSkills" value="">
+        <input type="hidden" name="selectedSkills" id="selectedSkillsInput">
         <button type="button" class="btn btn-primary" onclick="addSelectedSkill()">Add Skill Tag</button>
   </div>
 
@@ -97,8 +97,8 @@
         const selectTag = document.getElementById("selectTag");
         const selectedSkills = selectTag.value;
 
-        const skillInput = document.getElementById("skill");
-        $(skillInput).tagsinput('add', selectedSkills);
+        const selectedSkillsInput = document.getElementById("selectedSkillsInput");
+        selectedSkillsInput.value += selectedSkills + ",";  // Use comma or any separator you prefer
 
         // Remove the selected skill from the dropdown options
         selectTag.querySelector(`option[value="${selectedSkills}"]`).remove();
@@ -126,33 +126,6 @@
         
         tagContainer.appendChild(deleteButton);
         selectedTagsDiv.appendChild(tagContainer);
-    }
-
-    function printSelection() {
-        const selectedTagsDiv = document.getElementById("selectedTags");
-        const selectedInputsDiv = document.getElementById("selectedInputs");
-
-        const selectedTags = selectedTagsDiv.getElementsByClassName("badge-secondary");
-        const selectedWordCount = document.querySelector('input[name="flexRadioDefault"]:checked').nextElementSibling.textContent;
-
-        selectedInputsDiv.innerHTML = ""; // Clear previous selections
-
-        for (const tag of selectedTags) {
-            const tagText = tag.textContent;
-            const tagContainer = document.createElement("div");
-            tagContainer.textContent = `Skill: ${tagText}`;
-            selectedInputsDiv.appendChild(tagContainer);
-        }
-
-        const wordCountContainer = document.createElement("div");
-        wordCountContainer.textContent = `Word Count: ${selectedWordCount}`;
-        selectedInputsDiv.appendChild(wordCountContainer);
-
-        const jobAdTextarea = document.getElementById("job_ad");
-        const jobAdContent = jobAdTextarea.value;
-        const jobAdContainer = document.createElement("div");
-        jobAdContainer.textContent = `Job Advertisement: ${jobAdContent}`;
-        selectedInputsDiv.appendChild(jobAdContainer);
     }
 
 </script>
