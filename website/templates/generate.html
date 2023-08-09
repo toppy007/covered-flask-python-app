@@ -4,12 +4,12 @@
 
 {% block content %}
 <br />
-<h3 align="center">Create Job Advertisement</h3>
+<h3 align="center">Create Job Optimised Resume</h3>
 <br />
 
-<form method="POST">
+<form action="{{ url_for('views.generate') }}" method="post">
   <div class="form-group">
-    <label for="job_ad">Job Advertisement</label>
+    <label for="job_ad">Paste Job Advertisement</label>
     <textarea
       class="form-control"
       id="job_ad"
@@ -20,38 +20,88 @@
   </div>
 
   <h5 align="left">Add core skill to the personal statement</h5>
-
-  <form method="POST">
     <div class="form-group">
         <label for="selectTag">Select a Skill:</label>
         <select id="selectTag" class="form-control">
-            {% for skill in user.skills %}
-            <option value="{{ skill.data }}">{{ skill.data }}</option>
+            {% for note in user.notes %}
+            <option value="{{ note.data }}">{{ note.data }}</option>
             {% endfor %}
         </select>
     </div>
     <div>
+        <input type="hidden" id="selectedSkillsInput" name="selectedSkills" value="">
         <button type="button" class="btn btn-primary" onclick="addSelectedSkill()">Add Skill Tag</button>
+  </div>
+
+  <div class="mt-3">
+    <div id="selectedTags">
+        <!-- Selected skill tags will be displayed here -->
+    </div>
+  </div>
+  <br />
+
+  <h5>Selected Word Count for the Personal Statement:</h5>
+
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+            <label class="form-check-label" for="flexRadioDefault1">
+                0 - 50
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+            <label class="form-check-label" for="flexRadioDefault2">
+                51 - 100
+            </label>
+        </div>
+        <!-- Add more radio buttons for other word count ranges -->
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+            <label class="form-check-label" for="flexRadioDefault3">
+                101 - 150
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
+            <label class="form-check-label" for="flexRadioDefault4">
+                151 - 200
+            </label>
+        </div>
+        <!-- Add more radio buttons for additional word count ranges -->
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary" onclick="printSelection()">Create</button>
     </div>
 </form>
 
 <div class="mt-3">
-    <h4>Selected Skill Tags:</h4>
-    <div id="selectedTags">
-        <!-- Selected skill tags will be displayed here -->
+    <h5>Selected Inputs:</h5>
+    <div id="selectedInputs">
+        <!-- Selected inputs will be displayed here -->
     </div>
+</div>
+
+<h3>API Response:</h3>
+<div>
+    {% if api_response %}
+        <p>{{ api_response | safe }}</p>
+    {% else %}
+        <p>No API response available.</p>
+    {% endif %}
 </div>
 
 <script>
     function addSelectedSkill() {
         const selectTag = document.getElementById("selectTag");
-        const selectedSkill = selectTag.value;
+        const selectedSkills = selectTag.value;
 
         const skillInput = document.getElementById("skill");
-        $(skillInput).tagsinput('add', selectedSkill);
+        $(skillInput).tagsinput('add', selectedSkills);
 
         // Remove the selected skill from the dropdown options
-        selectTag.querySelector(`option[value="${selectedSkill}"]`).remove();
+        selectTag.querySelector(`option[value="${selectedSkills}"]`).remove();
 
         // Display the selected skill tag in the separate area
         const selectedTagsDiv = document.getElementById("selectedTags");
@@ -60,7 +110,7 @@
         tagContainer.className = "badge badge-secondary mr-1";
         
         const tagText = document.createElement("span");
-        tagText.textContent = selectedSkill;
+        tagText.textContent = selectedSkills;
         tagContainer.appendChild(tagText);
 
         const deleteButton = document.createElement("span");
@@ -70,13 +120,40 @@
         deleteButton.onclick = function() {
             selectedTagsDiv.removeChild(tagContainer);
             // Optionally, add the skill back to the dropdown options
-            selectTag.innerHTML += `<option value="${selectedSkill}">${selectedSkill}</option>`;
-            $(skillInput).tagsinput('remove', selectedSkill);
+            selectTag.innerHTML += `<option value="${selectedSkills}">${selectedSkills}</option>`;
+            $(skillInput).tagsinput('remove', selectedSkills);
         };
         
         tagContainer.appendChild(deleteButton);
         selectedTagsDiv.appendChild(tagContainer);
     }
-</script>
 
+    function printSelection() {
+        const selectedTagsDiv = document.getElementById("selectedTags");
+        const selectedInputsDiv = document.getElementById("selectedInputs");
+
+        const selectedTags = selectedTagsDiv.getElementsByClassName("badge-secondary");
+        const selectedWordCount = document.querySelector('input[name="flexRadioDefault"]:checked').nextElementSibling.textContent;
+
+        selectedInputsDiv.innerHTML = ""; // Clear previous selections
+
+        for (const tag of selectedTags) {
+            const tagText = tag.textContent;
+            const tagContainer = document.createElement("div");
+            tagContainer.textContent = `Skill: ${tagText}`;
+            selectedInputsDiv.appendChild(tagContainer);
+        }
+
+        const wordCountContainer = document.createElement("div");
+        wordCountContainer.textContent = `Word Count: ${selectedWordCount}`;
+        selectedInputsDiv.appendChild(wordCountContainer);
+
+        const jobAdTextarea = document.getElementById("job_ad");
+        const jobAdContent = jobAdTextarea.value;
+        const jobAdContainer = document.createElement("div");
+        jobAdContainer.textContent = `Job Advertisement: ${jobAdContent}`;
+        selectedInputsDiv.appendChild(jobAdContainer);
+    }
+
+</script>
 {% endblock %}
