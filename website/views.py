@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey
-from .prompts import personal_statement_prompt
+from .prompts import personal_statement_prompt, job_analysis_prompt, job_analysis_compare_skill
 from . import db
 import json
 
@@ -55,20 +55,21 @@ def generate():
         selected_notes = request.form.get('selectedNotes')
         word_count = request.form.get('flexRadioDefault')
         
-        prompt = personal_statement_prompt(job_ad, selected_notes, word_count)
-        print(prompt)
-        
-        #run a function that takes inout and creates prompts
+        messages = job_analysis_prompt(job_ad)
         
         user_id = current_user.id
         api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
         if api_key_entry:
             api_key = api_key_entry.key
-            messages = prompt
-            api_response = send_api_request(api_key, messages)
+            first_api_response = send_api_request(api_key, messages)
 
-            return render_template('generate.html', api_response=api_response, user=current_user)
+            messages = job_analysis_compare_skill(first_api_response, user_id)
+            print(messages)
+            
+            second_response = send_api_request(api_key, messages)
+
+            return render_template('generate.html', api_response=first_api_response, second_response=second_response, user=current_user)
         else:
             return "API key not found"
 

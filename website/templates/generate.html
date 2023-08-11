@@ -91,6 +91,14 @@
     {% endif %}
 </div>
 
+<div>
+    {% if second_response %}
+        <p>{{ second_response | safe }}</p>
+    {% else %}
+        <p>No API response available.</p>
+    {% endif %}
+</div>
+
 <script>
     function addSelectedNote() {
         const selectTag = document.getElementById("selectTag");
