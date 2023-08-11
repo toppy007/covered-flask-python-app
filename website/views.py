@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey
+from .prompts import personal_statement_prompt
 from . import db
 import json
 
@@ -50,20 +51,21 @@ def profile():
 def generate():
     if request.method == 'POST':  # Check if the request is a POST request
         print(request.form)
-        selected_skills = request.form.get('selectedSkills')
-        print("skills")
-        print(selected_skills)
+        job_ad = request.form.get('job_ad')
+        selected_notes = request.form.get('selectedNotes')
+        word_count = request.form.get('flexRadioDefault')
+        
+        prompt = personal_statement_prompt(job_ad, selected_notes, word_count)
+        print(prompt)
+        
+        #run a function that takes inout and creates prompts
+        
         user_id = current_user.id
-
         api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
         if api_key_entry:
             api_key = api_key_entry.key
-            
-            messages = [{'role': 'system', 'content': 'You are a helpful assistant that provides personal statement for a resume.'}]
-            messages.append({'role': 'user', 'content': f'Use these {selected_skills} to write a personal statement.'}) 
-            
-            # Make the API request
+            messages = prompt
             api_response = send_api_request(api_key, messages)
 
             return render_template('generate.html', api_response=api_response, user=current_user)
