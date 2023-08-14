@@ -1,11 +1,10 @@
 from .models import Skill
 
-
 def personal_statement_prompt(job_advertisement, important_statements, max_word_count):
     system_prompt = "**Personal Statement Prompt**\n\n"
     
     user_prompt = (
-        f"Job Advertisement:\n{job_advertisement}\n\n"
+        f"Job Advertisement Key Techinical Skills Required:\n{job_advertisement}\n\n"
         f"Important Statements to Include:\n{important_statements}\n\n"
         f"Max Word Count: {max_word_count}\n\n"
         f"Write a personal statement that addresses the job requirements mentioned in the advertisement and avoid's flowery language."

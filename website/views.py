@@ -55,21 +55,23 @@ def generate():
         selected_notes = request.form.get('selectedNotes')
         word_count = request.form.get('flexRadioDefault')
         
-        messages = job_analysis_prompt(job_ad)
         
         user_id = current_user.id
         api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
         if api_key_entry:
             api_key = api_key_entry.key
+            
+            messages = job_analysis_prompt(job_ad)
             first_api_response = send_api_request(api_key, messages)
 
             messages = job_analysis_compare_skill(first_api_response, user_id)
-            print(messages)
-            
             second_response = send_api_request(api_key, messages)
-
-            return render_template('generate.html', api_response=first_api_response, second_response=second_response, user=current_user)
+            
+            messages = personal_statement_prompt(second_response, selected_notes, word_count)
+            perosnal_statement = send_api_request(api_key, messages)
+    
+            return render_template('generate.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
         else:
             return "API key not found"
 
