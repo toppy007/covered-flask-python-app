@@ -4,7 +4,7 @@
 
 {% block content %}
 <br />
-<h3 align="center">Create Job Optimised Resume</h3>
+<h3 align="center">Create Covering Letter</h3>
 <br />
 
 <form action="{{ url_for('views.generate') }}" method="post">
@@ -19,9 +19,9 @@
     ></textarea>
   </div>
 
-  <h5 align="left">personal statement passages you want to include</h5>
+  <h5 align="left">Passages you want to include</h5>
     <div class="form-group">
-        <label for="selectTag">Select a notes to include:</label>
+        <label for="selectTag">Select Key Passages:</label>
         <select id="selectTag" class="form-control">
             {% for note in user.notes %}
             <option value="{{ note.data }}">{{ note.data }}</option>
@@ -40,7 +40,7 @@
   </div>
   <br />
 
-  <h5>Selected Word Count for the Personal Statement:</h5>
+  <h5>Selected word count for covering letter:</h5>
 
   <div class="form-group">
         <div class="form-check">
