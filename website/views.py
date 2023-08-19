@@ -71,11 +71,25 @@ def generate():
             messages = personal_statement_prompt(second_response, selected_notes, word_count)
             perosnal_statement = send_api_request(api_key, messages)
     
-            return render_template('generate.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
+            return render_template('results.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
         else:
             return "API key not found"
 
     return render_template('generate.html', user=current_user)
+
+@views.route('/results', methods=['GET'])
+@login_required
+def results():
+    # You can access the necessary data from the request or session as needed
+    # For example, if you're passing data from the 'generate' route, you can access it here
+    
+    # Placeholder data for demonstration purposes
+    api_response = "Sample API Response"
+    second_response = "Sample Second Response"
+    personal_statement = "Sample Personal Statement"
+    
+    return render_template('results.html', api_response=api_response, second_response=second_response, personal_statement=personal_statement, user=current_user)
+
 
 
 @views.route('/delete-note', methods=['POST'])
