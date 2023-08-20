@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, url_for, redirect
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
@@ -71,7 +71,7 @@ def generate():
                 messages = personal_statement_prompt(second_response, selected_notes, word_count)
                 perosnal_statement = send_api_request(api_key, messages)
         
-                return render_template('results.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
+                return redirect(url_for('views.results', api_response=first_api_response, second_response=second_response, personal_statement=perosnal_statement))
             else:
                 return "API key not found"
             
@@ -86,8 +86,6 @@ def generate():
                 
                 messages = generate_job_info(job_ad)
                 first_api_response = send_api_request(api_key, messages)
-                
-                print(first_api_response)
             
                 return render_template('generate.html', user=current_user, analysisResult=first_api_response)
             else:
@@ -95,14 +93,12 @@ def generate():
     
     return render_template('generate.html', user=current_user)
     
-    
-
 @views.route('/results', methods=['GET'])
 @login_required
 def results():
-    api_response = "Sample API Response"
-    second_response = "Sample Second Response"
-    personal_statement = "Sample Personal Statement"
+    api_response = request.args.get('api_response')
+    second_response = request.args.get('second_response')
+    personal_statement = request.args.get('personal_statement')
     
     return render_template('results.html', api_response=api_response, second_response=second_response, personal_statement=personal_statement, user=current_user)
 
