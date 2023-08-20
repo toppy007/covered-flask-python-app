@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey
 from .prompts import personal_statement_prompt, job_analysis_prompt, job_analysis_compare_skill
+from .analyzing_prompts import generate_job_info
 from . import db
 import json
 
@@ -49,52 +50,65 @@ def profile():
 @views.route('/generate', methods=['GET', 'POST'])
 @login_required
 def generate():
-    if request.method == 'POST':  # Check if the request is a POST request
-        print(request.form)
-        job_ad = request.form.get('job_ad')
-        selected_notes = request.form.get('selectedNotes')
-        word_count = request.form.get('flexRadioDefault')
-        
-        
-        user_id = current_user.id
-        api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
-
-        if api_key_entry:
-            api_key = api_key_entry.key
+    if request.method == 'POST':
+        if 'create' in request.form:
+            job_ad = request.form.get('job_ad')
+            selected_notes = request.form.get('selectedNotes')
+            word_count = request.form.get('flexRadioDefault')
             
-            messages = job_analysis_prompt(job_ad)
-            first_api_response = send_api_request(api_key, messages)
+            user_id = current_user.id
+            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
-            messages = job_analysis_compare_skill(first_api_response, user_id)
-            second_response = send_api_request(api_key, messages)
+            if api_key_entry:
+                api_key = api_key_entry.key
+                
+                messages = job_analysis_prompt(job_ad)
+                first_api_response = send_api_request(api_key, messages)
+
+                messages = job_analysis_compare_skill(first_api_response, user_id)
+                second_response = send_api_request(api_key, messages)
+                
+                messages = personal_statement_prompt(second_response, selected_notes, word_count)
+                perosnal_statement = send_api_request(api_key, messages)
+        
+                return render_template('results.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
+            else:
+                return "API key not found"
             
-            messages = personal_statement_prompt(second_response, selected_notes, word_count)
-            perosnal_statement = send_api_request(api_key, messages)
+        elif 'job_ad' in request.form:
+            job_ad = request.form.get('job_ad')
+            
+            user_id = current_user.id
+            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+            
+            if api_key_entry:
+                api_key = api_key_entry.key
+                
+                messages = generate_job_info(job_ad)
+                first_api_response = send_api_request(api_key, messages)
+                
+                print(first_api_response)
+            
+                return render_template('generate.html', user=current_user, analysisResult=first_api_response)
+            else:
+                return "API key not found"
     
-            return render_template('results.html', api_response=first_api_response, second_response=second_response, perosnal_statement=perosnal_statement, user=current_user)
-        else:
-            return "API key not found"
-
     return render_template('generate.html', user=current_user)
+    
+    
 
 @views.route('/results', methods=['GET'])
 @login_required
 def results():
-    # You can access the necessary data from the request or session as needed
-    # For example, if you're passing data from the 'generate' route, you can access it here
-    
-    # Placeholder data for demonstration purposes
     api_response = "Sample API Response"
     second_response = "Sample Second Response"
     personal_statement = "Sample Personal Statement"
     
     return render_template('results.html', api_response=api_response, second_response=second_response, personal_statement=personal_statement, user=current_user)
 
-
-
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  
-    note = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
+    note = json.loads(request.data)
     noteId = note['noteId']
     note = Note.query.get(noteId)
     if note:

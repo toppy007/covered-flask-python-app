@@ -10,6 +10,7 @@
 <form action="{{ url_for('views.generate') }}" method="post">
   <div class="form-group">
     <label for="job_ad">Paste Job Advertisement</label>
+
     <textarea
       class="form-control"
       id="job_ad"
@@ -17,6 +18,14 @@
       rows="8"
       placeholder="Enter job advertisement content"
     ></textarea>
+  </div>
+
+  <div>
+    <button type="submit" name="analyze" class="btn btn-primary" onclick="analyzeForm()">Analyze and Display</button>
+  </div>
+
+  <div id="analysisResult">
+    {{ analysisResult | safe }}
   </div>
 
   <h5 align="left">Passages you want to include</h5>
@@ -71,36 +80,9 @@
         <!-- Add more radio buttons for additional word count ranges -->
     </div>
     <div>
-        <button type="submit" class="btn btn-primary" onclick="printSelection()">Create</button>
+        <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
     </div>
 </form>
-
-<h5>Core Technical Keywords Taken From the Job Spec:</h5>
-<div>
-    {% if api_response %}
-        <p>{{ api_response | safe }}</p>
-    {% else %}
-        <p>No API response available.</p>
-    {% endif %}
-</div>
-
-<h5>Matched Core Skills</h5>
-<div>
-    {% if second_response %}
-        <p>{{ second_response | safe }}</p>
-    {% else %}
-        <p>No API response available.</p>
-    {% endif %}
-</div>
-
-<h5>Job Tailored Personal Statement</h5>
-<div>
-    {% if perosnal_statement %}
-        <p>{{ perosnal_statement | safe }}</p>
-    {% else %}
-        <p>No API response available.</p>
-    {% endif %}
-</div>
 
 <script>
     function addSelectedNote() {
@@ -108,7 +90,7 @@
         const selectedNotes = selectTag.value;
 
         const selectedSkillsInput = document.getElementById("selectedNotesInput");
-        selectedNotesInput.value += selectedNotes + ",";  // Use comma or any separator you prefer
+        selectedNotesInput.value += selectedNotes + ","; 
 
         selectTag.querySelector(`option[value="${selectedNotes}"]`).remove();
         const selectedTagsDiv = document.getElementById("selectedTags");
