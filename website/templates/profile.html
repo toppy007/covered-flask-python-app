@@ -53,7 +53,7 @@
     <div class="form-group">
       <ul class="list-group list-skill-flush d-inline-block" id="skills">
         {% for skill in user.skills %}
-        <li class="btn btn-outline-primary d-inline-block mr-2 btn-sm mb-2">
+        <li class="btn btn-outline-primary d-inline-block mr-1 btn-sm mb-2">
           {{ skill.data }}
           <button type="button" class="close ml-2" aria-label="close" onClick="deleteSkill({{ skill.id }})">
             <span aria-hidden="true">&times;</span>
@@ -66,7 +66,7 @@
       <div class="form-group">
         <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here">
       </div>
-      <button type="submit" class="btn btn-primary mb-3">Add Core Skill</button>
+      <button type="submit" class="btn btn-primary mb-1">Add Core Skill</button>
     </form>
   
   <br />
@@ -146,18 +146,27 @@
         const projectForm = document.getElementById('projectForm');
         const skillInput = document.getElementById('skill');
         const skillForm = document.getElementById('skill-form');
-        
+  
         toggleFormBtn.addEventListener('click', function() {
-          // Toggle project form visibility
+          if (projectForm.style.display === 'none') {
+            projectForm.style.display = 'block';
+            toggleFormBtn.textContent = 'Hide Form';
+          } else {
+            projectForm.style.display = 'none';
+            toggleFormBtn.textContent = 'Add Project';
+          }
         });
-    
+  
         skillInput.addEventListener('keydown', function(event) {
           if (event.key === 'Enter') {
             event.preventDefault(); // Prevent default Enter key behavior
             skillForm.submit(); // Submit the form
           }
         });
+  
+        // Add any other event listeners or scripts here
       });
     </script>
 
-    {% endblock %}
+    
+  {% endblock %}
