@@ -49,7 +49,28 @@ def profile():
                 db.session.add(new_api_key)
                 db.session.commit()
                 flash('Api Key Added!', category='success')
-                    
+                
+        elif 'project_title' in request.form:
+            project_title = request.form['project_title']
+            project_date = f"{request.form['project_date_from_month']}/{request.form['project_date_from_year']} to {request.form['project_date_to_month']}/{request.form['project_date_to_year']}"
+            project_link = request.form['project_link']
+            project_description = request.form['project_description']
+            project_core_skill = request.form['project_core_skill']
+
+            new_project = Project(
+                project_title=project_title,
+                project_date=project_date,
+                project_link=project_link,
+                project_description=project_description,
+                project_core_skill=project_core_skill,
+                user_id=current_user.id
+            )
+            
+            db.session.add(new_project)
+            db.session.commit()
+
+            flash('Project added!', category='success')
+    
     return render_template("profile.html", user=current_user)
 
 @views.route('/generate', methods=['GET', 'POST'])
@@ -139,6 +160,18 @@ def delete_api_key():
     if api_key:
         if api_key.user_id == current_user.id:
             db.session.delete(api_key)
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/delete-project', methods=['POST'])
+def delete_project():  
+    project = json.loads(request.data)
+    projectId = project['projectId']
+    project = Project.query.get(projectId)
+    if project:
+        if project.user_id == current_user.id:
+            db.session.delete(project)
             db.session.commit()
 
     return jsonify({})

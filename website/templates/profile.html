@@ -72,6 +72,37 @@
   <br />
   <h5 align="left">Build your projects database to include into your covering letter</h5>
   <br />
+  
+  <h3>Projects</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Project Title</th>
+        <th>Project Date</th>
+        <th>Project Link</th>
+        <th>Project Description</th>
+        <th>Core Skills</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in user.projects %}
+      <tr>
+        <td>{{ project.project_title }}</td>
+        <td>{{ project.project_date }}</td>
+        <td>{{ project.project_link }}</td>
+        <td>{{ project.project_description }}</td>
+        <td>{{ project.project_core_skill }}</td>
+        <td>
+          <button type="button" class="btn btn-danger" onClick="deleteProject({{ project.id }})">
+            Delete
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>  
+
   <button id="toggleFormBtn" class="btn btn-primary mb-3">Add Project</button>
 
   <div class="container mt-1">

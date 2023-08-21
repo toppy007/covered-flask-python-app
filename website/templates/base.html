@@ -113,6 +113,15 @@
             });
           }
 
+          function deleteProject(projectId) {
+            fetch("/delete-project", {
+              method: "POST",
+              body: JSON.stringify({ projectId: projectId }),
+            }).then((_res) => {
+              window.location.href = "/profile";
+            });
+          }
+
           window.addEventListener('beforeunload', function() {
             localStorage.setItem('scrollPosition', window.scrollY);
           });

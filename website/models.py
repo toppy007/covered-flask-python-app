@@ -38,3 +38,4 @@ class User(db.Model, UserMixin):
     notes = db.relationship('Note', backref='user', lazy=True)
     skills = db.relationship('Skill', backref='user', lazy=True)
     api_keys = db.relationship('OpenAiApiKey', backref='user', lazy=True)
+    projects = db.relationship('Project', backref='user', lazy=True)
