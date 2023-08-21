@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, url_for, 
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
-from .models import Note, Skill, OpenAiApiKey
+from .models import Note, Skill, OpenAiApiKey, Project
 from .prompts import personal_statement_prompt, job_analysis_prompt, job_analysis_compare_skill
 from .analyzing_prompts import generate_job_info
 from . import db
@@ -11,6 +11,10 @@ import json
 views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template("home.html", user=current_user)
+    
+@views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     if request.method == 'POST':
