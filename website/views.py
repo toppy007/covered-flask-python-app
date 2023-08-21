@@ -39,6 +39,7 @@ def profile():
                     db.session.add(new_skill)
                     db.session.commit()
                     flash('Skill added!', category='success')
+        
         elif 'api_key' in request.form:
             key = request.form.get('api_key')
             if len(key) < 1:
