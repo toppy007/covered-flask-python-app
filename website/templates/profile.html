@@ -11,7 +11,7 @@
   <form method="POST">
     <h5 align="left">Upload Api Key</h5>
       <div class="form-group">
-        <input type="text" class="form-control" id="api_key" name="api_key" placeholder="Enter API Key"/>
+        <input type="text" class="form-control" id="api_key" name="api_key" placeholder="Enter API Key here..."/>
       </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
@@ -33,7 +33,7 @@
     <h5 align="left">Build a database of notes your want to mention in your covering letter</h5>
       <ul class="list-group list-group-flush" id="notes">
       {% for note in user.notes %}
-        <li class="list-group-item">
+        <li class="list-group-item list-group-item-dark">
           {{ note.data }}
           <button type="button" class="close" onClick="deleteNote({{ note.id }})">
             <span aria-hidden="true">&times;</span>
@@ -43,7 +43,7 @@
       </ul>
     <form method="POST">
       <div class="form-group">
-        <textarea name="note" id="note" class="form-control"></textarea>
+        <textarea name="note" id="note" rows="4" class="form-control" placeholder="Enter your passages here..."></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Add Statement Note</button>
     </form>
@@ -64,16 +64,14 @@
     </div>
     <form action="{{ url_for('views.profile') }}" method="POST" id="skill-form">
       <div class="form-group">
-        <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here">
+        <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here...">
       </div>
       <button type="submit" class="btn btn-primary mb-1">Add Core Skill</button>
     </form>
-  
+
   <br />
   <h5 align="left">Build your projects database to include into your covering letter</h5>
-  <br />
-  
-  <h3>Projects</h3>
+
   <table class="table">
     <thead>
       <tr>
@@ -102,9 +100,9 @@
       {% endfor %}
     </tbody>
   </table>  
-
+  
   <button id="toggleFormBtn" class="btn btn-primary mb-3">Add Project</button>
-
+  
   <div class="container mt-1">
     <form method="POST" id="projectForm" {% if not show_form %}style="display: none"{% endif %}>
       <div class="form-group">
