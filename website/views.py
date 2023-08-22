@@ -76,8 +76,10 @@ def profile():
 @views.route('/generate', methods=['GET', 'POST'])
 @login_required
 def generate():
+    sections = {}
     if request.method == 'POST':
         if 'create' in request.form:
+            
             job_ad = request.form.get('job_ad')
             selected_notes = request.form.get('selectedNotes')
             word_count = request.form.get('flexRadioDefault')
@@ -112,12 +114,24 @@ def generate():
                 
                 messages = generate_job_info(job_ad)
                 first_api_response = send_api_request(api_key, messages)
+                
+                print(first_api_response)
+                
+                current_section = None
+
+                for line in first_api_response.splitlines():
+                    if line.strip():
+                        if line.endswith(":"):
+                            current_section = line.strip(":")
+                            sections[current_section] = []
+                        else:
+                            sections[current_section].append(line.strip("- "))
             
-                return render_template('generate.html', user=current_user, analysisResult=first_api_response, input_value=job_ad)
+                return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
     
-    return render_template('generate.html', user=current_user)
+    return render_template('generate.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET'])
 @login_required
