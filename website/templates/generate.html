@@ -20,6 +20,12 @@
 </form>
   
 <div class="container mt-5">
+    {% if error_message %}
+    <div class="alert alert-danger">
+      {{ error_message }}
+    </div>
+  {% endif %}
+  
     {% for section, content in sections.items() %}
       <h2>{{ section }}</h2>
       <ul>

@@ -5,6 +5,7 @@ from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project
 from .prompts import personal_statement_prompt, job_analysis_prompt, job_analysis_compare_skill
 from .analyzing_prompts import generate_job_info
+from .api_response_handling import ResponseHandling
 from . import db
 import json
 
@@ -118,16 +119,20 @@ def generate():
                 print(first_api_response)
                 
                 current_section = None
-
-                for line in first_api_response.splitlines():
-                    if line.strip():
-                        if line.endswith(":"):
-                            current_section = line.strip(":")
-                            sections[current_section] = []
-                        else:
-                            sections[current_section].append(line.strip("- "))
-            
-                return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
+                
+                if ResponseHandling.is_non_conforming_response(first_api_response):
+                    error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
+                    return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
+                else:
+                    for line in first_api_response.splitlines():
+                        if line.strip():
+                            if line.endswith(":"):
+                                current_section = line.strip(":")
+                                sections[current_section] = []
+                            else:
+                                sections[current_section].append(line.strip("- "))
+                
+                    return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
     
