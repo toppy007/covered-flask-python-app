@@ -113,7 +113,7 @@ def generate():
                 messages = generate_job_info(job_ad)
                 first_api_response = send_api_request(api_key, messages)
             
-                return render_template('generate.html', user=current_user, analysisResult=first_api_response)
+                return render_template('generate.html', user=current_user, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
     
