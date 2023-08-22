@@ -124,14 +124,17 @@ def generate():
                     error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
                 else:
+                    current_section = None
+
                     for line in first_api_response.splitlines():
                         if line.strip():
-                            if line.endswith(":"):
+                            if ":" in line:
                                 current_section = line.strip(":")
-                                sections[current_section] = []
-                            else:
+                                sections[current_section] = []  # Initialize the list for the section
+                            elif current_section is not None:
                                 sections[current_section].append(line.strip("- "))
-                
+                                
+                    print(sections)
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"

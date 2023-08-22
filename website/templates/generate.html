@@ -21,20 +21,26 @@
   
 <div class="container mt-5">
     {% if error_message %}
-    <div class="alert alert-danger">
-      {{ error_message }}
-    </div>
-  {% endif %}
-  
-    {% for section, content in sections.items() %}
-      <h2>{{ section }}</h2>
-      <ul>
-        {% for line in content %}
-          <li>{{ line }}</li>
-        {% endfor %}
-      </ul>
-  {% endfor %}
-</div>
+      <div class="alert alert-danger">
+        {{ error_message }}
+      </div>
+    {% else %}
+      {% for section, content in sections.items() %}
+        {% if "company name" in section|lower %}
+          <h4>{{ section }}: {{ content[0] }}</h2>
+        {% elif "position" in section|lower %}
+          <h4>{{ section }}: {{ content[0] }}</h3>
+        {% else %}
+          <h4>{{ section }}</h4>
+          <ul>
+            {% for line in content %}
+              <li>{{ line }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
   
 <br id="createCover"/>
   <h3 align="left">Create Your Tailored Supporting Covering Letter</h3>
