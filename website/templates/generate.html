@@ -32,7 +32,7 @@ content %}
   
   <div id="analysisResult">{{ analysisResult | safe }}</div>
   
-  <br />
+  <br id="createCover"/>
   <h3 align="left">Create Your Tailored Supporting Covering Letter</h3>
   <br />
   <button type="button" id="toggleFormBtn" class="btn btn-primary mb-3">Create Optimised Covering Letter</button>
@@ -173,7 +173,7 @@ content %}
     const toggleFormBtn = document.getElementById('toggleFormBtn');
     const projectForm = document.getElementById('projectForm');
     const scrollButton = document.getElementById('toggleFormBtn');
-    const scrollToElement = document.getElementById('projectForm');
+    const scrollToElement = document.getElementById('createCover');
     
     projectForm.style.display = 'none';
   
@@ -188,8 +188,14 @@ content %}
     });
 
     scrollButton.addEventListener('click', function() {
-        scrollToElement.scrollIntoView({ behavior: 'smooth' });
+        // Scroll to the element with an offset
+        scrollToElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',  
+          inline: 'nearest',
+        });
       });
+
   });
   
 </script>
