@@ -5,3 +5,5 @@ class ResponseHandling():
         has_sections = any(line.endswith(":") for line in lines)
 
         return not has_sections or len(lines) <= 1
+    
+    

@@ -46,10 +46,10 @@
   <h3 align="left">Create your tailored supporting covering letter</h3>
 <br />
   <button type="button" id="toggleFormBtn" class="btn btn-primary mb-3">Create Optimised Covering Letter</button>
-  
+
     <div class="form-group" id="projectForm">
     <h5 align="left">Passages you want to include</h5>
-    <select id="selectTag" class="form-control">
+    <select id="selectTag" class="form-control mb-3">
       <option disabled selected value="">Select Passages</option>
       {% for note in user.notes %}
       <option value="{{ note.data }}">{{ note.data }}</option>
@@ -57,11 +57,10 @@
     </select>
   <div>
     <input type="hidden" name="selectedNotes" id="selectedNotesInput" />
-    <button type="button" class="btn btn-primary" onclick="addSelectedNote()">
-      Add
-    </button>
-  </div>
-
+</div>
+<div>
+<button type="button" class="btn btn-primary" onclick="addSelectedNote()">Add</button>
+</div>
   <div class="mt-3">
     <div id="selectedTags">
       <!-- Selected skill tags will be displayed here -->
