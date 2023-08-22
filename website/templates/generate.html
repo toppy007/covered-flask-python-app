@@ -1,8 +1,5 @@
-{% extends "base.html" %}
-
-{% block title %}analyze/create{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}analyze/create{% endblock %} {% block
+content %}
 <br />
 <h1 align="left">Analyze & Create Covering Letter</h1>
 <br />
@@ -11,37 +8,53 @@
 
 <form action="{{ url_for('views.generate') }}" method="post">
   <h5 align="left">Insert job advertisement</h5>
-    <div class="form-group">
-      <textarea class="form-control" id="job_ad" name="job_ad" rows="8" placeholder="Copy & paste job advert here..."></textarea>
-    </div>
-    <div>
-      <button type="submit" name="analyze" class="btn btn-primary" onclick="analyzeForm()">Analyze</button>
-      <button type="reset" class="btn btn-danger ml-2">Reset</button>
-    </div>
-
-    <div id="analysisResult">
-      {{ analysisResult | safe }}
-    </div>
-<br />
-  <h3 align="left">Create Your Tailored Supporting Covering Letter </h3>
-<br />
-  <h5 align="left">Passages you want to include</h5>
-    <div class="form-group">
-      <select id="selectTag" class="form-control">
-        <option disabled selected value="">Select Passages</option>
-        {% for note in user.notes %}
-        <option value="{{ note.data }}">{{ note.data }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div>
-        <input type="hidden" name="selectedNotes" id="selectedNotesInput">
-        <button type="button" class="btn btn-primary" onclick="addSelectedNote()">Add</button>
+  <div class="form-group">
+    <textarea
+      class="form-control"
+      id="job_ad"
+      name="job_ad"
+      rows="10"
+      placeholder="Copy & paste job advert here..."
+    ></textarea>
+  </div>
+  <div>
+    <button
+      type="submit"
+      name="analyze"
+      class="btn btn-primary"
+      onclick="analyzeForm()"
+    >
+      Analyze
+    </button>
+    <button type="reset" class="btn btn-danger ml-2">Reset</button>
+  </div>
+</form>
+  
+  <div id="analysisResult">{{ analysisResult | safe }}</div>
+  
+  <br />
+  <h3 align="left">Create Your Tailored Supporting Covering Letter</h3>
+  <br />
+  <button type="button" id="toggleFormBtn" class="btn btn-primary mb-3">Create Optimised Covering Letter</button>
+  
+  <div class="form-group" id="projectForm">
+    <h5 align="left">Passages you want to include</h5>
+    <select id="selectTag" class="form-control">
+      <option disabled selected value="">Select Passages</option>
+      {% for note in user.notes %}
+      <option value="{{ note.data }}">{{ note.data }}</option>
+      {% endfor %}
+    </select>
+  <div>
+    <input type="hidden" name="selectedNotes" id="selectedNotesInput" />
+    <button type="button" class="btn btn-primary" onclick="addSelectedNote()">
+      Add
+    </button>
   </div>
 
   <div class="mt-3">
     <div id="selectedTags">
-        <!-- Selected skill tags will be displayed here -->
+      <!-- Selected skill tags will be displayed here -->
     </div>
   </div>
   <br />
@@ -49,82 +62,135 @@
   <h5>Selected word count for covering letter:</h5>
 
   <div class="form-group">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="50">
-            <label class="form-check-label" for="flexRadioDefault1">
-                0 - 50
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="100">
-            <label class="form-check-label" for="flexRadioDefault2">
-                51 - 100
-            </label>
-        </div>
-        <!-- Add more radio buttons for other word count ranges -->
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="150">
-            <label class="form-check-label" for="flexRadioDefault3">
-                101 - 150
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" value="200">
-            <label class="form-check-label" for="flexRadioDefault4">
-                151 - 200
-            </label>
-        </div>
-        <!-- Add more radio buttons for additional word count ranges -->
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="flexRadioDefault"
+        id="flexRadioDefault1"
+        value="50"
+      />
+      <label class="form-check-label" for="flexRadioDefault1"> 0 - 50 </label>
     </div>
-    <div>
-        <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="flexRadioDefault"
+        id="flexRadioDefault2"
+        checked
+        value="100"
+      />
+      <label class="form-check-label" for="flexRadioDefault2"> 51 - 100 </label>
     </div>
-</form>
+    <!-- Add more radio buttons for other word count ranges -->
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="flexRadioDefault"
+        id="flexRadioDefault3"
+        value="150"
+      />
+      <label class="form-check-label" for="flexRadioDefault3">
+        101 - 150
+      </label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="flexRadioDefault"
+        id="flexRadioDefault4"
+        value="200"
+      />
+      <label class="form-check-label" for="flexRadioDefault4">
+        151 - 200
+      </label>
+    </div>
+    <!-- Add more radio buttons for additional word count ranges -->
+  </div>
+  <div>
+    <button
+      type="submit"
+      name="create"
+      class="btn btn-primary"
+      onclick="printSelection()"
+    >
+      Create
+    </button>
+  </div>
+</div>
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
 <script>
-    function addSelectedNote() {
-        const selectTag = document.getElementById("selectTag");
-        const selectedNotes = selectTag.value;
+  function addSelectedNote() {
+    const selectTag = document.getElementById("selectTag");
+    const selectedNotes = selectTag.value;
 
-        const selectedSkillsInput = document.getElementById("selectedNotesInput");
-        selectedNotesInput.value += selectedNotes + ","; 
+    const selectedSkillsInput = document.getElementById("selectedNotesInput");
+    selectedNotesInput.value += selectedNotes + ",";
 
-        selectTag.querySelector(`option[value="${selectedNotes}"]`).remove();
-        const selectedTagsDiv = document.getElementById("selectedTags");
-        const tagContainer = document.createElement("div");
-        tagContainer.className = "badge badge-secondary mr-1";
-        
-        const tagText = document.createElement("span");
-        tagText.textContent = selectedNotes;
-        tagContainer.appendChild(tagText);
+    selectTag.querySelector(`option[value="${selectedNotes}"]`).remove();
+    const selectedTagsDiv = document.getElementById("selectedTags");
+    const tagContainer = document.createElement("div");
+    tagContainer.className = "badge badge-secondary mr-1";
 
-        const deleteButton = document.createElement("span");
-        deleteButton.innerHTML = "&times;";
-        deleteButton.className = "ml-2";
-        deleteButton.style.cursor = "pointer";
-        deleteButton.onclick = function() {
-            selectedTagsDiv.removeChild(tagContainer);
-            selectTag.innerHTML += `<option value="${selectedNotes}">${selectedNotes}</option>`;
-            $(noteInput).tagsinput('remove', selectedNotes);
-        };
-        
-        tagContainer.appendChild(deleteButton);
-        selectedTagsDiv.appendChild(tagContainer);
+    const tagText = document.createElement("span");
+    tagText.textContent = selectedNotes;
+    tagContainer.appendChild(tagText);
+
+    const deleteButton = document.createElement("span");
+    deleteButton.innerHTML = "&times;";
+    deleteButton.className = "ml-2";
+    deleteButton.style.cursor = "pointer";
+    deleteButton.onclick = function () {
+      selectedTagsDiv.removeChild(tagContainer);
+      selectTag.innerHTML += `<option value="${selectedNotes}">${selectedNotes}</option>`;
+      $(noteInput).tagsinput("remove", selectedNotes);
+    };
+
+    tagContainer.appendChild(deleteButton);
+    selectedTagsDiv.appendChild(tagContainer);
+  }
+
+  function printSelection() {
+    const selectedNotes = document.getElementById("selectedNotesInput").value;
+    const jobAdContent = document.getElementById("job_ad").value;
+    const wordCountRadios = document.querySelectorAll('input[name="flexRadioDefault"]');
+    let selectedWordCountRange;
+    for (const radio of wordCountRadios) {
+      if (radio.checked) {
+        selectedWordCountRange = radio.value;
+        break;
+      }
     }
+  }
 
-    function printSelection() {
-        const selectedNotes = document.getElementById("selectedNotesInput").value;
-        const jobAdContent = document.getElementById("job_ad").value;
-        
-        const wordCountRadios = document.querySelectorAll('input[name="flexRadioDefault"]');
-        let selectedWordCountRange;
-        for (const radio of wordCountRadios) {
-            if (radio.checked) {
-                selectedWordCountRange = radio.value;
-                break;
-            }
-        }
-    }
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleFormBtn = document.getElementById('toggleFormBtn');
+    const projectForm = document.getElementById('projectForm');
+    const scrollButton = document.getElementById('toggleFormBtn');
+    const scrollToElement = document.getElementById('projectForm');
+    
+    projectForm.style.display = 'none';
+  
+    toggleFormBtn.addEventListener('click', function() {
+      if (projectForm.style.display === 'none') {
+        projectForm.style.display = 'block';
+        toggleFormBtn.textContent = 'Hide Form';
+      } else {
+        projectForm.style.display = 'none';
+        toggleFormBtn.textContent = 'Create Optimised Covering Letter';
+      }
+    });
 
+    scrollButton.addEventListener('click', function() {
+        scrollToElement.scrollIntoView({ behavior: 'smooth' });
+      });
+  });
+  
 </script>
 {% endblock %}
