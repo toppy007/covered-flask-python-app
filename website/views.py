@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify, url_for, redirect
+from flask import Blueprint, render_template, request, flash, jsonify, session
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
@@ -70,7 +70,11 @@ def profile():
 @views.route('/generate', methods=['GET', 'POST'])
 @login_required
 def generate():
-    sections = {}
+    
+    if 'sections' not in session:
+        session['sections'] = {}  # Initialize 'sections' in session if not present
+    sections = session['sections']
+    
     if request.method == 'POST':
         if 'create' in request.form:
             user_id = current_user.id
@@ -79,10 +83,14 @@ def generate():
             if api_key_entry:
                 api_key = api_key_entry.key
                 
-                print(data)
+                print(session['sections'])
+                
+                data = (session['sections'])
                 
                 messages = create_matches_prompt(data, user_id)
                 create_matches_response = send_api_request(api_key, messages)
+                
+                session.clear()
                 
                 return render_template('results.html', user=current_user, skills_matcher=create_matches_response)
             else:
@@ -118,7 +126,8 @@ def generate():
                             elif current_section is not None:
                                 sections[current_section].append(line.strip("- "))
                                 
-                    data = sections
+                    session['sections'] = sections
+                    
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"

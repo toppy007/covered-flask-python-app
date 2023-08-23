@@ -4,10 +4,8 @@ from fuzzywuzzy import fuzz
 def create_matches_prompt(analysis_dict, user_id):
     skills = Skill.query.filter_by(user_id=user_id).all()
 
-    job_ad_skills = analysis_dict.get("Skills", [])
+    job_ad_skills = analysis_dict.get("Technical Skills", [])
     
-    print(analysis_dict)
-
     print(job_ad_skills)
     
     matching_skills = []
