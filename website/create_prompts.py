@@ -1,16 +1,25 @@
 from .models import Skill
 
-def personal_statement_prompt(job_advertisement, important_statements, max_word_count):
-    system_prompt = "**Personal Statement Prompt**\n\n"
+def create_matches_prompt(analysis_dict, user_id):
+    skills = Skill.query.filter_by(user_id=user_id).all()
     
-    user_prompt = (
-        f"Job Advertisement Key Techinical Skills Required:\n{job_advertisement}\n\n"
-        f"Important Statements to Include:\n{important_statements}\n\n"
-        f"Max Word Count: {max_word_count}\n\n"
-        f"Write a personal statement that addresses the job requirements mentioned in the advertisement and avoid's flowery language."
-        f"Include the important statements provided and ensure that the statement does not exceed {max_word_count} words."
-        f"ensure the statements word count does not exceed {max_word_count} words."
+    system_prompt = "**How suitable am I for this role**\n\n"
+
+    user_skills_prompt = "I have the following skills: "
+    for skill in skills:
+        user_skills_prompt += f"- {skill.data}\n"
+    
+    job_ad_skills = analysis_dict.get("Skills", [])
+    job_skills_prompt = "The job advertisement requires the following skills:\n"
+    for skill in job_ad_skills:
+        job_skills_prompt += f"- {skill}\n"
+
+    similarity_prompt = (
+        "Please evaluate how well my skills match the skills required for this role. "
+        "Consider the skills mentioned above and provide a rating or feedback."
     )
+
+    user_prompt = user_skills_prompt + "\n" + job_skills_prompt + "\n" + similarity_prompt
 
     messages = [
         {"role": "system", "content": system_prompt},

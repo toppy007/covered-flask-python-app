@@ -45,6 +45,8 @@
 <br id="createCover"/>
   <h3 align="left">Create your tailored supporting covering letter</h3>
 <br />
+
+<form action="{{ url_for('views.generate') }}" method="post">
   <button type="button" id="toggleFormBtn" class="btn btn-primary mb-3">Create Optimised Covering Letter</button>
 
     <div class="form-group" id="projectForm">
@@ -117,19 +119,12 @@
         151 - 200
       </label>
     </div>
-    <!-- Add more radio buttons for additional word count ranges -->
   </div>
   <div>
-    <button
-      type="submit"
-      name="create"
-      class="btn btn-primary"
-      onclick="printSelection()"
-    >
-      Create
-    </button>
+    <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
   </div>
 </div>
+</form>
 
 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

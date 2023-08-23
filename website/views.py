@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project
-
+from .create_prompts import create_matches_prompt
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -58,14 +58,7 @@ def profile():
             project_description = request.form['project_description']
             project_core_skill = request.form['project_core_skill']
 
-            new_project = Project(
-                project_title=project_title,
-                project_date=project_date,
-                project_link=project_link,
-                project_description=project_description,
-                project_core_skill=project_core_skill,
-                user_id=current_user.id
-            )
+            new_project = Project(project_title=project_title, project_date=project_date, project_link=project_link, project_description=project_description, project_core_skill=project_core_skill, user_id=current_user.id)
             
             db.session.add(new_project)
             db.session.commit()
@@ -80,21 +73,18 @@ def generate():
     sections = {}
     if request.method == 'POST':
         if 'create' in request.form:
-            
-            job_ad = request.form.get('job_ad')
-            selected_notes = request.form.get('selectedNotes')
-            word_count = request.form.get('flexRadioDefault')
-            
             user_id = current_user.id
             api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
             if api_key_entry:
                 api_key = api_key_entry.key
                 
-                messages = job_analysis_prompt(sections)
-                first_api_response = send_api_request(api_key, messages)
+                messages = create_matches_prompt(sections, user_id)
+                create_matches_response = send_api_request(api_key, messages)
+                
+                print(create_matches_response)
         
-                return redirect(url_for('views.results', api_response=first_api_response, second_response=second_response, personal_statement=perosnal_statement))
+                return render_template('results.html', user=current_user, skills_matcher=create_matches_response)
             else:
                 return "API key not found"
             
