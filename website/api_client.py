@@ -7,7 +7,7 @@ def send_api_request(user_api_key, messages):
     response = openai.ChatCompletion.create(
         model=model, 
         messages=messages, 
-        temperature=0.3, 
+        temperature=0.0, 
         top_p=1, 
         frequency_penalty=0, 
         presence_penalty=0
