@@ -79,11 +79,11 @@ def generate():
             if api_key_entry:
                 api_key = api_key_entry.key
                 
-                messages = create_matches_prompt(sections, user_id)
+                print(data)
+                
+                messages = create_matches_prompt(data, user_id)
                 create_matches_response = send_api_request(api_key, messages)
                 
-                print(create_matches_response)
-        
                 return render_template('results.html', user=current_user, skills_matcher=create_matches_response)
             else:
                 return "API key not found"
@@ -100,16 +100,11 @@ def generate():
                 messages = generate_job_info(job_ad)
                 first_api_response = send_api_request(api_key, messages)
                 
-                print(first_api_response)
-                
-                current_section = None
-                
                 if ResponseHandling.is_non_conforming_response(first_api_response):
                     error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
                 else:
                     current_section = None
-
                     for line in first_api_response.splitlines():
                         if line.strip():
                             if ":" in line:
@@ -123,8 +118,7 @@ def generate():
                             elif current_section is not None:
                                 sections[current_section].append(line.strip("- "))
                                 
-                    print(sections)
-                    
+                    data = sections
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
