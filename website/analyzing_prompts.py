@@ -12,7 +12,7 @@ def generate_job_info(job_advertisement):
         f"```\n"
         f"{job_advertisement}\n"
         f"```\n"
-        f"Please provide me with the qualifications, requirements, and technical skills needed for this job."
+        f"Please provide me with the qualifications, requirements, and technical skills needed for this job as a list of keywords."
         f"```\n"
         f"Alos provide me with the following information:\n"
         f"- {company_name_question}\n"

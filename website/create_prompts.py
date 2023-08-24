@@ -3,24 +3,30 @@ from fuzzywuzzy import fuzz
 
 def create_matches_prompt(analysis_dict, user_id):
     skills = Skill.query.filter_by(user_id=user_id).all()
-
-    job_ad_skills = analysis_dict.get("Technical skills", [])
     
-    print("these are my matching skills lists")
-    print(job_ad_skills)
-    for skill in skills:
-        print(skill.data)
+    lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
+    lowercase_dict = {key.lower(): value for key, value in lowercase_analysis_dict.items()}
+
+    print(lowercase_dict)
+
+    job_ad_skills = lowercase_dict.get("technical skills", [])
     
     matching_skills = []
+    threshold = 40  # Adjust the threshold as needed
+
     for skill in skills:
+        user_skill_lower = skill.data.lower()
+        
         for job_skill in job_ad_skills:
-            similarity_ratio = fuzz.ratio(skill.data.lower(), job_skill.lower())
-            if similarity_ratio >= 50:  # Adjust the threshold as needed
+            job_skill_lower = job_skill.lower()
+            similarity_ratio = fuzz.ratio(user_skill_lower, job_skill_lower)
+            
+            if similarity_ratio >= threshold:
                 matching_skills.append(skill.data)
-                break  # Move to the next user skill
-            
-            print(matching_skills)
-            
+                break 
+
+    print("Matching skills:")
+    print(matching_skills)
 
     system_prompt = "**How suitable am I for this role**\n\n"
 
