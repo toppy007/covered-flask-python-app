@@ -1,0 +1,34 @@
+<div class="container mt-3">
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th>Job Analysis</th>
+                  <th>Job Ad Information</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for section, content in sections.items() %}
+                    <tr>
+                        <th scope="row">{{ section }}</th>
+                        <td>
+                            {% if "company name" in section|lower or "position" in section|lower %}
+                                <strong>{{ content[0] }}</strong>
+                            {% else %}
+                                <ul class="list-unstyled mb-0">
+                                    {% for line in content %}
+                                        <li>{{ line }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

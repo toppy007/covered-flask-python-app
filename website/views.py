@@ -70,9 +70,9 @@ def profile():
     
     return render_template("profile.html", user=current_user)
 
-@views.route('/generate', methods=['GET', 'POST'])
+@views.route('/ana_cre_main', methods=['GET', 'POST'])
 @login_required
-def generate():
+def ana_cre_main():
     
     if 'sections' not in session:
         session['sections'] = {}  # Initialize 'sections' in session if not present
@@ -113,7 +113,7 @@ def generate():
                 
                 if ResponseHandling.is_non_conforming_response(first_api_response):
                     error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
-                    return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
+                    return render_template('ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
                 else:
                     current_section = None
                     for line in first_api_response.splitlines():
@@ -131,13 +131,13 @@ def generate():
                                 
                     session['sections'] = sections
                     
-                    return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
+                    return render_template('ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
             
     session.clear()
     
-    return render_template('generate.html', user=current_user, sections=sections)
+    return render_template('ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET'])
 @login_required
