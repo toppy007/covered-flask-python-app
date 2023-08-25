@@ -1,5 +1,3 @@
-# flask-python-app
-
 # COVERED
 
 This Flask-based web application, primarily consisting of a Blueprint named `views`, offers a platform for users to interact with and generate tailored job application content. The application leverages user profiles, notes, skills, and projects. Here's a summary of the key functionalities and the tech stack used:
