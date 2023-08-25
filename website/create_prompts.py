@@ -1,31 +1,35 @@
 from .models import Skill
 from fuzzywuzzy import fuzz
 
-def get_user_skills(user_id):
-    return Skill.query.filter_by(user_id=user_id).all()
-
-def preprocess_analysis_dict(analysis_dict, user_skills):
-    lowercase_analysis_dict = {key: [skill.lower() for skill in user_skills] for key, skills in analysis_dict.items()}
-    lowercase_dict = {key.lower(): value for key, value in lowercase_analysis_dict.items()}
-    return lowercase_dict
-
-def find_matching_skills(user_skills, job_ad_skills, threshold=60):
-    matching_skills = []
+def create_matches_prompt(analysis_dict, user_id):
+    skills = Skill.query.filter_by(user_id=user_id).all()
     
-    for user_skill in user_skills:
-        user_skill_lower = user_skill.data.lower()
+    lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
+    lowercase_dict = {key.lower(): value for key, value in lowercase_analysis_dict.items()}
+
+    print(lowercase_dict)
+
+    job_ad_skills = lowercase_dict.get("keywords for ats analysis", [])
+    
+    matching_skills = []
+    threshold = 20  # Adjust the threshold as needed
+
+    for skill in skills:
+        user_skill_lower = skill.data.lower()
         
         for job_skill in job_ad_skills:
             job_skill_lower = job_skill.lower()
             similarity_ratio = fuzz.ratio(user_skill_lower, job_skill_lower)
             
             if similarity_ratio >= threshold:
-                matching_skills.append(user_skill.data)
-                break
-                
-    return matching_skills
+                matching_skills.append(skill.data)
+                break 
 
-def generate_user_prompt(matching_skills, job_ad_skills):
+    print("Matching skills:")
+    print(matching_skills)
+
+    system_prompt = "**How suitable am I for this role**\n\n"
+
     if matching_skills:
         user_skills_prompt = "My matching technical skills are:\n"
         for skill in matching_skills:
@@ -43,24 +47,10 @@ def generate_user_prompt(matching_skills, job_ad_skills):
     )
 
     user_prompt = user_skills_prompt + "\n" + job_skills_prompt + "\n" + similarity_prompt
-    
-    return user_prompt
 
-def create_matches_prompt(analysis_dict, user_id):
-    user_skills = get_user_skills(user_id)
-    
-    lowercase_dict = preprocess_analysis_dict(analysis_dict, user_skills)
-    job_ad_skills = lowercase_dict.get("technical skills", [])
-    
-    matching_skills = find_matching_skills(user_skills, job_ad_skills)
-    
-    system_prompt = "**How suitable am I for this role**\n\n"
-    
-    user_prompt = generate_user_prompt(matching_skills, job_ad_skills)
-    
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
-    
+
     return messages
