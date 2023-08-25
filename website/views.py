@@ -18,6 +18,9 @@ def home():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    
+    session.clear()
+    
     if request.method == 'POST':
         if 'note' in request.form:
             note = request.form.get('note')
@@ -131,6 +134,8 @@ def generate():
                     return render_template('generate.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
+            
+    session.clear()
     
     return render_template('generate.html', user=current_user, sections=sections)
     

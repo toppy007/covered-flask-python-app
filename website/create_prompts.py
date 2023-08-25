@@ -12,7 +12,7 @@ def create_matches_prompt(analysis_dict, user_id):
     job_ad_skills = lowercase_dict.get("keywords for ats analysis", [])
     
     matching_skills = []
-    threshold = 20  # Adjust the threshold as needed
+    threshold = 70  # Adjust the threshold as needed
 
     for skill in skills:
         user_skill_lower = skill.data.lower()
