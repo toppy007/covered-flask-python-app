@@ -5,57 +5,18 @@
 <br />
   <h1 align="left">Analyze & Create</h1>
 <br />
-    {% include "ana_cre_inputad.html" %}
-    {% include "ana_cre_outputad.html" %}
-    {% include "ana_cre_create.html"%}
-<br />
+
+{% if 'sections' in session %}
+  {% include "ana_cre_outputad.html" %}
+  {% include "ana_cre_create.html"%}
+{% else %}
+  {% include "ana_cre_inputad.html" %}
+{% endif %}
 
 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
 <script>
-  function addSelectedNote() {
-    const selectTag = document.getElementById("selectTag");
-    const selectedNotes = selectTag.value;
-
-    const selectedSkillsInput = document.getElementById("selectedNotesInput");
-    selectedNotesInput.value += selectedNotes + ",";
-
-    selectTag.querySelector(`option[value="${selectedNotes}"]`).remove();
-    const selectedTagsDiv = document.getElementById("selectedTags");
-    const tagContainer = document.createElement("div");
-    tagContainer.className = "badge badge-secondary mr-1";
-
-    const tagText = document.createElement("span");
-    tagText.textContent = selectedNotes;
-    tagContainer.appendChild(tagText);
-
-    const deleteButton = document.createElement("span");
-    deleteButton.innerHTML = "&times;";
-    deleteButton.className = "ml-2";
-    deleteButton.style.cursor = "pointer";
-    deleteButton.onclick = function () {
-      selectedTagsDiv.removeChild(tagContainer);
-      selectTag.innerHTML += `<option value="${selectedNotes}">${selectedNotes}</option>`;
-      $(noteInput).tagsinput("remove", selectedNotes);
-    };
-
-    tagContainer.appendChild(deleteButton);
-    selectedTagsDiv.appendChild(tagContainer);
-  }
-
-  function printSelection() {
-    const selectedNotes = document.getElementById("selectedNotesInput").value;
-    const jobAdContent = document.getElementById("job_ad").value;
-    const wordCountRadios = document.querySelectorAll('input[name="flexRadioDefault"]');
-    let selectedWordCountRange;
-    for (const radio of wordCountRadios) {
-      if (radio.checked) {
-        selectedWordCountRange = radio.value;
-        break;
-      }
-    }
-  }
 
   document.addEventListener('DOMContentLoaded', function() {
     const toggleFormBtn = document.getElementById('toggleFormBtn');

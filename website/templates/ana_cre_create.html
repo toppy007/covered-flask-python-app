@@ -1,3 +1,5 @@
+<div id="ana_cre_create">
+
 <br id="createCover"/>
   <h3 align="left">Create your tailored supporting covering letter</h3>
 <br />
@@ -80,3 +82,49 @@
     <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
   </div>
 </div>
+</div>
+
+<script>
+    function addSelectedNote() {
+      const selectTag = document.getElementById("selectTag");
+      const selectedNotes = selectTag.value;
+  
+      const selectedSkillsInput = document.getElementById("selectedNotesInput");
+      selectedNotesInput.value += selectedNotes + ",";
+  
+      selectTag.querySelector(`option[value="${selectedNotes}"]`).remove();
+      const selectedTagsDiv = document.getElementById("selectedTags");
+      const tagContainer = document.createElement("div");
+      tagContainer.className = "badge badge-secondary mr-1";
+  
+      const tagText = document.createElement("span");
+      tagText.textContent = selectedNotes;
+      tagContainer.appendChild(tagText);
+  
+      const deleteButton = document.createElement("span");
+      deleteButton.innerHTML = "&times;";
+      deleteButton.className = "ml-2";
+      deleteButton.style.cursor = "pointer";
+      deleteButton.onclick = function () {
+        selectedTagsDiv.removeChild(tagContainer);
+        selectTag.innerHTML += `<option value="${selectedNotes}">${selectedNotes}</option>`;
+        $(noteInput).tagsinput("remove", selectedNotes);
+      };
+  
+      tagContainer.appendChild(deleteButton);
+      selectedTagsDiv.appendChild(tagContainer);
+    }
+  
+    function printSelection() {
+      const selectedNotes = document.getElementById("selectedNotesInput").value;
+      const jobAdContent = document.getElementById("job_ad").value;
+      const wordCountRadios = document.querySelectorAll('input[name="flexRadioDefault"]');
+      let selectedWordCountRange;
+      for (const radio of wordCountRadios) {
+        if (radio.checked) {
+          selectedWordCountRange = radio.value;
+          break;
+        }
+      }
+    }
+</script>
