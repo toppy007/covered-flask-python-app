@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project
-from .create_prompts import create_matches_prompt
+from .create_prompts import formating_response_lower, matching_skills, create_prompt
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -90,7 +90,10 @@ def ana_cre_main():
                 
                 data = (session['sections'])
                 
-                messages = create_matches_prompt(data, user_id)
+                formated_response = formating_response_lower(data)
+                matches = matching_skills(formated_response, user_id)
+                messages = create_prompt(matches, formated_response)
+                
                 create_matches_response = send_api_request(api_key, messages)
                 
                 session.clear()
