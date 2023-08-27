@@ -1,0 +1,82 @@
+<br />
+<h5 align="left">Build your work experience data to include into your covering letter</h5>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Job Title</th>
+      <th>Company Name</th>
+      <th>Employment Dates</th>
+      <th>Responsibilites</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for workexp in user.workexps %}
+    <tr>
+      <td>{{ workexp.workexp_title }}</td>
+      <td>{{ workexp.workexp_company }}</td>
+      <td>{{ workexp.workexp_dates }}</td>
+      <td>{{ workexp.workexp_resposibilities }}</td>
+      <td>
+        <button type="button" class="btn btn-danger" onClick="deleteProject({{ project.id }})">
+          Delete
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>  
+
+<br id="scrollAddProject"/>
+
+<button id="toggleFormBtn" class="btn btn-primary mb-3">Add Work Experience</button>
+
+<div class="container mt-1">
+  <form method="POST" id="projectForm" {% if not show_form %}style="display: none"{% endif %}>
+    <div class="form-group">
+      <label for="project_title">Job Title:</label>
+      <input type="text" name="project_title" id="project_title" class="form-control" placeholder="Enter Project Title">
+    </div>
+    <div class="form-group">
+      <label for="project_client">Company Name:</label>
+      <input type="text" name="project_client" id="project_client" class="form-control" placeholder="Enter Project Client">
+    </div>
+
+    <div class="form-group">
+      <label for="project_date_range">Date Range:</label>
+      <div class="input-group">
+        <select name="project_date_from_month" class="custom-select">
+          {% for month in range(1, 13) %}
+            <option value="{{ '%02d'|format(month) }}">{{ month }}</option>
+          {% endfor %}
+        </select>
+        <select name="project_date_from_year" class="custom-select ml-2">
+          {% for year in range(2010, 2030) %}
+            <option value="{{ year }}">{{ year }}</option>
+          {% endfor %}
+        </select>
+        <span class="mx-2">to</span>
+        <select name="project_date_to_month" class="custom-select">
+          {% for month in range(1, 13) %}
+            <option value="{{ '%02d'|format(month) }}">{{ month }}</option>
+          {% endfor %}
+        </select>
+        <select name="project_date_to_year" class="custom-select ml-2">
+          {% for year in range(2010, 2030) %}
+            <option value="{{ year }}">{{ year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="project_description">Project Description:</label>
+      <textarea name="project_description" id="project_description" class="form-control" rows="6" placeholder="Enter Project Description"></textarea>
+    </div>
+    <div class="text-left">
+      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="reset" class="btn btn-danger ml-2">Reset</button>
+    </div>
+  </form>
+</div>

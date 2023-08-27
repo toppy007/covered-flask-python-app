@@ -17,6 +17,15 @@ class Project(db.Model):
     project_core_skill = db.Column(db.String(10000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+class Workexp(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    workexp_title = db.Column(db.String(10000))
+    workexp_company = db.Column(db.String(10000))
+    workexp_dates = db.Column(db.String(10000))
+    workexp_responsiblities = db.Column(db.String(10000))
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Skill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,3 +48,4 @@ class User(db.Model, UserMixin):
     skills = db.relationship('Skill', backref='user', lazy=True)
     api_keys = db.relationship('OpenAiApiKey', backref='user', lazy=True)
     projects = db.relationship('Project', backref='user', lazy=True)
+    workexps = db.relationship('workexp', backref='user', lazy=True)
