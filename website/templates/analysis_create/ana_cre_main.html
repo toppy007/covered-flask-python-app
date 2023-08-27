@@ -24,9 +24,9 @@
     const scrollButton = document.getElementById('toggleFormBtn');
     const scrollToElement = document.getElementById('createCover');
     
-    projectForm.style.display = 'none';
+  projectForm.style.display = 'none';
   
-    toggleFormBtn.addEventListener('click', function() {
+  toggleFormBtn.addEventListener('click', function() {
       if (projectForm.style.display === 'none') {
         projectForm.style.display = 'block';
         toggleFormBtn.textContent = 'Hide Form';
@@ -34,16 +34,16 @@
         projectForm.style.display = 'none';
         toggleFormBtn.textContent = 'Create Optimised Covering Letter';
       }
-    });
+  });
 
-    scrollButton.addEventListener('click', function() {
+  scrollButton.addEventListener('click', function() {
         // Scroll to the element with an offset
         scrollToElement.scrollIntoView({
           behavior: 'smooth',
           block: 'start',  
           inline: 'nearest',
         });
-      });
+  });
 
   });
   

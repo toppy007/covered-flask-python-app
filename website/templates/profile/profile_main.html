@@ -2,124 +2,15 @@
 {% block title %}Profile{% endblock %} 
 {% block content%}
 
-  <br />
-    <h1 align="left">Profile</h1>
-  <br />
+<br />
+  <h1 align="left">Profile</h1>
+<br />
 
 {% include "profile/profile_api.html" %}
 {% include "profile/profile_notes.html" %}
-
-    <br />
-    <h5 align="left">Add core skills to a cover letter skills database</h5>
-    <div class="form-group">
-      <ul class="list-group list-skill-flush d-inline-block" id="skills">
-        {% for skill in user.skills %}
-        <li class="btn btn-outline-primary d-inline-block mr-1 btn-sm mb-2">
-          {{ skill.data }}
-          <button type="button" class="close ml-2" aria-label="close" onClick="deleteSkill({{ skill.id }})">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-    <form action="{{ url_for('views.profile_main') }}" method="POST" id="skill-form">
-      <div class="form-group">
-        <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here...">
-      </div>
-      <button type="submit" class="btn btn-primary mb-1">Add Core Skill</button>
-    </form>
-
-  <br />
-  <h5 align="left">Build your projects database to include into your covering letter</h5>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Project Title</th>
-        <th>Project Date</th>
-        <th>Project Link</th>
-        <th>Project Description</th>
-        <th>Core Skills</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for project in user.projects %}
-      <tr>
-        <td>{{ project.project_title }}</td>
-        <td>{{ project.project_date }}</td>
-        <td>{{ project.project_link }}</td>
-        <td>{{ project.project_description }}</td>
-        <td>{{ project.project_core_skill }}</td>
-        <td>
-          <button type="button" class="btn btn-danger" onClick="deleteProject({{ project.id }})">
-            Delete
-          </button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>  
-  
-  <button id="toggleFormBtn" class="btn btn-primary mb-3">Add Project</button>
-  
-  <div class="container mt-1">
-    <form method="POST" id="projectForm" {% if not show_form %}style="display: none"{% endif %}>
-      <div class="form-group">
-        <label for="project_title">Project Title:</label>
-        <input type="text" name="project_title" id="project_title" class="form-control" placeholder="Enter Project Title">
-      </div>
-      <div class="form-group">
-        <label for="project_client">Project Client:</label>
-        <input type="text" name="project_client" id="project_client" class="form-control" placeholder="Enter Project Client">
-      </div>
-
-      <div class="form-group">
-        <label for="project_date_range">Date Range:</label>
-        <div class="input-group">
-          <select name="project_date_from_month" class="custom-select">
-            {% for month in range(1, 13) %}
-              <option value="{{ '%02d'|format(month) }}">{{ month }}</option>
-            {% endfor %}
-          </select>
-          <select name="project_date_from_year" class="custom-select ml-2">
-            {% for year in range(2022, 2030) %}
-              <option value="{{ year }}">{{ year }}</option>
-            {% endfor %}
-          </select>
-          <span class="mx-2">to</span>
-          <select name="project_date_to_month" class="custom-select">
-            {% for month in range(1, 13) %}
-              <option value="{{ '%02d'|format(month) }}">{{ month }}</option>
-            {% endfor %}
-          </select>
-          <select name="project_date_to_year" class="custom-select ml-2">
-            {% for year in range(2022, 2030) %}
-              <option value="{{ year }}">{{ year }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="project_link">Project Link:</label>
-        <input type="text" name="project_link" id="project_link" class="form-control" placeholder="Enter Project Link">
-      </div>
-      <div class="form-group">
-        <label for="project_description">Project Description:</label>
-        <textarea name="project_description" id="project_description" class="form-control" placeholder="Enter Project Description"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="project_core_skill">Core Skills:</label>
-        <input type="text" name="project_core_skill" id="project_core_skill" class="form-control" placeholder="Enter Core Skills">
-      </div>
-      <div class="text-left">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button type="reset" class="btn btn-danger ml-2">Reset</button>
-      </div>
-    </form>
-  </div>
+{% include "profile/profile_skills.html"%}
+{% include "profile/profile_projects.html"%}
+{% include "profile/profile_workexp.html"%}
 
     <br />
     <br />
@@ -136,24 +27,38 @@
         const projectForm = document.getElementById('projectForm');
         const skillInput = document.getElementById('skill');
         const skillForm = document.getElementById('skill-form');
+        const scrollButton = document.getElementById('toggleFormBtn');
+        const scrollToElement = document.getElementById('scrollAddProject');
+
   
-        toggleFormBtn.addEventListener('click', function() {
-          if (projectForm.style.display === 'none') {
-            projectForm.style.display = 'block';
-            toggleFormBtn.textContent = 'Hide Form';
-          } else {
-            projectForm.style.display = 'none';
-            toggleFormBtn.textContent = 'Add Project';
-          }
-        });
+      toggleFormBtn.addEventListener('click', function() {
+        if (projectForm.style.display === 'none') {
+          projectForm.style.display = 'block';
+          toggleFormBtn.textContent = 'Hide Form';
+        } else {
+          projectForm.style.display = 'none';
+          toggleFormBtn.textContent = 'Add Project';
+        }
+      });
   
-        skillInput.addEventListener('keydown', function(event) {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            skillForm.submit();
-          }
+      skillInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          skillForm.submit();
+        }
+      });
+
+      scrollButton.addEventListener('click', function() {
+        scrollToElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',  
+          inline: 'nearest',
         });
       });
+
+      });
+
+
     </script>
 
     

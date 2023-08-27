@@ -1,0 +1,20 @@
+<br />
+<h5 align="left">Add core skills to a cover letter skills database</h5>
+<div class="form-group">
+  <ul class="list-group list-skill-flush d-inline-block" id="skills">
+    {% for skill in user.skills %}
+    <li class="btn btn-outline-primary d-inline-block mr-1 btn-sm mb-2">
+      {{ skill.data }}
+      <button type="button" class="close ml-2" aria-label="close" onClick="deleteSkill({{ skill.id }})">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<form action="{{ url_for('views.profile_main') }}" method="POST" id="skill-form">
+  <div class="form-group">
+    <input type="text" name="skill" id="skill" class="form-control" placeholder="Enter your core skill here...">
+  </div>
+  <button type="submit" class="btn btn-primary mb-1">Add Core Skill</button>
+</form>
