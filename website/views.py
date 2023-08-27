@@ -72,8 +72,11 @@ def profile_main():
             workexp_title = request.form['workexp_title']
             workexp_dates = request.form['workexp_company']
             workexp_company = f"{request.form['workexp_date_from_month']}/{request.form['workexp_date_from_year']} to {request.form['workexp_date_to_month']}/{request.form['workexp_date_to_year']}"
-            workexp_responsiblities = request.form['workexp_responsibilities']
+            
+            print(request.form.getlist('string_array'))
+            workexp_responsiblities = "\n".join(request.form.getlist('string_array'))
 
+            print(workexp_responsiblities)
             new_workexp = Workexp(workexp_title=workexp_title, workexp_company=workexp_company, workexp_dates=workexp_dates, workexp_responsiblities=workexp_responsiblities, user_id=current_user.id)
             
             db.session.add(new_workexp)

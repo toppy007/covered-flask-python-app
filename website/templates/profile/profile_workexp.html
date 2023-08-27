@@ -17,7 +17,7 @@
       <td>{{ workexp.workexp_title }}</td>
       <td>{{ workexp.workexp_company }}</td>
       <td>{{ workexp.workexp_dates }}</td>
-      <td>{{ workexp.workexp_resposibilities }}</td>
+      <td>{{ workexp.workexp_responsiblities }}</td>
       <td>
         <button type="button" class="btn btn-danger" onClick="deleteWorkexp({{ workexp.id }})">
             Delete
@@ -80,6 +80,7 @@
         <textarea name="add-workexp-btn" id="workexp_responsiblities" rows="4" class="form-control" placeholder="Enter your passages here..."></textarea>
     </div>
     
+    <input type="hidden" name="string_array" id="string_array">
     <button type="button" id="add-workexp-btn" class="btn btn-primary mb-3">Add work experience accomplishments</button>
     
     <div class="text-left">
@@ -126,4 +127,9 @@
             outputList.appendChild(listItem);
         }
     }
+
+    document.getElementById("workexpForm").addEventListener("submit", function() {
+        // Set the value of the hidden input field to the stringArray data
+        document.getElementById("string_array").value = JSON.stringify(stringArray);
+    });
 </script>
