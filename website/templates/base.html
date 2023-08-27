@@ -21,7 +21,7 @@
     />
     <title>{% block title %}Home{% endblock %}</title>
   </head>
-  
+
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <button
@@ -36,7 +36,7 @@
         <div class="navbar-nav">
           {% if user.is_authenticated %}
           <a class="nav-item nav-link" id="home" href="/">Home</a>
-          <a class="nav-item nav-link" id="profile" href="/profile">Profile</a>
+          <a class="nav-item nav-link" id="profile_main" href="/profile_main">Profile</a>
           <a class="nav-item nav-link" id="ana_cre_main" href="/ana_cre_main">Analyze/Create</a>
           <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
           {% else %}
@@ -91,7 +91,7 @@
               method: "POST",
               body: JSON.stringify({ noteId: noteId }),
             }).then((_res) => {
-              window.location.href = "/profile";
+              window.location.href = "/profile_main";
             });
           }
 
@@ -100,7 +100,7 @@
               method: "POST",
               body: JSON.stringify({ skillId: skillId }),
             }).then((_res) => {
-              window.location.href = "/profile";
+              window.location.href = "/profile_main";
             });
           }
 
@@ -109,7 +109,7 @@
               method: "POST",
               body: JSON.stringify({ api_keyId: api_keyId }),
             }).then((_res) => {
-              window.location.href = "/profile";
+              window.location.href = "/profile_main";
             });
           }
 
@@ -118,7 +118,7 @@
               method: "POST",
               body: JSON.stringify({ projectId: projectId }),
             }).then((_res) => {
-              window.location.href = "/profile";
+              window.location.href = "/profile_main";
             });
           }
 

@@ -15,9 +15,9 @@ views = Blueprint('views', __name__)
 def home():
     return render_template("home.html", user=current_user)
     
-@views.route('/profile', methods=['GET', 'POST'])
+@views.route('/profile_main', methods=['GET', 'POST'])
 @login_required
-def profile():
+def profile_main():
     
     session.clear()
     
@@ -68,7 +68,7 @@ def profile():
 
             flash('Project added!', category='success')
     
-    return render_template("profile.html", user=current_user)
+    return render_template("profile/profile_main.html", user=current_user)
 
 @views.route('/ana_cre_main', methods=['GET', 'POST'])
 @login_required

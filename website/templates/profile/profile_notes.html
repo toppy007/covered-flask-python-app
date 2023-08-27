@@ -1,0 +1,20 @@
+<br />
+    <h3 align="left">Personalize Settings and Info</h3>
+  <br />
+    <h5 align="left">Build a database of notes your want to mention in your covering letter</h5>
+      <ul class="list-group list-group-flush" id="notes">
+      {% for note in user.notes %}
+        <li class="list-group-item list-group-item-dark">
+          {{ note.data }}
+          <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </li>
+      {% endfor %}
+      </ul>
+    <form method="POST">
+      <div class="form-group">
+        <textarea name="note" id="note" rows="4" class="form-control" placeholder="Enter your passages here..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Statement Note</button>
+    </form>
