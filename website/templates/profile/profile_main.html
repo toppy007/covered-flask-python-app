@@ -25,8 +25,13 @@
       document.addEventListener('DOMContentLoaded', function() {
         const toggleFormBtn = document.getElementById('toggleFormBtn');
         const projectForm = document.getElementById('projectForm');
+
+        const toggleWorkexpFormBtn = document.getElementById('toggleWorkexpFormBtn');
+        const workexpForm = document.getElementById('workexpForm');
+
         const skillInput = document.getElementById('skill');
         const skillForm = document.getElementById('skill-form');
+
         const scrollButton = document.getElementById('toggleFormBtn');
         const scrollToElement = document.getElementById('scrollAddProject');
 
@@ -38,6 +43,16 @@
         } else {
           projectForm.style.display = 'none';
           toggleFormBtn.textContent = 'Add Project';
+        }
+      });
+
+      toggleWorkexpFormBtn.addEventListener('click', function() {
+        if (workexpForm.style.display === 'none') {
+          workexpForm.style.display = 'block';
+          toggleWorkexpFormBtn.textContent = 'Hide Form';
+        } else {
+          workexpForm.style.display = 'none';
+          toggleWorkexpFormBtn.textContent = 'Add Project';
         }
       });
   

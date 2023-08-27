@@ -48,4 +48,4 @@ class User(db.Model, UserMixin):
     skills = db.relationship('Skill', backref='user', lazy=True)
     api_keys = db.relationship('OpenAiApiKey', backref='user', lazy=True)
     projects = db.relationship('Project', backref='user', lazy=True)
-    workexps = db.relationship('workexp', backref='user', lazy=True)
+    workexps = db.relationship('Workexp', backref='user', lazy=True)

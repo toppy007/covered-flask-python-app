@@ -28,19 +28,19 @@
   </tbody>
 </table>  
 
-<br id="scrollAddProject"/>
+<br id="scrollAddWorkexp"/>
 
-<button id="toggleFormBtn" class="btn btn-primary mb-3">Add Work Experience</button>
+<button id="toggleWorkexpFormBtn" class="btn btn-primary mb-3">Add Work Experience</button>
 
 <div class="container mt-1">
-  <form method="POST" id="projectForm" {% if not show_form %}style="display: none"{% endif %}>
+  <form method="POST" id="workexpForm" {% if not show_form %}style="display: none"{% endif %}>
     <div class="form-group">
       <label for="project_title">Job Title:</label>
-      <input type="text" name="project_title" id="project_title" class="form-control" placeholder="Enter Project Title">
+      <input type="text" name="project_title" id="project_title" class="form-control" placeholder="Enter Job Title">
     </div>
     <div class="form-group">
       <label for="project_client">Company Name:</label>
-      <input type="text" name="project_client" id="project_client" class="form-control" placeholder="Enter Project Client">
+      <input type="text" name="project_client" id="project_client" class="form-control" placeholder="Enter Company Name">
     </div>
 
     <div class="form-group">
@@ -69,11 +69,16 @@
         </select>
       </div>
     </div>
+    
+
 
     <div class="form-group">
-      <label for="project_description">Project Description:</label>
-      <textarea name="project_description" id="project_description" class="form-control" rows="6" placeholder="Enter Project Description"></textarea>
+        <label for="project_description">Create a list of work experience accomplishments:</label>
+        <textarea name="note" id="note" rows="4" class="form-control" placeholder="Enter your passages here..."></textarea>
     </div>
+
+    <button type="button" id="add-skill-btn" class="btn btn-primary mb-3">Add work experience accomplishments</button>
+
     <div class="text-left">
       <button type="submit" class="btn btn-primary">Save</button>
       <button type="reset" class="btn btn-danger ml-2">Reset</button>
