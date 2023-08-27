@@ -122,6 +122,15 @@
             });
           }
 
+          function deleteWorkexp(workexpId) {
+            fetch("/delete-workexp", {
+              method: "POST",
+              body: JSON.stringify({ workexpId: workexpId }),
+            }).then((_res) => {
+              window.location.href = "/profile_main";
+            });
+          }
+
           window.addEventListener('beforeunload', function() {
             localStorage.setItem('scrollPosition', window.scrollY);
           });

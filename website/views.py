@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, session
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
-from .models import Note, Skill, OpenAiApiKey, Project
+from .models import Note, Skill, OpenAiApiKey, Project, Workexp
 from .create_prompts import formating_response_lower, matching_skills, create_prompt
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
@@ -64,6 +64,19 @@ def profile_main():
             new_project = Project(project_title=project_title, project_date=project_date, project_link=project_link, project_description=project_description, project_core_skill=project_core_skill, user_id=current_user.id)
             
             db.session.add(new_project)
+            db.session.commit()
+
+            flash('Project added!', category='success')
+            
+        elif 'workexp_title' in request.form:
+            workexp_title = request.form['workexp_title']
+            workexp_dates = request.form['workexp_company']
+            workexp_company = f"{request.form['workexp_date_from_month']}/{request.form['workexp_date_from_year']} to {request.form['workexp_date_to_month']}/{request.form['workexp_date_to_year']}"
+            workexp_responsiblities = request.form['workexp_responsibilities']
+
+            new_workexp = Workexp(workexp_title=workexp_title, workexp_company=workexp_company, workexp_dates=workexp_dates, workexp_responsiblities=workexp_responsiblities, user_id=current_user.id)
+            
+            db.session.add(new_workexp)
             db.session.commit()
 
             flash('Project added!', category='success')
@@ -195,6 +208,18 @@ def delete_project():
     if project:
         if project.user_id == current_user.id:
             db.session.delete(project)
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/delete-workexp', methods=['POST'])
+def delete_workexp():  
+    workexp = json.loads(request.data)
+    workexpId = workexp['workexpId']
+    workexp = Workexp.query.get(workexpId)
+    if workexp:
+        if workexp.user_id == current_user.id:
+            db.session.delete(workexp)
             db.session.commit()
 
     return jsonify({})
