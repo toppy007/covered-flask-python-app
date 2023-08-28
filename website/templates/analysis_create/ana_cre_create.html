@@ -7,7 +7,7 @@
 <form action="{{ url_for('views.ana_cre_main') }}" method="post">
   <button type="button" id="toggleFormBtn" class="btn btn-primary mb-3">Create Optimised Covering Letter</button>
     <div class="form-group" id="projectForm">
-    <h5 align="left">Passages you want to include</h5>
+    <h5 align="left">Passages you want to include.</h5>
     <select id="selectTag" class="form-control mb-3">
       <option disabled selected value="">Select Passages</option>
       {% for note in user.notes %}
@@ -28,11 +28,13 @@
     </div>
   </div>
 
+  <h5>Added extra supporting infomation.</h5>
+  
   <div id="output" class="mt-3">
-    <strong>Array supporting information:</strong>
+    <strong>Array of supporting information:</strong>
     <ul id="stringList"></ul>
   </div>
-  
+
   <div class="form-group">
     <label for="added_extra">Added extra supporting infomation, contacts or links:</label>
     <textarea name="added_extra" id="added_extra" rows="4" class="form-control" placeholder="Enter your passages here..."></textarea>
@@ -42,17 +44,17 @@
   <button type="button" id="added-extra-btn" class="btn btn-primary mb-3">Add supporting infomation</button>
 
   <br />
+  <h5>Add the recruiter's name.</h5>
     <div class="form-group">
-      <label for="project_title">Name drop the recruiter:</label>
       <input type="text" name="project_title" id="project_title" class="form-control" placeholder="Enter the recruiter..">
     </div>
 
-  <h5>Selected word count for covering letter:</h5>
-
   <div class="form-group">
-    <label for="customRange1" class="form-label">Example range</label>
-    <input type="range" class="form-range" id="customRange1">
+    <label for="wordcount"><h5>Select total word count:</h5></label>
+    <input type="range" class="custom-range" min="100" max="1000" step="100" id="custonWordCountRange" name="wordcount" value="300" style="width: 100%">
+    <div class="wordcount">300</div>
   </div>
+
   <div>
     <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
   </div>
@@ -139,5 +141,15 @@
             outputList.appendChild(listItem);
         }
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const custonWordCountRange = document.getElementById("custonWordCountRange");
+      const wordCountDiv = document.querySelector("div.wordcount");
+    
+      custonWordCountRange.addEventListener("input", function () {
+        const value = custonWordCountRange.value;
+        wordCountDiv.textContent = value;
+      });
+    });
 
 </script>
