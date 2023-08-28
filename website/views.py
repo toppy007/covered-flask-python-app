@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
-from .create_prompts import formating_response_lower, matching_skills, create_prompt
+from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -112,9 +112,13 @@ def ana_cre_main():
                 
                 create_matches_response = send_api_request(api_key, messages)
                 
+                suitiblity = suitability_checker(data, user_id)
+                
+                suitibility_response = send_api_request(api_key, suitiblity)
+                
                 session.clear()
                 
-                return render_template('results.html', user=current_user, skills_matcher=create_matches_response)
+                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response)
             else:
                 return "API key not found"
             

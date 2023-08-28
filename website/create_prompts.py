@@ -1,4 +1,4 @@
-from .models import Skill
+from .models import Skill, Note, Workexp, Project
 from fuzzywuzzy import fuzz
 
 def formating_response_lower(analysis_dict):
@@ -49,6 +49,46 @@ def create_prompt(job_ad_skills, matching_skills):
 
     user_prompt = user_skills_prompt + "\n" + job_skills_prompt + "\n" + similarity_prompt
 
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+
+    return messages
+
+def suitability_checker(job_ad_extracted, user_id):
+    skills = Skill.query.filter_by(user_id=user_id).all()
+    projects = Project.query.filter_by(user_id=user_id).all()
+    workexps = Workexp.query.filter_by(user_id=user_id).all()
+    
+    # Extract user skills, projects, and work experiences
+    user_skills = "\n".join([f"- {skill.data}" for skill in skills])
+    user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
+    user_workexps = "\n".join([f"- {workexp.workexp_responsiblities}" for workexp in workexps])
+    
+    similarity_prompt = (
+        "Based on the provided user information and the job advertisement, please give an assessment of the user's suitability for the role in terms of a percentage. You can provide additional insights and reasoning for the assessment."
+    )
+    
+    # Extract the content from job_ad_extracted dictionary and convert to string
+    job_ad_content = "\n".join([f"{key}: {value}" for key, value in job_ad_extracted.items()])
+    
+    job_ad_content_placeholder = (
+        "Here's a summary of the job advertisement, but please keep in mind that there might be additional "
+        "skills and qualifications that are not listed here. Feel free to ask for more details if needed."
+    )
+
+    user_prompt = (
+        f"{job_ad_content_placeholder}\n"
+        f"{job_ad_content}\n"
+        f"I have the following skills:\n{user_skills}\n"
+        f"I have the following completed projects:\n{user_projects}\n"
+        f"I have the following work experiences:\n{user_workexps}\n"
+        f"{similarity_prompt}"
+    )
+    
+    system_prompt = "**How suitable am I for this role**\n\n"
+    
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
