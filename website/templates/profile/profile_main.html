@@ -35,6 +35,8 @@
         const scrollButton = document.getElementById('toggleFormBtn');
         const scrollToElement = document.getElementById('scrollAddProject');
 
+        const toggleWorkexpBtn = document.getElementById('toggleWorkexpFormBtn');
+        const scrollWorkexpElement = document.getElementById('scrollAddWorkexp');
   
       toggleFormBtn.addEventListener('click', function() {
         if (projectForm.style.display === 'none') {
@@ -64,14 +66,22 @@
       });
 
 
-      scrollButton.addEventListener('click', function() {
-        scrollToElement.scrollIntoView({
+      toggleWorkexpBtn.addEventListener('click', function() {
+        scrollWorkexpElement.scrollIntoView({
           behavior: 'smooth',
           block: 'start',  
           inline: 'nearest',
         });
       });
 
+      scrollButton.addEventListener('click', function() {
+        scrollToElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',  
+          inline: 'nearest',
+        });
+
+      });
 
       });
 
