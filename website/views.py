@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
-from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker, create_gpt_prompt
+from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker, create_gpt_prompt, project_match
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -118,17 +118,22 @@ def ana_cre_main():
                 matches = matching_skills(formated_response, user_id)
                 messages = create_prompt(matches, formated_response)
                 
+                print(formated_response)
+                
                 create_matches_response = send_api_request(api_key, messages)
                 
                 suitiblity = suitability_checker(data, user_id)
                 suitibility_response = send_api_request(api_key, suitiblity)
                 
-                covering_letter_message = create_gpt_prompt(formated_response, user_id)
+                projects_match = project_match(suitibility_response, user_id)
+                projects_matched = send_api_request(api_key, projects_match)
+                
+                covering_letter_message = create_gpt_prompt(data, user_id)
                 create_covering_letter = send_api_request(api_key, covering_letter_message)
                 
                 session.clear()
                 
-                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response, create_covering_letter=create_covering_letter)
+                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response, create_covering_letter=create_covering_letter, projects_matched=projects_matched)
             else:
                 return "API key not found"
             

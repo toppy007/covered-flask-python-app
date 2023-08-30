@@ -96,15 +96,35 @@ def suitability_checker(job_ad_extracted, user_id):
 
     return messages
 
-def project_match(user_id):
+def project_match(job_ad_summary, user_id):
+    
     projects = Project.query.filter_by(user_id=user_id).all()
     
     user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
-
-
+    
+    similarity_prompt = (
+        "Based on the provided user information and the job advertisement, please give an assessment of the user's suitability for the role in terms of a percentage. You can provide additional insights and reasoning for the assessment."
+    )
+    
+    user_prompt = (
+        f"{job_ad_summary}\n"
+        f"I have the following completed projects:\n{user_projects}\n"
+        f"{similarity_prompt}"
+    )
+    
+    system_prompt = "**analysis which project best have core skill linked to the role**\n\n"
+    
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+    
     return messages
 
-def create_gpt_prompt(data, user_id):
+def create_gpt_prompt(analysis_dict, user_id):
+    lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
+    data = {key.lower(): value for key, value in lowercase_analysis_dict.items()}
+
     skills = Skill.query.filter_by(user_id=user_id).all()
     user_skills = "\n".join([f"- {skill.data}" for skill in skills])
     
