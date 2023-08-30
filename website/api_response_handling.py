@@ -1,3 +1,5 @@
+# these are functions that help format infomation for api promps and respones
+
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
