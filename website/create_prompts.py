@@ -96,6 +96,14 @@ def suitability_checker(job_ad_extracted, user_id):
 
     return messages
 
+def project_match(user_id):
+    projects = Project.query.filter_by(user_id=user_id).all()
+    
+    user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
+
+
+    return messages
+
 def create_gpt_prompt(data, user_id):
     skills = Skill.query.filter_by(user_id=user_id).all()
     user_skills = "\n".join([f"- {skill.data}" for skill in skills])
@@ -106,10 +114,11 @@ def create_gpt_prompt(data, user_id):
     
     user_prompt = (  
         f"This is the recruiter's name I want the covering letter addressed to: {data['recruiters_name'][0]}\n\n"
-        f"This is the company's name: {data['Company Name'][0]}\n\n"
-        f"This is the position I am applying for: {data['Position'][0]}\n\n"
-        f"These are the keywords from the ATS analysis from the job advert: {', '.join(data['Keywords for ATS analysis'])}\n\n"
+        f"This is the company's name: {data['company name'][0]}\n\n"
+        f"This is the position I am applying for: {data['position'][0]}\n\n"
+        f"These are the keywords from the ATS analysis from the job advert: {', '.join(data['keywords for ats analysis'])}\n\n"
         f"I have the following skills:\n{user_skills}\n"
+        
     )
 
     messages = [

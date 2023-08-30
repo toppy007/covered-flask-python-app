@@ -123,7 +123,7 @@ def ana_cre_main():
                 suitiblity = suitability_checker(data, user_id)
                 suitibility_response = send_api_request(api_key, suitiblity)
                 
-                covering_letter_message = create_gpt_prompt(data, user_id)
+                covering_letter_message = create_gpt_prompt(formated_response, user_id)
                 create_covering_letter = send_api_request(api_key, covering_letter_message)
                 
                 session.clear()
