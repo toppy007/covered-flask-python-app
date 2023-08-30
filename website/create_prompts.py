@@ -97,10 +97,11 @@ def suitability_checker(job_ad_extracted, user_id):
     return messages
 
 def project_match(job_ad_summary, user_id):
-    
     projects = Project.query.filter_by(user_id=user_id).all()
-    
-    user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
+    user_projects = "\n".join([
+        f"- Title: {project.project_title}\n  Date: {project.project_date}\n  Link: {project.project_link}\n  Description: {project.project_description}\n  Core Skill: {project.project_core_skill}"
+        for project in projects
+    ])
     
     similarity_prompt = (
         "Based on the provided user information and the job advertisement, please give an assessment of the user's suitability for the role in terms of a percentage. You can provide additional insights and reasoning for the assessment."
@@ -122,28 +123,34 @@ def project_match(job_ad_summary, user_id):
     return messages
 
 def create_gpt_prompt(analysis_dict, user_id):
-    lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
-    data = {key.lower(): value for key, value in lowercase_analysis_dict.items()}
+    # Convert analysis_dict to lowercase for consistency
+    lowercase_analysis_dict = {key.lower(): [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
+    
+    
+    print(lowercase_analysis_dict)
+    
+    # Fetch user skills from the database
+    user_skills = Skill.query.filter_by(user_id=user_id).all()
+    formatted_user_skills = "\n".join([f"- {skill.data}" for skill in user_skills])
 
-    skills = Skill.query.filter_by(user_id=user_id).all()
-    user_skills = "\n".join([f"- {skill.data}" for skill in skills])
-    
-    print(data)
-    
-    system_prompt = "**Help me write a covering letter with the following information**\n\n"
-    
-    user_prompt = (  
-        f"This is the recruiter's name I want the covering letter addressed to: {data['recruiters_name'][0]}\n\n"
-        f"This is the company's name: {data['company name'][0]}\n\n"
-        f"This is the position I am applying for: {data['position'][0]}\n\n"
-        f"These are the keywords from the ATS analysis from the job advert: {', '.join(data['keywords for ats analysis'])}\n\n"
-        f"I have the following skills:\n{user_skills}\n"
-        
+    # Prepare the system prompt
+    system_prompt = "**Help me write a cover letter with the following information**\n\n"
+
+    # Prepare the user prompt
+    user_prompt = (
+        f"This is the recruiter's name I want the cover letter addressed to: {lowercase_analysis_dict.get('recruiters_name', [''])[0]}\n\n"
+        f"This is the company's name: {lowercase_analysis_dict.get('company name', [''])[0]}\n\n"
+        f"This is the position I am applying for: {lowercase_analysis_dict.get('position', [''])[0]}\n\n"
+        f"These are the keywords from the ATS analysis from the job advert: {', '.join(lowercase_analysis_dict.get('keywords for ats analysis', []))}\n\n"
+        f"I have the following skills:\n{formatted_user_skills}\n"
     )
 
+    # Construct the messages list
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
-    
+    print("this is the promopt")
+    print(messages)
     return messages
+
