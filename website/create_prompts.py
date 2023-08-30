@@ -95,3 +95,26 @@ def suitability_checker(job_ad_extracted, user_id):
     ]
 
     return messages
+
+def create_gpt_prompt(data, user_id):
+    skills = Skill.query.filter_by(user_id=user_id).all()
+    user_skills = "\n".join([f"- {skill.data}" for skill in skills])
+    
+    print(data)
+    
+    system_prompt = "**Help me write a covering letter with the following information**\n\n"
+    
+    user_prompt = (  
+        f"This is the recruiter's name I want the covering letter addressed to: {data['recruiters_name'][0]}\n\n"
+        f"This is the company's name: {data['Company Name'][0]}\n\n"
+        f"This is the position I am applying for: {data['Position'][0]}\n\n"
+        f"These are the keywords from the ATS analysis from the job advert: {', '.join(data['Keywords for ATS analysis'])}\n\n"
+        f"I have the following skills:\n{user_skills}\n"
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+    
+    return messages

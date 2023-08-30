@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
-from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker
+from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker, create_gpt_prompt
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -99,12 +99,20 @@ def ana_cre_main():
             user_id = current_user.id
             api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
+            selected_notes = request.form.get('selectedNotes')
+            added_extra = request.form.get('added_extra')
+            recruiters_name = request.form.get('project_title')
+            word_count = request.form.get('wordcount')
+
             if api_key_entry:
                 api_key = api_key_entry.key
                 
-                print(session['sections'])
-                
                 data = (session['sections'])
+                
+                data['Selected Notes'] = [selected_notes]
+                data['Added Extra'] = [added_extra]
+                data['recruiters_name'] = [recruiters_name]
+                data['Word Count'] = [word_count]
                 
                 formated_response = formating_response_lower(data)
                 matches = matching_skills(formated_response, user_id)
@@ -113,12 +121,14 @@ def ana_cre_main():
                 create_matches_response = send_api_request(api_key, messages)
                 
                 suitiblity = suitability_checker(data, user_id)
-                
                 suitibility_response = send_api_request(api_key, suitiblity)
+                
+                covering_letter_message = create_gpt_prompt(data, user_id)
+                create_covering_letter = send_api_request(api_key, covering_letter_message)
                 
                 session.clear()
                 
-                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response)
+                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response, create_covering_letter=create_covering_letter)
             else:
                 return "API key not found"
             
