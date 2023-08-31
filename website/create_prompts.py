@@ -1,5 +1,6 @@
 from .models import Skill, Note, Workexp, Project
 from fuzzywuzzy import fuzz
+from .api_response_handling import ResponseHandling
 
 def formating_response_lower(analysis_dict):
     lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
@@ -56,67 +57,25 @@ def create_prompt(job_ad_skills, matching_skills):
 
     return messages
 
-def suitability_checker(job_ad_extracted, user_id):
-    skills = Skill.query.filter_by(user_id=user_id).all()
-    projects = Project.query.filter_by(user_id=user_id).all()
-    workexps = Workexp.query.filter_by(user_id=user_id).all()
+def project_match(analysis_dict, user_id):
+    lowercase_dict = {key.lower(): value for key, value in analysis_dict.items()}
     
-    # Extract user skills, projects, and work experiences
-    user_skills = "\n".join([f"- {skill.data}" for skill in skills])
-    user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
-    user_workexps = "\n".join([f"- {workexp.workexp_responsiblities}" for workexp in workexps])
+    print(lowercase_dict)
     
-    similarity_prompt = "Generate pros and cons paragraphs based on user skills, projects, work experience, and the job description."
-
+    job_ats_skills = lowercase_dict.get('keywords for ats analysis', [])
+    job_ats_skills = [skill.lower() for skill in job_ats_skills if isinstance(skill, str)]
     
-    # Extract the content from job_ad_extracted dictionary and convert to string
-    job_ad_content = "\n".join([f"{key}: {value}" for key, value in job_ad_extracted.items()])
+    print (job_ats_skills)
     
-    job_ad_content_placeholder = (
-        "Here's a summary of the job advertisement, but please keep in mind that there might be additional "
-        "skills and qualifications that are not listed here."
-    )
-
-    user_prompt = (
-        f"{job_ad_content_placeholder}\n"
-        f"{job_ad_content}\n"
-        f"I have the following skills:\n{user_skills}\n"
-        f"I have the following completed projects:\n{user_projects}\n"
-        f"I have the following work experiences:\n{user_workexps}\n"
-        f"{similarity_prompt}"
-    )
+    projects_that_match = ResponseHandling.rank_projects_to_add(job_ats_skills, user_id)
     
-    system_prompt = "You are a language model generating pros and cons. Please generate a pros paragraph and a cons paragraph based on the provided information.\n\n"
-    
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ]
-
-    return messages
-
-def project_match(job_ad_summary, user_id):
-    projects = Project.query.filter_by(user_id=user_id).all()
-    user_projects = "\n".join([
-        f"- Title: {project.project_title}\n  Date: {project.project_date}\n  Link: {project.project_link}\n  Description: {project.project_description}\n  Core Skill: {project.project_core_skill}"
-        for project in projects
-    ])
-    
-    similarity_prompt = (
-        "Based on the provided user information and the job advertisement, please give an assessment of the user's suitability for the role in terms of a percentage. You can provide additional insights and reasoning for the assessment."
-    )
-    
-    user_prompt = (
-        f"{job_ad_summary}\n"
-        f"I have the following completed projects:\n{user_projects}\n"
-        f"{similarity_prompt}"
-    )
+    print(projects_that_match)
     
     system_prompt = "**analysis which project best have core skill linked to the role**\n\n"
     
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
+        {"role": "user", "content": projects_that_match}
     ]
     
     return messages

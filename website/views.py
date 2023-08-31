@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
-from .create_prompts import formating_response_lower, matching_skills, create_prompt, suitability_checker, create_gpt_prompt, project_match
+from .create_prompts import formating_response_lower, project_match
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from . import db
@@ -88,8 +88,7 @@ def profile_main():
 
 @views.route('/ana_cre_main', methods=['GET', 'POST'])
 @login_required
-def ana_cre_main():
-    pros_cons_dict = {}
+def ana_cre_main(): 
     
     if 'sections' not in session:
         session['sections'] = {}  # Initialize 'sections' in session if not present
@@ -115,12 +114,9 @@ def ana_cre_main():
                 data['Added Extra'] = [added_extra]
                 data['recruiters_name'] = [recruiters_name]
                 data['Word Count'] = [word_count]
-                
-                formated_response = formating_response_lower(data)
-                matches = matching_skills(formated_response, user_id)
-                
-                covering_letter_message = create_gpt_prompt(data, user_id)
-                create_covering_letter = send_api_request(api_key, covering_letter_message)
+
+                matches = project_match(data, user_id)
+                create_covering_letter = send_api_request(api_key, matches)
                 
                 session.clear()
                 

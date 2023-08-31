@@ -1,4 +1,6 @@
-from sklearn.feature_extraction.text import CountVectorizer
+from .models import Project
+
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 class ResponseHandling():
@@ -31,13 +33,27 @@ class ResponseHandling():
                 
         return lowercase_dict
     
-    def calculate_similarity(user_skills, job_skills):
-        vectorizer = CountVectorizer().fit_transform([user_skills, job_skills])
-        vectors = vectorizer.toarray()
-        similarity = cosine_similarity(vectors)
+    def rank_projects_to_add(job_ats_skills, user_id):
+        projects = Project.query.filter_by(user_id=user_id).all()
         
-        return similarity[0][1]
-    
+        user_projects_from_db = [
+            f"{project.project_title} {project.project_description} {project.project_core_skill}"
+            for project in projects
+        ]
         
-    
-    
+        def calculate_similarity(user_projects, job_ats_skills):
+            vectorizer = TfidfVectorizer().fit_transform(user_projects)
+            vectors = vectorizer.toarray()
+            similarity = cosine_similarity(vectors)
+            
+            print(similarity[0][1])
+            
+            return similarity[0][1]
+
+        similarity_score = calculate_similarity(user_projects_from_db, job_ats_skills)
+        
+        print(f"Cosine Similarity Score: {similarity_score}")
+
+                    
+                
+            
