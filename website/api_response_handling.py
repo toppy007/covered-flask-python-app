@@ -33,7 +33,9 @@ class ResponseHandling():
                 
         return lowercase_dict
     
-    def rank_projects_to_add(job_ats_skills, user_id):
+    def rank_projects_to_add(job_ats, user_id):
+        job_ats_skills = ' '.join(job_ats)
+        
         projects = Project.query.filter_by(user_id=user_id).all()
         
         user_projects_from_db = [
@@ -42,17 +44,20 @@ class ResponseHandling():
         ]
         
         def calculate_similarity(user_projects, job_ats_skills):
-            vectorizer = TfidfVectorizer().fit_transform(user_projects)
-            vectors = vectorizer.toarray()
-            similarity = cosine_similarity(vectors)
+            print("aaaaaaaaaaaaaaaaaaaa")
+            print(user_projects)
             
-            print(similarity[0][1])
+            vectorizer = TfidfVectorizer().fit(user_projects)
+            user_vectors = vectorizer.transform(user_projects)
+            job_vector = vectorizer.transform([job_ats_skills])
             
-            return similarity[0][1]
+            similarity_scores = cosine_similarity(user_vectors, job_vector)
+            return similarity_scores
 
-        similarity_score = calculate_similarity(user_projects_from_db, job_ats_skills)
+        similarity_scores = calculate_similarity(user_projects_from_db, job_ats_skills)
         
-        print(f"Cosine Similarity Score: {similarity_score}")
+        for project, score in zip(projects, similarity_scores):
+            print(f"Project: {project.project_title}, Similarity Score: {score[0]}")
 
                     
                 
