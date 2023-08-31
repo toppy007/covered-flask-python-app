@@ -89,6 +89,7 @@ def profile_main():
 @views.route('/ana_cre_main', methods=['GET', 'POST'])
 @login_required
 def ana_cre_main():
+    pros_cons_dict = {}
     
     if 'sections' not in session:
         session['sections'] = {}  # Initialize 'sections' in session if not present
@@ -105,6 +106,7 @@ def ana_cre_main():
             word_count = request.form.get('wordcount')
 
             if api_key_entry:
+                
                 api_key = api_key_entry.key
                 
                 data = (session['sections'])
@@ -131,9 +133,29 @@ def ana_cre_main():
                 covering_letter_message = create_gpt_prompt(data, user_id)
                 create_covering_letter = send_api_request(api_key, covering_letter_message)
                 
+                if ResponseHandling.is_non_conforming_response(suitibility_response):
+                    error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
+                    return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response, create_covering_letter=create_covering_letter, projects_matched=projects_matched, error_message=error_message)
+                else:
+                    pros_cons_section = None
+                    for line in suitibility_response.splitlines():
+                        if line.strip():
+                            if ":" in line:
+                                if line.endswith(":"):
+                                    pros_cons_section = line.strip(":")   
+                                    pros_cons_dict[pros_cons_section] = [] 
+                                else:
+                                    split_result = line.split(":")
+                                    pros_cons_dict[split_result[0]] = []
+                                    pros_cons_dict[split_result[0]].append(split_result[1])
+                            elif pros_cons_section is not None:
+                                pros_cons_dict[pros_cons_section].append(line.strip("- "))
+                
+                print(pros_cons_dict)
+                
                 session.clear()
                 
-                return render_template('results.html', user=current_user, skills_matcher=create_matches_response, suitibility_response=suitibility_response, create_covering_letter=create_covering_letter, projects_matched=projects_matched)
+                return render_template('results.html', pros=pros_cons_dict['Pros'], cons=pros_cons_dict['Cons'], user=current_user, skills_matcher=create_matches_response, create_covering_letter=create_covering_letter, projects_matched=projects_matched)
             else:
                 return "API key not found"
             

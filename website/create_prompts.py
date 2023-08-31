@@ -66,16 +66,15 @@ def suitability_checker(job_ad_extracted, user_id):
     user_projects = "\n".join([f"- {project.project_description} ({project.project_core_skill})" for project in projects])
     user_workexps = "\n".join([f"- {workexp.workexp_responsiblities}" for workexp in workexps])
     
-    similarity_prompt = (
-        "Based on the provided user information and the job advertisement, please give an assessment of the user's suitability for the role in terms of a percentage. You can provide additional insights and reasoning for the assessment."
-    )
+    similarity_prompt = "Generate pros and cons paragraphs based on user skills, projects, work experience, and the job description."
+
     
     # Extract the content from job_ad_extracted dictionary and convert to string
     job_ad_content = "\n".join([f"{key}: {value}" for key, value in job_ad_extracted.items()])
     
     job_ad_content_placeholder = (
         "Here's a summary of the job advertisement, but please keep in mind that there might be additional "
-        "skills and qualifications that are not listed here. Feel free to ask for more details if needed."
+        "skills and qualifications that are not listed here."
     )
 
     user_prompt = (
@@ -87,7 +86,7 @@ def suitability_checker(job_ad_extracted, user_id):
         f"{similarity_prompt}"
     )
     
-    system_prompt = "**How suitable am I for this role**\n\n"
+    system_prompt = "You are a language model generating pros and cons. Please generate a pros paragraph and a cons paragraph based on the provided information.\n\n"
     
     messages = [
         {"role": "system", "content": system_prompt},

@@ -1,5 +1,3 @@
-# these are functions that help format infomation for api promps and respones
-
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -10,6 +8,22 @@ class ResponseHandling():
         has_sections = any(line.endswith(":") for line in lines)
 
         return not has_sections or len(lines) <= 1
+    
+    def convert_pros_cons_to_dict(response):
+        lines = response.splitlines()
+        lines = [line.strip() for line in lines if line.strip()]
+        
+        result_dict = {}
+        current_section = None
+        
+        for line in lines:
+            if line.endswith(":"):
+                current_section = line[:-1]
+                result_dict[current_section] = []
+            elif current_section:
+                result_dict[current_section].append(line)
+        
+        return result_dict
     
     def formating_response_lower(analysis_dict):
         lowercase_analysis_dict = {key: [skill.lower() for skill in skills] for key, skills in analysis_dict.items()}
