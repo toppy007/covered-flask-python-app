@@ -3,38 +3,8 @@
 {% block content %}
 <div class="container">
     <br />
-    <h1>Created Results</h1>
-    <br />
-    <h3>ChatGPT's skills matcher</h3>
-    <p>{{ skills_matcher }}</p>
-    <h3>ChatGPT's suitibility matcher</h3>
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-6">
-                <h2 class="text-success">Pros</h2>
-                <ul class="list-group">
-                    {% for pro in pros %}
-                    <li class="list-group-item list-group-item-success">{{ pro }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h2 class="text-danger">Cons</h2>
-                <ul class="list-group">
-                    {% for con in cons %}
-                    <li class="list-group-item list-group-item-danger">{{ con }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
-    <br />
     <h3>your covering letter</h3>
     <p>{{ create_covering_letter }}</p>
     <br />
-    <h3>project match</h3>
-    <p>{{ projects_matched }}</p>
 </div>
 {% endblock %}
