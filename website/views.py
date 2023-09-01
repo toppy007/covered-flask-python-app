@@ -118,6 +118,8 @@ def ana_cre_main():
                 matches = project_match(data, user_id)
                 create_covering_letter = send_api_request(api_key, matches)
                 
+                print(data)
+                
                 session.clear()
                 
                 return render_template('results.html', user=current_user, create_covering_letter=create_covering_letter)
