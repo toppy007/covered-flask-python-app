@@ -1,5 +1,6 @@
 from .models import Project, Skill, Workexp
 
+from fuzzywuzzy import fuzz 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -47,37 +48,44 @@ class CalculateProjectSimilarity:
     
 class CalculateSkillsSimilarity:
     @staticmethod
-    def create_array(data_dict, dic_key):
+    def create_array(data_dict, dic_keys):
         lowercase_dict = {key.lower(): value for key, value in data_dict.items()}
-        job_ats_skills = lowercase_dict.get(dic_key, [])
-        job_ats_keywords_array = [ats_keyword.lower() for ats_keyword in job_ats_skills if isinstance(ats_keyword, str)]
-        
-        return job_ats_keywords_array
+
+        # Check each possible key and return the first one found
+        for dic_key in dic_keys:
+            job_ats_skills = lowercase_dict.get(dic_key.lower(), [])
+            if job_ats_skills:
+                job_ats_keywords_array = [ats_keyword.lower() for ats_keyword in job_ats_skills if isinstance(ats_keyword, str)]
+                
+                return job_ats_keywords_array
+
+        # If none of the keys are found, return an empty list
+        return []
     
     @staticmethod
     def create_string_array_of_skills(user_id):
         skills = Skill.query.filter_by(user_id=user_id).all()
-        user_skills_from_db = [skill.data for skill in skills]
+        user_skills_from_db = [str(skill.data).lower() for skill in skills]
         
         return user_skills_from_db
     
     @staticmethod
-    def find_matching_words(skills_list, ats_keyword_list, threshold=0.5):
-        set1 = set(skills_list)
-        set2 = set(ats_keyword_list)
+    def find_matching_words(skills_list, ats_keyword_list, threshold=80):
+        matching_words = []
 
-        jaccard_similarity = len(set1.intersection(set2)) / len(set1.union(set2))
+        for user_skill in skills_list:
+            for ats_keyword in ats_keyword_list:
+                similarity_score = fuzz.token_sort_ratio(user_skill, ats_keyword)
+                if similarity_score >= threshold:
+                    matching_words.append(user_skill)
+                    break  # Break out of the inner loop when a match is found
 
-        if jaccard_similarity >= threshold:
-            matching_words = list(set1.intersection(set2))
-            return matching_words
-        else:
-            return []
+        return matching_words
     
     @staticmethod
-    def calculate_similarity(data_dict, dic_key, user_id, threshold=0.5):
+    def calculate_similarity(data_dict, dic_key, user_id):
         ats_keywords = CalculateSkillsSimilarity.create_array(data_dict, dic_key)
         user_skills = CalculateSkillsSimilarity.create_string_array_of_skills(user_id)
-        matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords, threshold)
-
+        matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords)
+        
         return matching_words

@@ -6,6 +6,7 @@ from .models import Note, Skill, OpenAiApiKey, Project, Workexp
 from .create_prompts import formating_response_lower, project_match
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
+from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity
 from . import db
 import json
 
@@ -114,15 +115,14 @@ def ana_cre_main():
                 data['Added Extra'] = [added_extra]
                 data['recruiters_name'] = [recruiters_name]
                 data['Word Count'] = [word_count]
-
-                matches = project_match(data, user_id)
-                create_covering_letter = send_api_request(api_key, matches)
                 
-                print(data)
+                dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
                 
                 session.clear()
                 
-                return render_template('results.html', user=current_user, create_covering_letter=create_covering_letter)
+                return render_template('results.html', user=current_user, create_covering_letter=skills_match)
             else:
                 return "API key not found"
             
