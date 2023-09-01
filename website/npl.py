@@ -6,13 +6,19 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class CalculateProjectSimilarity:
     @staticmethod
-    def create_string(data_dict, dic_key):
+    def create_string(data_dict, dic_keys):
         lowercase_dict = {key.lower(): value for key, value in data_dict.items()}
-        job_ats_skills = lowercase_dict.get(dic_key, [])
-        job_ats_keywords = [ats_keyword.lower() for ats_keyword in job_ats_skills if isinstance(ats_keyword, str)]
-        job_ats_keywords_string = ' '.join(job_ats_keywords)
-        
-        return job_ats_keywords_string
+
+        # Check each possible key and return the first one found
+        for dic_key in dic_keys:
+            job_ats_skills = lowercase_dict.get(dic_key.lower(), [])
+            if job_ats_skills:
+                # Join the list of keywords into a single string
+                job_ats_keywords_string = ' '.join([ats_keyword.lower() for ats_keyword in job_ats_skills if isinstance(ats_keyword, str)])
+                return job_ats_keywords_string
+
+        return ""
+
 
     @staticmethod
     def create_string_array_of_projects(user_id):
@@ -26,7 +32,8 @@ class CalculateProjectSimilarity:
 
     @staticmethod
     def calculate_similarity(user_projects_from_db, job_ats_keywords_string):
-        vectorizer = TfidfVectorizer().fit(user_projects_from_db)
+        vectorizer = TfidfVectorizer().fit(user_projects_from_db)  # Fit the vectorizer on user projects
+
         job_vector = vectorizer.transform([job_ats_keywords_string])
 
         similarity_scores = []
@@ -85,7 +92,9 @@ class CalculateSkillsSimilarity:
     @staticmethod
     def calculate_similarity(data_dict, dic_key, user_id):
         ats_keywords = CalculateSkillsSimilarity.create_array(data_dict, dic_key)
+        print(ats_keywords)
         user_skills = CalculateSkillsSimilarity.create_string_array_of_skills(user_id)
+        print(user_skills)
         matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords)
         
         return matching_words

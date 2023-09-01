@@ -119,10 +119,11 @@ def ana_cre_main():
                 dic_key = ["keywords for ats analysis", "ats keywords"]
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
+                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(user_id, dic_key, data)
                 
                 session.clear()
                 
-                return render_template('results.html', user=current_user, create_covering_letter=skills_match)
+                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match)
             else:
                 return "API key not found"
             
