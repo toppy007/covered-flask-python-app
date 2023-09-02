@@ -20,7 +20,7 @@ class CalculateProjectSimilarity:
     @staticmethod
     def create_tuple_array_of_projects(user_id):
         projects = Project.query.filter_by(user_id=user_id).all()
-        project_info = [(project.project_id, project.project_title, project.project_description) for project in projects]
+        project_info = [(project.id, project.project_title, project.project_description) for project in projects]
 
         return project_info
 
@@ -32,10 +32,10 @@ class CalculateProjectSimilarity:
 
         similarity_scores = []
 
-        for project_id, project_title, project_description in user_projects_info:
+        for id, project_title, project_description in user_projects_info:
             user_vector = vectorizer.transform([project_description])
             similarity_score = cosine_similarity(user_vector, job_vector)
-            similarity_scores.append((project_id, project_title, similarity_score[0][0]))
+            similarity_scores.append((id, project_title, similarity_score[0][0]))
 
         return similarity_scores
 
@@ -108,7 +108,7 @@ class CalculateWorkexpsSimilarity:
             for responsibility in responsibilities:
                 cleaned_responsibility = responsibility.strip()
                 if cleaned_responsibility:
-                    responsibilities_list.append((workexp.workexp_title, cleaned_responsibility))
+                    responsibilities_list.append((workexp.id, cleaned_responsibility))
 
             return responsibilities_list
 
@@ -118,10 +118,10 @@ class CalculateWorkexpsSimilarity:
         job_vector = vectorizer.transform([job_ats_keywords_string])
         similarity_scores = []
 
-        for workexp_title, cleaned_responsibility in user_workexp_info:
+        for id, cleaned_responsibility in user_workexp_info:
             user_vector = vectorizer.transform([cleaned_responsibility])
             similarity_score = cosine_similarity(user_vector, job_vector)
-            similarity_scores.append((cleaned_responsibility, similarity_score[0][0]))
+            similarity_scores.append((id, cleaned_responsibility, similarity_score[0][0]))
 
         return similarity_scores
 
