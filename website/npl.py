@@ -1,3 +1,9 @@
+# The npl.py script utilizes NLP techniques to match user data (projects, skills, work experience)
+# with job requirements. It employs TF-IDF vectorization and cosine similarity for comparison.
+# The script is organized into classes: CalculateProjectSimilarity, CalculateSkillsSimilarity, 
+# and CalculateWorkexpsSimilarity. It aids in job matching and recommendation by assessing the 
+# similarity between user profiles and job criteria.
+
 from .models import Project, Skill, Workexp
 
 from fuzzywuzzy import fuzz 
@@ -14,7 +20,7 @@ class CalculateProjectSimilarity:
     @staticmethod
     def create_tuple_array_of_projects(user_id):
         projects = Project.query.filter_by(user_id=user_id).all()
-        project_info = [(project.project_title, project.project_description) for project in projects]
+        project_info = [(project.project_id, project.project_title, project.project_description) for project in projects]
 
         return project_info
 
@@ -26,10 +32,10 @@ class CalculateProjectSimilarity:
 
         similarity_scores = []
 
-        for project_title, project_description in user_projects_info:
+        for project_id, project_title, project_description in user_projects_info:
             user_vector = vectorizer.transform([project_description])
             similarity_score = cosine_similarity(user_vector, job_vector)
-            similarity_scores.append((project_title, similarity_score[0][0]))
+            similarity_scores.append((project_id, project_title, similarity_score[0][0]))
 
         return similarity_scores
 
