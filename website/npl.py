@@ -82,3 +82,39 @@ class CalculateSkillsSimilarity:
         matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords)
         
         return matching_words
+    
+class CalculateWorkexpsSimilarity:
+    @staticmethod
+    def create_array_of_workexp(user_id):
+        workexps = Workexp.query.filter_by(user_id=user_id).all()
+        
+        # Create an empty list to store the responsibilities
+        responsibilities_list = []
+
+        # Iterate through each work experience object and extract responsibilities
+        for workexp in workexps:
+            # Convert responsibilities to lowercase and split by ","
+            responsibilities_str = workexp.workexp_responsiblities.lower()
+
+            # Remove double quotes and extra square brackets
+            responsibilities_str = responsibilities_str.replace('"', '').replace('[', '').replace(']', '').replace('\\', '')
+
+            responsibilities = responsibilities_str.split(",")
+
+            # Add each responsibility to the list
+            for responsibility in responsibilities:
+                cleaned_responsibility = responsibility.strip()
+                if cleaned_responsibility:  # Check if the cleaned responsibility is not an empty string
+                    responsibilities_list.append((workexp.workexp_title, cleaned_responsibility))
+
+        for item in responsibilities_list:
+            print(item)
+
+        return responsibilities_list
+
+
+
+
+
+
+    

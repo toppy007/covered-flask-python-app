@@ -5,7 +5,7 @@ from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
-from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity
+from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity, CalculateWorkexpsSimilarity
 from . import db
 import json
 
@@ -119,6 +119,10 @@ def ana_cre_main():
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(user_id, data)
+                workexp_match = CalculateWorkexpsSimilarity.create_array_of_workexp(user_id)
+                
+                print("AAAAAAAA")
+                print(workexp_match)
                 
                 session.clear()
                 
