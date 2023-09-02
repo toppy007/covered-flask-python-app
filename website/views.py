@@ -3,7 +3,6 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
-from .create_prompts import formating_response_lower, project_match
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity
@@ -119,7 +118,7 @@ def ana_cre_main():
                 dic_key = ["keywords for ats analysis", "ats keywords"]
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
-                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(user_id, dic_key, data)
+                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(user_id, data)
                 
                 session.clear()
                 
