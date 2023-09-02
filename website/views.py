@@ -120,7 +120,8 @@ def ana_cre_main():
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(data, user_id)
                 workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(data, user_id)
-                
+                print(project_match)
+                print(workexp_match)
                 session.clear()
                 
                 return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, workexp_match=workexp_match)

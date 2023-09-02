@@ -7,10 +7,17 @@
     <p>{{ create_covering_letter }}</p>
     <br />
     <h3>projects match</h3>
-    <p>{{ create_covering_project }}</p>
+    <ul>
+        {% for _, project_name, score in create_covering_project %}
+            <li>{{ project_name }}: {{ "%.5f"|format(score) }}</li>
+        {% endfor %}
+    </ul>
     <br />
     <h3>work exp match</h3>
-    <p>{{ workexp_match }}</p>
-
+    <ul>
+        {% for _, description, score in workexp_match %}
+            <li>{{ description }}: {{ "%.5f"|format(score) }}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

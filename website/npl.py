@@ -52,14 +52,23 @@ class CalculateSkillsSimilarity:
     def create_array(data_dict, dic_keys):
         lowercase_dict = {key.lower(): value for key, value in data_dict.items()}
         
+        individual_words = []
+        joined_keywords = []
+
         for dic_key in dic_keys:
             job_ats_skills = lowercase_dict.get(dic_key.lower(), [])
             if job_ats_skills:
-                job_ats_keywords_array = [ats_keyword.lower() for ats_keyword in job_ats_skills if isinstance(ats_keyword, str)]
-                
-                return job_ats_keywords_array
-
-        return []
+                for ats_keyword in job_ats_skills:
+                    if isinstance(ats_keyword, str):
+                        words = ats_keyword.lower().replace('/', ' ').split()
+                        individual_words.extend(words) 
+                        joined_keywords.append(' '.join(words)) 
+        
+        combined_keywords = list(set(joined_keywords + individual_words))
+        
+        print(combined_keywords)
+        
+        return combined_keywords
     
     @staticmethod
     def create_string_array_of_skills(user_id):
