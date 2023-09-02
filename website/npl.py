@@ -8,7 +8,7 @@ class CalculateProjectSimilarity:
     @staticmethod
     def create_string(data_dict):
         result_string = ' '.join([str(value) for value in data_dict.values()])
-        print(result_string)
+        
         return result_string
 
     @staticmethod
@@ -34,9 +34,9 @@ class CalculateProjectSimilarity:
         return similarity_scores
 
     @staticmethod
-    def function_calculate_project_similarity(user_id, dict_key):
+    def function_calculate_project_similarity(data, user_id):
         user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
-        job_ats_keywords_string = CalculateProjectSimilarity.create_string(dict_key)
+        job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
         similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
         
         return similarity_scores
@@ -85,32 +85,47 @@ class CalculateSkillsSimilarity:
     
 class CalculateWorkexpsSimilarity:
     @staticmethod
+    def create_string_workexp(data_dict):
+        result_string = ' '.join([str(value) for value in data_dict])
+        return result_string
+
+    @staticmethod
     def create_array_of_workexp(user_id):
         workexps = Workexp.query.filter_by(user_id=user_id).all()
-        
-        # Create an empty list to store the responsibilities
         responsibilities_list = []
 
-        # Iterate through each work experience object and extract responsibilities
         for workexp in workexps:
-            # Convert responsibilities to lowercase and split by ","
             responsibilities_str = workexp.workexp_responsiblities.lower()
-
-            # Remove double quotes and extra square brackets
             responsibilities_str = responsibilities_str.replace('"', '').replace('[', '').replace(']', '').replace('\\', '')
-
             responsibilities = responsibilities_str.split(",")
 
-            # Add each responsibility to the list
             for responsibility in responsibilities:
                 cleaned_responsibility = responsibility.strip()
-                if cleaned_responsibility:  # Check if the cleaned responsibility is not an empty string
+                if cleaned_responsibility:
                     responsibilities_list.append((workexp.workexp_title, cleaned_responsibility))
 
-        for item in responsibilities_list:
-            print(item)
+            return responsibilities_list
 
-        return responsibilities_list
+    @staticmethod
+    def calculate_similarity_workexp(user_workexp_info, job_ats_keywords_string):
+        vectorizer = TfidfVectorizer().fit([info[1] for info in user_workexp_info])
+        job_vector = vectorizer.transform([job_ats_keywords_string])
+        similarity_scores = []
+
+        for workexp_title, cleaned_responsibility in user_workexp_info:
+            user_vector = vectorizer.transform([cleaned_responsibility])
+            similarity_score = cosine_similarity(user_vector, job_vector)
+            similarity_scores.append((cleaned_responsibility, similarity_score[0][0]))
+
+        return similarity_scores
+
+    @staticmethod
+    def calculate_similarity(data_dict, user_id):
+        user_workexps = CalculateWorkexpsSimilarity.create_array_of_workexp(user_id)
+        ats_keywords = CalculateWorkexpsSimilarity.create_string_workexp(data_dict) 
+        matching_workexp = CalculateWorkexpsSimilarity.calculate_similarity_workexp(user_workexps, ats_keywords)
+        
+        return matching_workexp
 
 
 

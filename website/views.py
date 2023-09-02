@@ -118,8 +118,10 @@ def ana_cre_main():
                 dic_key = ["keywords for ats analysis", "ats keywords"]
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
-                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(user_id, data)
-                workexp_match = CalculateWorkexpsSimilarity.create_array_of_workexp(user_id)
+                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(data, user_id)
+                
+                print(data)
+                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(data, user_id)
                 
                 print("AAAAAAAA")
                 print(workexp_match)
