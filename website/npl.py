@@ -6,6 +6,9 @@
 
 from .models import Project, Skill, Workexp
 
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
@@ -13,6 +16,9 @@ from fuzzywuzzy import fuzz
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+nltk.download('stopwords')
+nltk.download('punkt')
 
 class CalculateProjectSimilarity:
     @staticmethod
