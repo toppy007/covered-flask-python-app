@@ -6,28 +6,28 @@
 
 from .models import Project, Skill, Workexp
 
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
 from fuzzywuzzy import fuzz 
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 class CalculateProjectSimilarity:
     @staticmethod
     def create_string(input_text):
-        tokens = word_tokenize(text)
+        tokens = word_tokenize(input_text)
         
-        # Remove punctuation and convert to lowercase
         tokens = [word.lower() for word in tokens if word.isalnum()]
         
-        # Remove stopwords
         stop_words = set(stopwords.words('english'))
         tokens = [word for word in tokens if word not in stop_words]
         
-        # Join the tokens back into a cleaned string
         cleaned_text = ' '.join(tokens)
         
-
-        # Join the cleaned tokens into a single string
-        result_string = ' '.join(cleaned_input.split())
+        result_string = ' '.join(cleaned_text.split())
+        
         return result_string
 
     @staticmethod
