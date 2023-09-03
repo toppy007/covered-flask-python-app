@@ -12,30 +12,52 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class CalculateProjectSimilarity:
     @staticmethod
-    def create_string(data_dict):
-        result_string = ' '.join([str(value) for value in data_dict.values()])
+    def create_string(input_text):
+        tokens = word_tokenize(text)
         
+        # Remove punctuation and convert to lowercase
+        tokens = [word.lower() for word in tokens if word.isalnum()]
+        
+        # Remove stopwords
+        stop_words = set(stopwords.words('english'))
+        tokens = [word for word in tokens if word not in stop_words]
+        
+        # Join the tokens back into a cleaned string
+        cleaned_text = ' '.join(tokens)
+        
+
+        # Join the cleaned tokens into a single string
+        result_string = ' '.join(cleaned_input.split())
         return result_string
 
     @staticmethod
     def create_tuple_array_of_projects(user_id):
         projects = Project.query.filter_by(user_id=user_id).all()
-        project_info = [(project.id, project.project_title, project.project_description) for project in projects]
+        project_info = [(project.id, project.project_title, project.project_description, project.project_core_skill) for project in projects]
 
         return project_info
 
     @staticmethod
     def calculate_similarity(user_projects_info, job_ats_keywords_string):
-        vectorizer = TfidfVectorizer().fit([info[1] for info in user_projects_info])
+        vectorizer = TfidfVectorizer().fit([info[2] + " " + info[3] for info in user_projects_info])
 
+        print("vectorizer")
+        print(user_projects_info)
+        print(vectorizer)
+        
         job_vector = vectorizer.transform([job_ats_keywords_string])
 
+        print(job_vector)
         similarity_scores = []
 
-        for id, project_title, project_description in user_projects_info:
-            user_vector = vectorizer.transform([project_description])
+        for id, project_title, project_description, project_core_skill in user_projects_info:
+            user_vector = vectorizer.transform([project_description, project_core_skill])
             similarity_score = cosine_similarity(user_vector, job_vector)
             similarity_scores.append((id, project_title, similarity_score[0][0]))
+            
+            print(user_vector)
+            print(similarity_score)
+            print(similarity_scores)
 
         return similarity_scores
 
@@ -44,6 +66,11 @@ class CalculateProjectSimilarity:
         user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
         job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
         similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
+        
+        print("project inputs npl proccessing")
+        print(user_projects)
+        
+        print(job_ats_keywords_string)
         
         return similarity_scores
     

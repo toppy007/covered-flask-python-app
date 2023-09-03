@@ -109,6 +109,7 @@ def ana_cre_main():
                 api_key = api_key_entry.key
                 
                 data = (session['sections'])
+                raw_data = (session['job_ad'])
                 
                 data['Selected Notes'] = [selected_notes]
                 data['Added Extra'] = [added_extra]
@@ -116,10 +117,13 @@ def ana_cre_main():
                 data['Word Count'] = [word_count]
                 
                 dic_key = ["keywords for ats analysis", "ats keywords"]
+                
+                print('raw data')
+                print(raw_data)
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
-                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(data, user_id)
-                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(data, user_id)
+                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
+                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
                 print(project_match)
                 print(workexp_match)
                 session.clear()
@@ -159,6 +163,7 @@ def ana_cre_main():
                                 sections[current_section].append(line.strip("- "))
                                 
                     session['sections'] = sections
+                    session['job_ad'] = job_ad
                     
                     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
