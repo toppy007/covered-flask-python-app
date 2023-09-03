@@ -133,8 +133,18 @@ class CalculateSkillsSimilarity:
     
 class CalculateWorkexpsSimilarity:
     @staticmethod
-    def create_string_workexp(data_dict):
-        result_string = ' '.join([str(value) for value in data_dict])
+    def create_string_workexp(input_text):
+        tokens = word_tokenize(input_text)
+        
+        tokens = [word.lower() for word in tokens if word.isalnum()]
+        
+        stop_words = set(stopwords.words('english'))
+        tokens = [word for word in tokens if word not in stop_words]
+        
+        cleaned_text = ' '.join(tokens)
+        
+        result_string = ' '.join(cleaned_text.split())
+        
         return result_string
 
     @staticmethod
