@@ -33,6 +33,53 @@ class FormattingProjectPrompts:
     def create_projects_prompt(project_evaluation_score):
         filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score)
         filtered_projects_object = FormattingProjectPrompts.theshold_projects_db_queary(filtered_projects)
-        formatted_projects_to_include = FormattingProjectPrompts.project_to_str():
+        formatted_projects_to_include = FormattingProjectPrompts.project_to_str(filtered_projects_object)
         
-        return 
+        return formatted_projects_to_include
+    
+class BuildingCreateCLPrompt:
+    @staticmethod
+    def combine_input_parameters(project_evaluation_score, job_info, job_advertisement):
+       
+        """
+        Combine input parameters to generate system and user prompts for creating a covering letter.
+
+        Args:
+            project_evaluation_score (float): The score for the project evaluation.
+            job_info (dict): Dictionary containing job-related information.
+            job_advertisement (str): The job advertisement text.
+
+        Returns:
+            list: A list of messages containing system and user prompts.
+        """
+        
+        system_prompt = "Generate a professional covering letter for the following job application:"
+        
+        company_name = job_info.get('Company Name', [None])[0]
+        job_title = job_info.get('Position', [None])[0]
+        recruiter = job_info.get('recruiters_name', [None])[0]
+        
+        company_name_info = f"The company I am applying to is {company_name}"
+        job_title_info = f"The position I am applying for is {job_title}"
+        recruiter_info = f"You should address the covering letter to {recruiter}"
+        projects_to_include = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
+
+        user_prompt = (
+            f"Given the following job advertisement:\n\n"
+            f"```\n"
+            f"{job_advertisement}\n"
+            f"```\n"
+            f"Please use the following information to create a covering letter:\n"
+            f"- {company_name_info}\n"
+            f"- {recruiter_info}\n"
+            f"- {job_title_info}\n"
+            f"Include the following projects:\n"
+            f"{projects_to_include}\n"
+        )
+        
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+
+        return messages
