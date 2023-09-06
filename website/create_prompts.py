@@ -4,12 +4,10 @@ class FormattingProjectPrompts:
     def threshold_projects_to_include(projects_evaluation, threshold=0.2):
         projects_to_include = []
 
-        for project_evaluation in projects_evaluation:
-            if isinstance(project_evaluation, tuple) and len(project_evaluation) >= 3:
-                for tup in project_evaluation:
-                    if isinstance(tup, tuple) and len(tup) >= 3:
-                        if tup[2] >= threshold:
-                            projects_to_include.append(tup[0])
+        for tup in projects_evaluation:
+            if isinstance(tup, tuple) and len(tup) == 3:
+                if tup[2] >= threshold:
+                    projects_to_include.append(tup[0])
 
         return projects_to_include
 
@@ -17,6 +15,8 @@ class FormattingProjectPrompts:
     def theshold_projects_db_queary(project_ids):
         projects = Project.query.filter(Project.id.in_(project_ids)).all()
         
+        print('project objects')
+        print(projects)
         return projects
 
     def project_to_str(projects):
@@ -34,10 +34,13 @@ class FormattingProjectPrompts:
         return "\n".join(project_strings)
     
     def create_projects_prompt(project_evaluation_score):
-        filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score)
+        filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score, threshold=0.2)
+        print(filtered_projects)
         filtered_projects_object = FormattingProjectPrompts.theshold_projects_db_queary(filtered_projects)
         formatted_projects_to_include = FormattingProjectPrompts.project_to_str(filtered_projects_object)
         
+        print('formatted projects')
+        print(formatted_projects_to_include)
         return formatted_projects_to_include
     
 class BuildingCreateCLPrompt:
@@ -65,6 +68,8 @@ class BuildingCreateCLPrompt:
         company_name_info = f"The company I am applying to is {company_name}"
         job_title_info = f"The position I am applying for is {job_title}"
         recruiter_info = f"You should address the covering letter to {recruiter}"
+        print("project evaluation score")
+        print(project_evaluation_score)
         projects_to_include = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
 
         user_prompt = (

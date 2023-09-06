@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from .filters import nl2br 
+
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -10,6 +12,7 @@ DB_NAME = "database.db"
 def create_app(testing=False):
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
+    app.jinja_env.filters['nl2br'] = nl2br
     
     if testing:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_' + DB_NAME

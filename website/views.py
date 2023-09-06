@@ -135,7 +135,7 @@ def ana_cre_main():
                 
                 session.clear()
                 
-                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, workexp_match=workexp_match, covering_letter=covering_letter)
+                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, covering_letter_message=covering_letter_message,  workexp_match=workexp_match, covering_letter=covering_letter)
             else:
                 return "API key not found"
             
