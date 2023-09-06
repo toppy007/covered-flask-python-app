@@ -5,6 +5,7 @@ from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
+from .create_prompts import BuildingCreateCLPrompt
 from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity, CalculateWorkexpsSimilarity
 from . import db
 import json
@@ -129,9 +130,12 @@ def ana_cre_main():
                 
                 print(data)
                 
+                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, data, raw_data)
+                covering_letter = send_api_request(api_key, covering_letter_message)
+                
                 session.clear()
                 
-                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, workexp_match=workexp_match)
+                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, workexp_match=workexp_match, covering_letter=covering_letter)
             else:
                 return "API key not found"
             

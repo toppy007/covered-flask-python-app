@@ -5,11 +5,14 @@ class FormattingProjectPrompts:
         projects_to_include = []
 
         for project_evaluation in projects_evaluation:
-            for tup in project_evaluation:
-                if tup[2] >= threshold:
-                    projects_to_include.append(tup[0])
+            if isinstance(project_evaluation, tuple) and len(project_evaluation) >= 3:
+                for tup in project_evaluation:
+                    if isinstance(tup, tuple) and len(tup) >= 3:
+                        if tup[2] >= threshold:
+                            projects_to_include.append(tup[0])
 
         return projects_to_include
+
 
     def theshold_projects_db_queary(project_ids):
         projects = Project.query.filter(Project.id.in_(project_ids)).all()
@@ -22,7 +25,7 @@ class FormattingProjectPrompts:
         for project in projects:
             project_str = f"Project Title: {project.project_title}\n"
             project_str += f"Project Date: {project.project_date}\n"
-            project_str += f"Project Link: {project.project_link}\n\n"
+            project_str += f"you must include this link in the covering letter Project Link: {project.project_link}\n\n"
             project_str += f"Project Description:\n{project.project_description}\n\n"
             project_str += f"Core Skills:\n{project.project_core_skill}\n"
 
@@ -75,6 +78,7 @@ class BuildingCreateCLPrompt:
             f"- {job_title_info}\n"
             f"Include the following projects:\n"
             f"{projects_to_include}\n"
+            f"also include the project link:\n"
         )
         
         messages = [
