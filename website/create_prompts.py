@@ -43,13 +43,16 @@ class FormattingProjectPrompts:
         print(formatted_projects_to_include)
         return formatted_projects_to_include
     
+class FormattingWorkExpPrompts():
+    def threshold_workexp_to_include():
+        return Workexp
+    
 class BuildingCreateCLPrompt:
     @staticmethod
     def combine_input_parameters(project_evaluation_score, job_info, job_advertisement):
        
         """
         Combine input parameters to generate system and user prompts for creating a covering letter.
-
         Args:
             project_evaluation_score (float): The score for the project evaluation.
             job_info (dict): Dictionary containing job-related information.
