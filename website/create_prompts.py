@@ -20,18 +20,19 @@ class FormattingProjectPrompts:
         return projects
 
     def project_to_str(projects):
-        project_strings = []
+        project_strings = (
+            f"Generate a formatted representation of the following projects:\n\n"
+            + "\n\n".join(
+                f"Project Title: {project.project_title}\n"
+                f"Project Date: {project.project_date}\n"
+                f"Project Link: {project.project_link}\n\n"
+                f"Project Description:\n{project.project_description}\n\n"
+                f"Core Skills:\n{project.project_core_skill}\n\n"
+                for project in projects
+            )
+        )
 
-        for project in projects:
-            project_str = f"Project Title: {project.project_title}\n"
-            project_str += f"Project Date: {project.project_date}\n"
-            project_str += f"you must include this link in the covering letter Project Link: {project.project_link}\n\n"
-            project_str += f"Project Description:\n{project.project_description}\n\n"
-            project_str += f"Core Skills:\n{project.project_core_skill}\n"
-
-            project_strings.append(project_str)
-
-        return "\n".join(project_strings)
+        return project_strings
     
     def create_projects_prompt(project_evaluation_score):
         filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score, threshold=0.2)
@@ -48,45 +49,29 @@ class FormattingWorkExpPrompts():
         return Workexp
     
 class BuildingCreateCLPrompt:
-    @staticmethod
     def combine_input_parameters(project_evaluation_score, job_info, job_advertisement):
-       
-        """
-        Combine input parameters to generate system and user prompts for creating a covering letter.
-        Args:
-            project_evaluation_score (float): The score for the project evaluation.
-            job_info (dict): Dictionary containing job-related information.
-            job_advertisement (str): The job advertisement text.
-
-        Returns:
-            list: A list of messages containing system and user prompts.
-        """
+        if not job_info or not job_advertisement:
+            return [] 
         
         system_prompt = "Generate a professional covering letter for the following job application:"
         
-        company_name = job_info.get('Company Name', [None])[0]
-        job_title = job_info.get('Position', [None])[0]
-        recruiter = job_info.get('recruiters_name', [None])[0]
+        company_name = job_info.get('Company Name', 'Unknown')
+        job_title = job_info.get('Position', 'Unknown')
+        recruiter = job_info.get('recruiters_name', 'Unknown')
         
-        company_name_info = f"The company I am applying to is {company_name}"
-        job_title_info = f"The position I am applying for is {job_title}"
-        recruiter_info = f"You should address the covering letter to {recruiter}"
-        print("project evaluation score")
-        print(project_evaluation_score)
-        projects_to_include = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
-
         user_prompt = (
-            f"Given the following job advertisement:\n\n"
+            f"Generate a professional covering letter for the following job application:\n"
+            f"- Company: {company_name}\n"
+            f"- Position: {job_title}\n"
+            f"- Recruiter: {recruiter}\n"
+            f"- Project Evaluation Score: {project_evaluation_score}\n"
+            f"Please use the following information to write the letter and consider the job advertisement below:\n"
             f"```\n"
             f"{job_advertisement}\n"
             f"```\n"
-            f"Please use the following information to create a covering letter:\n"
-            f"- {company_name_info}\n"
-            f"- {recruiter_info}\n"
-            f"- {job_title_info}\n"
             f"Include the following projects:\n"
-            f"{projects_to_include}\n"
-            f"also include the project link:\n"
+            f"{FormattingProjectPrompts.project_to_str(projects_to_include)}\n"  # Include the projects here
+            f"Additionally, provide project links and any other relevant details.\n"
         )
         
         messages = [
