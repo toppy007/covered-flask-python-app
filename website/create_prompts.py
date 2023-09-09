@@ -8,40 +8,43 @@ class FormattingProjectPrompts:
             if isinstance(tup, tuple) and len(tup) == 3:
                 if tup[2] >= threshold:
                     projects_to_include.append(tup[0])
-
+        
         return projects_to_include
 
 
-    def theshold_projects_db_queary(project_ids):
+    def threshold_projects_db_queary(project_ids):
         projects = Project.query.filter(Project.id.in_(project_ids)).all()
         
-        print('project objects')
-        print(projects)
         return projects
+    
 
     def project_to_str(projects):
-        project_strings = (
-            f"Generate a formatted representation of the following projects:\n\n"
-            + "\n\n".join(
-                f"Project Title: {project.project_title}\n"
-                f"Project Date: {project.project_date}\n"
-                f"Project Link: {project.project_link}\n\n"
-                f"Project Description:\n{project.project_description}\n\n"
-                f"Core Skills:\n{project.project_core_skill}\n\n"
-                for project in projects
-            )
-        )
+        project_strings = []
+        
+        print(projects)
+        
+        if isinstance(projects, tuple):
+            
+            print("my_tuple is a tuple.")
+        else:
+            print("my_tuple is not a tuple.")
 
-        return project_strings
+        for project in projects:
+            project_str = f"Project Title: {project.project_title}\n"
+            project_str += f"Project Date: {project.project_date}\n"
+            project_str += f"you must include this link in the covering letter Project Link: {project.project_link}\n\n"
+            project_str += f"Project Description:\n{project.project_description}\n\n"
+            project_str += f"Core Skills:\n{project.project_core_skill}\n"
+
+            project_strings.append(project_str)
+
+        return "\n".join(project_strings)
     
     def create_projects_prompt(project_evaluation_score):
         filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score, threshold=0.2)
-        print(filtered_projects)
-        filtered_projects_object = FormattingProjectPrompts.theshold_projects_db_queary(filtered_projects)
+        filtered_projects_object = FormattingProjectPrompts.threshold_projects_db_queary(filtered_projects)
         formatted_projects_to_include = FormattingProjectPrompts.project_to_str(filtered_projects_object)
         
-        print('formatted projects')
-        print(formatted_projects_to_include)
         return formatted_projects_to_include
     
 class FormattingWorkExpPrompts():
@@ -49,7 +52,9 @@ class FormattingWorkExpPrompts():
         return Workexp
     
 class BuildingCreateCLPrompt:
+    @staticmethod
     def combine_input_parameters(project_evaluation_score, job_info, job_advertisement):
+        
         if not job_info or not job_advertisement:
             return [] 
         
@@ -58,19 +63,20 @@ class BuildingCreateCLPrompt:
         company_name = job_info.get('Company Name', 'Unknown')
         job_title = job_info.get('Position', 'Unknown')
         recruiter = job_info.get('recruiters_name', 'Unknown')
+
+        projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
         
         user_prompt = (
             f"Generate a professional covering letter for the following job application:\n"
             f"- Company: {company_name}\n"
             f"- Position: {job_title}\n"
             f"- Recruiter: {recruiter}\n"
-            f"- Project Evaluation Score: {project_evaluation_score}\n"
             f"Please use the following information to write the letter and consider the job advertisement below:\n"
             f"```\n"
             f"{job_advertisement}\n"
             f"```\n"
             f"Include the following projects:\n"
-            f"{FormattingProjectPrompts.project_to_str(projects_to_include)}\n"  # Include the projects here
+            f"{projects_above_score_threshold}\n" 
             f"Additionally, provide project links and any other relevant details.\n"
         )
         
