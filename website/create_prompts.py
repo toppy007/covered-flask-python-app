@@ -21,14 +21,6 @@ class FormattingProjectPrompts:
     def project_to_str(projects):
         project_strings = []
         
-        print(projects)
-        
-        if isinstance(projects, tuple):
-            
-            print("my_tuple is a tuple.")
-        else:
-            print("my_tuple is not a tuple.")
-
         for project in projects:
             project_str = f"Project Title: {project.project_title}\n"
             project_str += f"Project Date: {project.project_date}\n"
