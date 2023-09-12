@@ -126,6 +126,8 @@ def ana_cre_main():
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
                 workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
                 
+                print(workexp_match)
+                
                 covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, data, raw_data)
                 covering_letter = send_api_request(api_key, covering_letter_message)
                 

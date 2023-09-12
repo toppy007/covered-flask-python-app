@@ -17,7 +17,6 @@ class FormattingProjectPrompts:
         
         return projects
     
-
     def project_to_str(projects):
         project_strings = []
         
@@ -40,8 +39,34 @@ class FormattingProjectPrompts:
         return formatted_projects_to_include
     
 class FormattingWorkExpPrompts():
-    def threshold_workexp_to_include():
-        return Workexp
+    def threshold_workexps_to_include(workexps_evaluation, threshold=0.2):
+        workexps_to_include = []
+
+        for tup in workexps_evaluation:
+            if isinstance(tup, tuple) and len(tup) == 3:
+                if tup[2] >= threshold:
+                    workexps_to_include.append(tup[0])
+        
+        return workexps_to_include
+    
+    def threshold_workexps_db_queary(project_ids):
+        workexps = Workexp.query.filter(Workexp.id.in_(project_ids)).all()
+        
+        return workexps
+    
+    def project_to_str(workexps):
+        workexp_strings = []
+        
+        for workexp in workexps:
+            workexp_str = f"work experience: {workexp.workexp_title}\n"
+            workexp_str += f"workexp Date: {workexp.workexp_date}\n"
+            workexp_str += f"you must include this link in the covering letter workexp Link: {workexp.workexp_link}\n\n"
+            workexp_str += f"workexp Description:\n{workexp.workexp_description}\n\n"
+            workexp_str += f"Core Skills:\n{workexp.workexp_core_skill}\n"
+
+            workexp_strings.append(workexp_str)
+
+        return "\n".join(workexp_strings)
     
 class BuildingCreateCLPrompt:
     @staticmethod
