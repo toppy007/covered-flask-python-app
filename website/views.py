@@ -133,7 +133,6 @@ def ana_cre_main():
             
         elif 'job_ad' in request.form:
             job_ad = request.form.get('job_ad')
-            
             user_id = current_user.id
             api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
             

@@ -83,17 +83,18 @@ class FormattingWorkExpPrompts():
     
 class BuildingCreateCLPrompt:
     @staticmethod
-    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, job_info, job_advertisement):
+    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement):
         
         if not job_info or not job_advertisement:
             return [] 
+        
+        print('job info')
+        print(job_info)
         
         system_prompt = "Generate a professional covering letter for the following job application:"
         
         company_name = job_info.get('Company Name', 'Unknown')
         job_title = job_info.get('Position', 'Unknown')
-        recruiter = job_info.get('recruiters_name', 'Unknown')
-        recruiter = job_info.get('recruiters_name', 'Unknown')
         recruiter = job_info.get('recruiters_name', 'Unknown')
 
         projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
@@ -108,6 +109,7 @@ class BuildingCreateCLPrompt:
             f"```\n"
             f"{job_advertisement}\n"
             f"```\n"
+            f"use must enferise these core skills in the covering letter:{skills_match}\n"
             f"Include the following projects:\n"
             f"{projects_above_score_threshold}\n" 
             f"Additionally, provide project links and any other relevant details.\n"
