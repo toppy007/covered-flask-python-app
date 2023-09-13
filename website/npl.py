@@ -99,8 +99,6 @@ class CalculateSkillsSimilarity:
         
         combined_keywords = list(set(joined_keywords + individual_words))
         
-        print(combined_keywords)
-        
         return combined_keywords
     
     @staticmethod

@@ -39,19 +39,17 @@ class FormattingProjectPrompts:
         return formatted_projects_to_include
     
 class FormattingWorkExpPrompts():
-    def threshold_workexps_to_include(workexps_evaluation, threshold=0.2):
+    def threshold_workexp_to_include(workexps_evaluation, threshold=0.2):
         workexp_to_include = [] 
 
         for tup in workexps_evaluation:
             if isinstance(tup, tuple) and len(tup) == 3:
                 if tup[2] >= threshold:
-                    workexp_to_include.add(tup)
-                    
-        print(workexp_to_include)
+                    workexp_to_include.append(tup)
 
         return (workexp_to_include)
     
-    def threshold_workexps_db_query(workexps_to_include):
+    def threshold_workexp_db_queary(workexps_to_include):
         modified_tuples = []
 
         for workexp in workexps_to_include:
@@ -64,23 +62,28 @@ class FormattingWorkExpPrompts():
         
         return modified_tuples
     
-    def project_to_str(workexps):
+    def workexp_to_str(workexps):
         workexp_strings = []
         
         for workexp in workexps:
-            workexp_str = f"work experience: {workexp.workexp_title}\n"
-            workexp_str += f"workexp Date: {workexp.workexp_date}\n"
-            workexp_str += f"you must include this link in the covering letter workexp Link: {workexp.workexp_link}\n\n"
-            workexp_str += f"workexp Description:\n{workexp.workexp_description}\n\n"
-            workexp_str += f"Core Skills:\n{workexp.workexp_core_skill}\n"
+            workexp_str = f"this was my job title where i gained the experience: {workexp[3]}\n"
+            workexp_str += f"this was the company I was working for to gain the experience: {workexp[4]}\n"
+            workexp_str += f"this is the experience id like to include in the covering letter: {workexp[1]}\n\n"
 
             workexp_strings.append(workexp_str)
 
         return "\n".join(workexp_strings)
     
+    def create_workexp_prompt(workexp_evaluation_score):
+        filtered_workexp = FormattingWorkExpPrompts.threshold_workexp_to_include(workexp_evaluation_score, threshold=0.2)
+        filtered_workexp_object = FormattingWorkExpPrompts.threshold_workexp_db_queary(filtered_workexp)
+        formatted_workexp_to_include = FormattingWorkExpPrompts.workexp_to_str(filtered_workexp_object)
+        
+        return formatted_workexp_to_include
+    
 class BuildingCreateCLPrompt:
     @staticmethod
-    def combine_input_parameters(project_evaluation_score, job_info, job_advertisement):
+    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, job_info, job_advertisement):
         
         if not job_info or not job_advertisement:
             return [] 
@@ -90,8 +93,11 @@ class BuildingCreateCLPrompt:
         company_name = job_info.get('Company Name', 'Unknown')
         job_title = job_info.get('Position', 'Unknown')
         recruiter = job_info.get('recruiters_name', 'Unknown')
+        recruiter = job_info.get('recruiters_name', 'Unknown')
+        recruiter = job_info.get('recruiters_name', 'Unknown')
 
         projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
+        workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
         
         user_prompt = (
             f"Generate a professional covering letter for the following job application:\n"
@@ -105,6 +111,8 @@ class BuildingCreateCLPrompt:
             f"Include the following projects:\n"
             f"{projects_above_score_threshold}\n" 
             f"Additionally, provide project links and any other relevant details.\n"
+            f"Include the following work experience:\n"
+            f"{workexps_above_score_threshold}\n" 
         )
         
         messages = [

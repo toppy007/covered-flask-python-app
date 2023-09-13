@@ -117,17 +117,12 @@ def ana_cre_main():
                 data['Word Count'] = [word_count]
                 
                 dic_key = ["keywords for ats analysis", "ats keywords"]
-                
-                print('raw data')
-                print(raw_data)
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
                 workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
                 
-                print(workexp_match)
-                
-                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, data, raw_data)
+                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data)
                 covering_letter = send_api_request(api_key, covering_letter_message)
                 
                 session.clear()
