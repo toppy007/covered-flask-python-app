@@ -96,6 +96,9 @@ class BuildingCreateCLPrompt:
         company_name = job_info.get('Company Name', 'Unknown')
         job_title = job_info.get('Position', 'Unknown')
         recruiter = job_info.get('recruiters_name', 'Unknown')
+        selected_notes = job_info.get('Selected Notes', 'Unknown')
+        extra_notes = job_info.get('Added Extra', 'Unknown')
+        word_count = job_info.get('Word Count', 'Unknown')
 
         projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
         workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
@@ -109,6 +112,8 @@ class BuildingCreateCLPrompt:
             "```\n"
             f"{job_advertisement}\n"
             "```\n\n"
+            f"mention these passages in the covering letter {selected_notes}\n"
+            f"ad these extra notes too {extra_notes}\n"
             f"Highlight the following core skills in the covering letter:\n"
             f"{skills_match}\n\n"
             "Include the following projects:\n"
@@ -116,6 +121,7 @@ class BuildingCreateCLPrompt:
             "For each project, provide project links and any other relevant details.\n\n"
             "Include the following work experience:\n"
             f"{workexps_above_score_threshold}\n"
+            f"the keep the letter word count to {word_count}.\n"
         )
         
         messages = [
