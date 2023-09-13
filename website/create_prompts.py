@@ -57,7 +57,7 @@ class FormattingWorkExpPrompts():
             workexps = Workexp.query.filter(Workexp.id == workexp_id).first()  # Assuming there's only one result per ID
             
             if workexps:
-                modified_tuple = (workexp[0], workexp[1], workexp[2], workexps.workexp_title, workexps.workexp_company)
+                modified_tuple = (workexp[0], workexp[1], workexp[2], workexps.workexp_title, workexps.workexp_dates)
                 modified_tuples.append(modified_tuple)
         
         return modified_tuples
@@ -101,20 +101,21 @@ class BuildingCreateCLPrompt:
         workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
         
         user_prompt = (
-            f"Generate a professional covering letter for the following job application:\n"
+            "Generate a professional covering letter for the following job application:\n"
             f"- Company: {company_name}\n"
             f"- Position: {job_title}\n"
-            f"- Recruiter: {recruiter}\n"
-            f"Please use the following information to write the letter and consider the job advertisement below:\n"
-            f"```\n"
+            f"- Recruiter: {recruiter}\n\n"
+            "Please use the following information to write the letter and consider the job advertisement below:\n"
+            "```\n"
             f"{job_advertisement}\n"
-            f"```\n"
-            f"use must enferise these core skills in the covering letter:{skills_match}\n"
-            f"Include the following projects:\n"
-            f"{projects_above_score_threshold}\n" 
-            f"Additionally, provide project links and any other relevant details.\n"
-            f"Include the following work experience:\n"
-            f"{workexps_above_score_threshold}\n" 
+            "```\n\n"
+            f"Highlight the following core skills in the covering letter:\n"
+            f"{skills_match}\n\n"
+            "Include the following projects:\n"
+            f"{projects_above_score_threshold}\n\n"
+            "For each project, provide project links and any other relevant details.\n\n"
+            "Include the following work experience:\n"
+            f"{workexps_above_score_threshold}\n"
         )
         
         messages = [
