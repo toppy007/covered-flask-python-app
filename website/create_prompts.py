@@ -104,24 +104,26 @@ class BuildingCreateCLPrompt:
         workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
         
         user_prompt = (
-            "Generate a professional covering letter for the following job application:\n"
-            f"- Company: {company_name}\n"
-            f"- Position: {job_title}\n"
-            f"- Recruiter: {recruiter}\n\n"
-            "Please use the following information to write the letter and consider the job advertisement below:\n"
+            "Please generate a professional covering letter for the following job application:\n\n"
+            f"Company: {company_name}\n"
+            f"Position: {job_title}\n"
+            f"Recruiter: {recruiter}\n\n"
+            "Job Advertisement:\n"
             "```\n"
             f"{job_advertisement}\n"
             "```\n\n"
-            f"mention these passages in the covering letter {selected_notes}\n"
-            f"ad these extra notes too {extra_notes}\n"
-            f"Highlight the following core skills in the covering letter:\n"
+            "In your letter, please incorporate the following key points and consider the job advertisement provided:\n\n"
+            f"Mention these passages from the job advertisement:\n"
+            f"{selected_notes}\n\n"
+            "Additionally, add these extra notes:\n"
+            f"{extra_notes}\n\n"
+            "Highlight the following core skills:\n"
             f"{skills_match}\n\n"
-            "Include the following projects:\n"
+            "Include the following projects, providing project links and relevant details for each:\n"
             f"{projects_above_score_threshold}\n\n"
-            "For each project, provide project links and any other relevant details.\n\n"
             "Include the following work experience:\n"
-            f"{workexps_above_score_threshold}\n"
-            f"the keep the letter word count to {word_count}.\n"
+            f"{workexps_above_score_threshold}\n\n"
+            f"Please ensure the letter's word count does not exceed {word_count}.\n"
         )
         
         messages = [
