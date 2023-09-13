@@ -142,7 +142,6 @@ class CalculateWorkexpsSimilarity:
         tokens = [word for word in tokens if word not in stop_words]
         
         cleaned_text = ' '.join(tokens)
-        
         result_string = ' '.join(cleaned_text.split())
         
         return result_string
@@ -160,9 +159,10 @@ class CalculateWorkexpsSimilarity:
             for responsibility in responsibilities:
                 cleaned_responsibility = responsibility.strip()
                 if cleaned_responsibility:
+                    
                     responsibilities_list.append((workexp.id, cleaned_responsibility))
-
-            return responsibilities_list
+                    
+        return responsibilities_list
 
     @staticmethod
     def calculate_similarity_workexp(user_workexp_info, job_ats_keywords_string):

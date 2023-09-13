@@ -40,19 +40,29 @@ class FormattingProjectPrompts:
     
 class FormattingWorkExpPrompts():
     def threshold_workexps_to_include(workexps_evaluation, threshold=0.2):
-        workexps_to_include = []
+        workexp_to_include = [] 
 
         for tup in workexps_evaluation:
             if isinstance(tup, tuple) and len(tup) == 3:
                 if tup[2] >= threshold:
-                    workexps_to_include.append(tup[0])
-        
-        return workexps_to_include
+                    workexp_to_include.add(tup)
+                    
+        print(workexp_to_include)
+
+        return (workexp_to_include)
     
-    def threshold_workexps_db_queary(project_ids):
-        workexps = Workexp.query.filter(Workexp.id.in_(project_ids)).all()
+    def threshold_workexps_db_query(workexps_to_include):
+        modified_tuples = []
+
+        for workexp in workexps_to_include:
+            workexp_id = workexp[0]
+            workexps = Workexp.query.filter(Workexp.id == workexp_id).first()  # Assuming there's only one result per ID
+            
+            if workexps:
+                modified_tuple = (workexp[0], workexp[1], workexp[2], workexps.workexp_title, workexps.workexp_company)
+                modified_tuples.append(modified_tuple)
         
-        return workexps
+        return modified_tuples
     
     def project_to_str(workexps):
         workexp_strings = []

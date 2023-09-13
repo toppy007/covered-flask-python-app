@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, flash, jsonify, session
 from flask_login import login_required, current_user
-from werkzeug.security import generate_password_hash
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
 from .analyzing_prompts import generate_job_info
