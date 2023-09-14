@@ -88,9 +88,6 @@ class BuildingCreateCLPrompt:
         if not job_info or not job_advertisement:
             return [] 
         
-        print('job info')
-        print(job_info)
-        
         system_prompt = "Generate a professional covering letter for the following job application:"
         
         company_name = job_info.get('Company Name', 'Unknown')
