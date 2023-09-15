@@ -18,14 +18,14 @@
       .then(response => response.json())
       .then(data => {
         const chartData = {
-          labels: data.labels,
+          labels: ['Matched', 'No Match'],
           datasets: [
             {
               label: 'Data',
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+              borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
               borderWidth: 1,
-              data: data.data,
+              data: [data['Matched'], data['No Match']],
             },
           ],
         };
@@ -33,18 +33,23 @@
         // Get the canvas element
         const ctx = document.getElementById('myChart').getContext('2d');
   
-        // Create the chart
+        // Create the chart as a doughnut chart
         const myChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'doughnut', // Set the chart type to 'doughnut'
           data: chartData,
           options: {
-            scales: {
-              y: {
-                beginAtZero: true,
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Donut Chart Example', // Set your chart title here
               },
             },
           },
         });
       });
-</script>
+  </script>
   

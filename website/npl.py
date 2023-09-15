@@ -7,6 +7,7 @@
 from .models import Project, Skill, Workexp
 
 import nltk
+import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -64,15 +65,16 @@ class CalculateProjectSimilarity:
         job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
         similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
         
-        print("project inputs npl proccessing")
-        print(user_projects)
-        
-        print(job_ats_keywords_string)
-        
         return similarity_scores
     
 class CalculateSkillsSimilarity:
     @staticmethod
+    def remove_numbers_and_special_characters(data_dict):
+        word_pattern = re.compile(r'\b[a-zA-Z]+\b')
+        words = word_pattern.findall(data_dict.lower())
+    
+        return ' '.join(words)
+    
     def create_array(data_dict, dic_keys):
         lowercase_dict = {key.lower(): value for key, value in data_dict.items()}
         
@@ -84,10 +86,11 @@ class CalculateSkillsSimilarity:
             if job_ats_skills:
                 for ats_keyword in job_ats_skills:
                     if isinstance(ats_keyword, str):
-                        words = ats_keyword.lower().replace('/', ' ').split()
-                        individual_words.extend(words) 
+                        cleaned_keyword = CalculateSkillsSimilarity.remove_numbers_and_special_characters(ats_keyword)
+                        words = cleaned_keyword.split()
+                        individual_words.extend(words)
                         joined_keywords.append(' '.join(words)) 
-        
+
         combined_keywords = list(set(joined_keywords + individual_words))
         
         return combined_keywords
@@ -100,7 +103,7 @@ class CalculateSkillsSimilarity:
         return user_skills_from_db
     
     @staticmethod
-    def find_matching_words(skills_list, ats_keyword_list, threshold=70):
+    def find_matching_words(skills_list, ats_keyword_list, threshold=60):
         matching_words = []
 
         for user_skill in skills_list:

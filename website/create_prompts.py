@@ -86,7 +86,7 @@ class BuildingCreateCLPrompt:
     def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement):
         
         if not job_info or not job_advertisement:
-            return [] 
+            return []  
         
         system_prompt = "Generate a professional covering letter for the following job application:"
         

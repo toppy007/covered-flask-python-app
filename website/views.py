@@ -89,9 +89,8 @@ def profile_main():
 @views.route('/ana_cre_main', methods=['GET', 'POST'])
 @login_required
 def ana_cre_main(): 
-    
     if 'sections' not in session:
-        session['sections'] = {}  # Initialize 'sections' in session if not present
+        session['sections'] = {}
     sections = session['sections']
     
     if request.method == 'POST':
@@ -245,3 +244,29 @@ def delete_workexp():
             db.session.commit()
 
     return jsonify({})
+
+@views.route('/get-chart-data')
+def get_chart_data():
+
+    dic_key = ["technical skills", "technical skills keywords"]
+    user_id = current_user.id
+
+    skills_data = CalculateSkillsSimilarity.calculate_similarity(session['sections'], dic_key, user_id)
+    tech_skills = CalculateSkillsSimilarity.create_array(session['sections'], dic_key)
+    
+    print(tech_skills)
+    print(skills_data)
+    
+    length_skills = len(skills_data)
+    length_tech_skills = len(tech_skills)
+    missing_tech_skills = (length_tech_skills - length_skills) 
+
+    print(missing_tech_skills)
+    print(length_skills)
+    
+    data = {
+        'Matched': length_skills,
+        'No Match': missing_tech_skills,
+    }
+
+    return jsonify(data)
