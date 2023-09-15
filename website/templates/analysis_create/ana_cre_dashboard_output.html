@@ -1,0 +1,50 @@
+<h3 align="left">Job Ad Analysis</h3>
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-6">
+            <!-- Other content or charts, if needed -->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // Make an AJAX request to fetch data from the Flask backend
+    fetch('/get-chart-data')
+      .then(response => response.json())
+      .then(data => {
+        const chartData = {
+          labels: data.labels,
+          datasets: [
+            {
+              label: 'Data',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+              data: data.data,
+            },
+          ],
+        };
+  
+        // Get the canvas element
+        const ctx = document.getElementById('myChart').getContext('2d');
+  
+        // Create the chart
+        const myChart = new Chart(ctx, {
+          type: 'bar',
+          data: chartData,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      });
+</script>
+  

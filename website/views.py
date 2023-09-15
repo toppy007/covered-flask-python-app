@@ -163,11 +163,6 @@ def ana_cre_main():
                     session['sections'] = sections
                     session['job_ad'] = job_ad
                     
-                    sections['Selected Notes'] = [selected_notes]
-                    sections['Added Extra'] = [added_extra]
-                    sections['recruiters_name'] = [recruiters_name]
-                    sections['Word Count'] = [word_count]
-                    
                     dic_key = ["keywords for ats analysis", "ats keywords"]
 
                     skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
