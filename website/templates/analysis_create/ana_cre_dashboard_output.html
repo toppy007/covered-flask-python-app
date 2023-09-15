@@ -3,14 +3,24 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <canvas id="myChart" width="400" height="400"></canvas>
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <canvas id="myChart1" width="200" height="200"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <!-- Other content or charts, if needed -->
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <canvas id="myChart2" width="200" height="200"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
 
@@ -63,13 +73,15 @@
     
 
     // render init block
-    const myChart = new Chart(
-      document.getElementById('myChart'),
+    const myChart1 = new Chart(
+      document.getElementById('myChart1'),
       config
     );
-
-    // const chartVersion = document.getElementById('chartVersion');
-    // chartVersion.innerText = Chart.version;
+    
+    const myChart2 = new Chart(
+        document.getElementById('myChart2'),
+        config
+    );
 
 
 });
