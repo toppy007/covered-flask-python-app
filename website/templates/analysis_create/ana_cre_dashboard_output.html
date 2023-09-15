@@ -12,44 +12,48 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    // Make an AJAX request to fetch data from the Flask backend
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+
+<script>
+    // setup 
     fetch('/get-chart-data')
-      .then(response => response.json())
-      .then(data => {
+    .then(response => response.json())
+    .then(data => {
         const chartData = {
-          labels: ['Matched', 'No Match'],
-          datasets: [
-            {
-              label: 'Data',
-              backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-              borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-              borderWidth: 1,
-              data: [data['Matched'], data['No Match']],
-            },
-          ],
+            datasets: [{
+                data: [data['Matched'], data['No Match']],
+                backgroundColor: [
+                'rgba(255, 26, 104, 0.2)',
+                'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                'rgba(255, 26, 104, 1)',
+                'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
         };
-  
-        // Get the canvas element
-        const ctx = document.getElementById('myChart').getContext('2d');
-  
-        // Create the chart as a doughnut chart
-        const myChart = new Chart(ctx, {
-          type: 'doughnut', // Set the chart type to 'doughnut'
-          data: chartData,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'top',
-              },
-              title: {
-                display: true,
-                text: 'Donut Chart Example', // Set your chart title here
-              },
-            },
-          },
-        });
-      });
-  </script>
-  
+
+    // config 
+    const config = {
+        type: 'doughnut',
+        data: chartData, // Use chartData as the data source
+        options: {},
+        plugins: [doughnutLabal]
+
+    };
+    
+
+    // render init block
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+
+    // const chartVersion = document.getElementById('chartVersion');
+    // chartVersion.innerText = Chart.version;
+
+
+});
+</script>
+
