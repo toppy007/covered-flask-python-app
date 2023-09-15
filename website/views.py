@@ -163,6 +163,17 @@ def ana_cre_main():
                     session['sections'] = sections
                     session['job_ad'] = job_ad
                     
+                    sections['Selected Notes'] = [selected_notes]
+                    sections['Added Extra'] = [added_extra]
+                    sections['recruiters_name'] = [recruiters_name]
+                    sections['Word Count'] = [word_count]
+                    
+                    dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                    skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
+                    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
+                    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
+                    
                     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
             else:
                 return "API key not found"
