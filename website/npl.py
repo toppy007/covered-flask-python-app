@@ -47,23 +47,14 @@ class CalculateProjectSimilarity:
     def calculate_similarity(user_projects_info, job_ats_keywords_string):
         vectorizer = TfidfVectorizer().fit([info[2] + " " + info[3] for info in user_projects_info])
 
-        print("vectorizer")
-        print(user_projects_info)
-        print(vectorizer)
-        
         job_vector = vectorizer.transform([job_ats_keywords_string])
 
-        print(job_vector)
         similarity_scores = []
 
         for id, project_title, project_description, project_core_skill in user_projects_info:
             user_vector = vectorizer.transform([project_description, project_core_skill])
             similarity_score = cosine_similarity(user_vector, job_vector)
             similarity_scores.append((id, project_title, similarity_score[0][0]))
-            
-            print(user_vector)
-            print(similarity_score)
-            print(similarity_scores)
 
         return similarity_scores
 
