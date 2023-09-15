@@ -19,6 +19,8 @@
     fetch('/get-chart-data')
     .then(response => response.json())
     .then(data => {
+        percentage = data['percentage'];
+
         const chartData = {
             datasets: [{
                 data: [data['Matched'], data['No Match']],
@@ -34,14 +36,30 @@
             }]
         };
 
-    // config 
-    const config = {
-        type: 'doughnut',
-        data: chartData, // Use chartData as the data source
-        options: {},
-        plugins: [doughnutLabal]
+        const doughnutLabal = {
+            id: 'doughnutLabal',
+            beforeDatasetDraw(chart, arg, pluginOptions) {
+                const { ctx, data } = chart;
 
-    };
+                ctx.save();
+                const xCoor = chart.getDatasetMeta(0).data[0].x;
+                const yCoor = chart.getDatasetMeta(0).data[0].y;
+                ctx.font = 'bold 75px sans-serif';
+                ctx.fillstyle = 'roba(54, 162, 235, 1)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${percentage}%`, xCoor, yCoor);
+            }
+
+        }
+    // config 
+        const config = {
+            type: 'doughnut',
+            data: chartData, // Use chartData as the data source
+            options: {},
+            plugins: [doughnutLabal]
+
+        };
     
 
     // render init block

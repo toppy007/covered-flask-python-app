@@ -260,13 +260,16 @@ def get_chart_data():
     length_skills = len(skills_data)
     length_tech_skills = len(tech_skills)
     missing_tech_skills = (length_tech_skills - length_skills) 
+    percentage = (100/length_tech_skills) * length_skills
 
+    print(percentage)
     print(missing_tech_skills)
     print(length_skills)
     
     data = {
         'Matched': length_skills,
         'No Match': missing_tech_skills,
+        'percentage': percentage
     }
 
     return jsonify(data)
