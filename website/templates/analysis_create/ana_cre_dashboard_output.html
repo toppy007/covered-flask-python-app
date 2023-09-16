@@ -75,3 +75,54 @@
 
 </script>
 
+<script>
+    fetch('/get-bar-project-score-data')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Data is now an array of objects received from the Flask route
+      const chartData = {
+        labels: data.map(item => item[1]), // Use the second element of each tuple as labels
+        datasets: [{
+          data: data.map(item => item[2]), // Use the third element of each tuple as data
+          backgroundColor: 'rgba(255, 26, 104, 0.2)',
+          borderColor: 'rgba(255, 26, 104, 1)',
+          borderWidth: 1
+        }]
+      };
+  
+      const config = {
+        type: 'bar',
+        data: chartData,
+        options: {
+          indexAxis: 'y',
+          elements: {
+            bar: {
+              borderWidth: 2,
+            }
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
+        },
+      };
+  
+      const myChart2 = new Chart(
+        document.getElementById('myChart2'),
+        config
+      );
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Handle the error gracefully, e.g., display an error message to the user
+    });
+  
+  
+</script>
+

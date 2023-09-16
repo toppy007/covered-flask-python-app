@@ -246,7 +246,7 @@ def delete_workexp():
     return jsonify({})
 
 @views.route('/get-doughnut-core-skills-data')
-def get_chart_data():
+def get_doughnut_core_skills_data():
 
     dic_key = ["technical skills", "technical skills keywords"]
     user_id = current_user.id
@@ -268,16 +268,11 @@ def get_chart_data():
     return jsonify(data)
 
 @views.route('/get-bar-project-score-data')
-def get_chart_data():
+def get_bar_project_score_data():
 
     user_id = current_user.id
     project_match = CalculateProjectSimilarity.function_calculate_project_similarity(session['job_ad'], user_id)
     
-    print('project score')
-    print(project_match)
+    print(jsonify(project_match))
     
-    data = {
-        'Project Similartiy Score': project_match,
-    }
-
-    return jsonify(data)
+    return jsonify(project_match)
