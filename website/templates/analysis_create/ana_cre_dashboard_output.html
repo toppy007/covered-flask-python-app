@@ -77,12 +77,7 @@
 
 <script>
     fetch('/get-bar-project-score-data')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       // Data is now an array of objects received from the Flask route
       const chartData = {
@@ -110,6 +105,8 @@
             legend: {
               display: false,
             },
+            
+          }
         },
       };
   
@@ -118,11 +115,5 @@
         config
       );
     })
-    .catch(error => {
-      console.error('Error:', error);
-      // Handle the error gracefully, e.g., display an error message to the user
-    });
-  
-  
 </script>
 
