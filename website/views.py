@@ -274,6 +274,15 @@ def get_bar_project_score_data():
     project_match = CalculateProjectSimilarity.function_calculate_project_similarity(session['job_ad'], user_id)
     project_match_with_threshold = [(project[0], project[1], project[2], 0.2) for project in project_match]
     
-    print(project_match_with_threshold)
-    
     return jsonify(project_match_with_threshold)
+
+@views.route('/get-bar-workexp-score-data')
+def get_bar_workexp_score_data():
+
+    user_id = current_user.id
+    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(session['job_ad'], user_id)
+    workexp_match_with_threshold = [(workexp[0], workexp[1][:25] + '...' if len(workexp[1]) > 25 else workexp[1], workexp[2], 0.2) for workexp in workexp_match]
+
+    print(workexp_match_with_threshold)
+    return jsonify(workexp_match_with_threshold)
+
