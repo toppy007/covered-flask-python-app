@@ -26,7 +26,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="card" style="width: 100%;">
+      <div class="card" style="width: 100%; height: 18rem;">
         <div class="card-body">
           <canvas id="myChart3" style="width: 100%; height: 100%;"></canvas>
         </div>
@@ -156,10 +156,12 @@
   fetch('/get-bar-workexp-score-data')
   .then(response => response.json())
   .then(data => {
-    // Data is now an array of objects received from the Flask route
+    const thresholdValue = 0.2;
+    
+    const labels = data.map(item => item[1]);
 
     const chartData = {
-      labels: data.map(item => item[1]), // Use the second element of each tuple as labels
+      labels: labels, // Use the second element of each tuple as labels
       datasets: [{
         data: data.map(item => item[2]), // Use the third element of each tuple as data
         backgroundColor: 'rgba(255, 26, 104, 0.2)',
@@ -168,12 +170,12 @@
 
       },
       {
-        data: data.map(item => item[3]), // Create an object with 'y' property
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        borderColor: 'rgba(0, 0, 0, 1)', // Color of the line
-        borderWidth: 0.5, // Width of the line
-        type: 'line' // Specify that this dataset should be a line chart
-      }
+        data: Array(data.length).fill(thresholdValue), // Fill with the threshold value
+        backgroundColor: 'transparent',
+        borderColor: 'rgba(0, 0, 0, 1)',
+        borderWidth: 1,
+        type: 'line',
+      },
       ]
     };
 
