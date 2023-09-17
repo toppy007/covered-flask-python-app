@@ -272,7 +272,8 @@ def get_bar_project_score_data():
 
     user_id = current_user.id
     project_match = CalculateProjectSimilarity.function_calculate_project_similarity(session['job_ad'], user_id)
+    project_match_with_threshold = [(project[0], project[1], project[2], 0.2) for project in project_match]
     
-    print(jsonify(project_match))
+    print(project_match_with_threshold)
     
-    return jsonify(project_match)
+    return jsonify(project_match_with_threshold)
