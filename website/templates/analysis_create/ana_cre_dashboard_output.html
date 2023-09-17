@@ -94,10 +94,13 @@
     fetch('/get-bar-project-score-data')
     .then(response => response.json())
     .then(data => {
-      // Data is now an array of objects received from the Flask route
+
+      let thresholdValue = 0.2;
+    
+      const labels = data.map(item => item[1]);
 
       const chartData = {
-        labels: data.map(item => item[1]), // Use the second element of each tuple as labels
+        labels: labels, // Use the second element of each tuple as labels
         datasets: [{
           data: data.map(item => item[2]), // Use the third element of each tuple as data
           backgroundColor: 'rgba(255, 26, 104, 0.2)',
@@ -121,7 +124,7 @@
         options: {
             scales: {
                 x: {
-                  min: 0,   // Set the minimum value of the x-axis to 0
+                  min: 0, 
                   max: 1,   // Set the maximum value of the x-axis to 1
                   beginAtZero: false, // Do not start the x-axis at zero
                   ticks: {
@@ -144,6 +147,19 @@
           }
         },
       };
+
+      const customThresholdRange = document.getElementById("custonthresholdproject");
+
+      function updateAndRenderChart() {
+        chartData.datasets[1].data = Array(chartData.labels.length).fill(thresholdValue);
+        myChart2.update();
+      }
+      
+      customThresholdRange.addEventListener("input", function () {
+        const value = customThresholdRange.value;
+        thresholdValue = parseFloat(value); // Update the thresholdValue
+        updateAndRenderChart(); // Call the function to update and re-render the chart
+      });
   
       const myChart2 = new Chart(
         document.getElementById('myChart2'),
@@ -185,11 +201,11 @@
       options: {
           scales: {
               x: {
-                min: 0,   // Set the minimum value of the x-axis to 0
-                max: 1,   // Set the maximum value of the x-axis to 1
-                beginAtZero: false, // Do not start the x-axis at zero
+                min: 0, 
+                max: 1,  
+                beginAtZero: false, 
                 ticks: {
-                  stepSize: 0.1, // Customize the step size between ticks as needed
+                  stepSize: 0.1, 
                 },
               },
             },
