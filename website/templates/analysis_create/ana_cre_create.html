@@ -57,6 +57,18 @@
     <div class="wordcount">300</div>
   </div>
 
+  <div class="form-group">
+    <label for="project-threshold"><h5>Select projects threshold to include:</h5></label>
+    <input type="range" class="custom-range" min="0" max="1" step="0.01" id="custonthresholdproject" name="projectthreshold" value="0.2" style="width: 100%">
+    <div class="projectthreshold">0.2</div>
+  </div>
+
+  <div class="form-group">
+    <label for="workexp-threshold"><h5>Select work experience threshold to include:</h5></label>
+    <input type="range" class="custom-range" min="0" max="1" step="0.01" id="custonthresholdworkexp" name="workexpthreshold" value="0.2" style="width: 100%">
+    <div class="workexpthreshold">0.2</div>
+  </div>
+
   <div>
     <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
   </div>
@@ -146,11 +158,26 @@
 
     document.addEventListener("DOMContentLoaded", function () {
       const custonWordCountRange = document.getElementById("custonWordCountRange");
+      const custonthresholdprojectRange = document.getElementById("custonthresholdproject");
+      const custonthresholdworkexpRange = document.getElementById("custonthresholdworkexp");
+
       const wordCountDiv = document.querySelector("div.wordcount");
-    
+      const projectthresholdDiv = document.querySelector("div.projectthreshold");
+      const workexpthresholdDiv = document.querySelector("div.workexpthreshold");
+
       custonWordCountRange.addEventListener("input", function () {
         const value = custonWordCountRange.value;
         wordCountDiv.textContent = value;
+      });
+
+      custonthresholdprojectRange.addEventListener("input", function () {
+        const value = custonthresholdprojectRange.value;
+        projectthresholdDiv.textContent = value;
+      });
+
+      custonthresholdworkexpRange.addEventListener("input", function () {
+        const value = custonthresholdworkexpRange.value;
+        workexpthresholdDiv.textContent = value;
       });
     });
     
