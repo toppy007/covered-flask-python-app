@@ -156,7 +156,7 @@
   fetch('/get-bar-workexp-score-data')
   .then(response => response.json())
   .then(data => {
-    const thresholdValue = 0.2;
+    let thresholdValue = 0.2;
     
     const labels = data.map(item => item[1]);
 
@@ -208,6 +208,19 @@
         }
       },
     };
+
+    const customThresholdRange = document.getElementById("custonthresholdworkexp");
+
+    function updateAndRenderChart() {
+      chartData.datasets[1].data = Array(chartData.labels.length).fill(thresholdValue);
+      myChart3.update();
+    }
+    
+    customThresholdRange.addEventListener("input", function () {
+      const value = customThresholdRange.value;
+      thresholdValue = parseFloat(value); // Update the thresholdValue
+      updateAndRenderChart(); // Call the function to update and re-render the chart
+    });
 
     const myChart3 = new Chart(
       document.getElementById('myChart3'),
