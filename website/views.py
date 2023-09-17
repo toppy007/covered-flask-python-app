@@ -283,6 +283,5 @@ def get_bar_workexp_score_data():
     workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(session['job_ad'], user_id)
     workexp_match_with_threshold = [(workexp[0], workexp[1][:25] + '...' if len(workexp[1]) > 25 else workexp[1], workexp[2], 0.2) for workexp in workexp_match]
 
-    print(workexp_match_with_threshold)
     return jsonify(workexp_match_with_threshold)
 
