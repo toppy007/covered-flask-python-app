@@ -102,6 +102,8 @@ def ana_cre_main():
             added_extra = request.form.get('added_extra')
             recruiters_name = request.form.get('project_title')
             word_count = request.form.get('wordcount')
+            threshold_workexp = request.form.get('custonthresholdproject')
+            threshold_project = request.form.get('custonthresholdproject')
 
             if api_key_entry:
                 
@@ -119,7 +121,7 @@ def ana_cre_main():
 
                 skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
-                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
+                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id, threshold_workexp)
                 
                 covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data)
                 covering_letter = send_api_request(api_key, covering_letter_message)
@@ -184,6 +186,12 @@ def results():
     personal_statement = request.args.get('personal_statement')
     
     return render_template('results.html', api_response=api_response, second_response=second_response, personal_statement=personal_statement, user=current_user)
+
+@views.route('/history', methods=['GET'])
+@login_required
+def history():
+    
+    return render_template('history.html', user=current_user)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  
