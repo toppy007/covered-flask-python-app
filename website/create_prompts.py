@@ -39,7 +39,7 @@ class FormattingProjectPrompts:
         return formatted_projects_to_include
     
 class FormattingWorkExpPrompts():
-    def threshold_workexp_to_include(workexps_evaluation, threshold=0.2):
+    def threshold_workexp_to_include(workexps_evaluation, threshold):
         workexp_to_include = [] 
 
         for tup in workexps_evaluation:
@@ -74,8 +74,8 @@ class FormattingWorkExpPrompts():
 
         return "\n".join(workexp_strings)
     
-    def create_workexp_prompt(workexp_evaluation_score):
-        filtered_workexp = FormattingWorkExpPrompts.threshold_workexp_to_include(workexp_evaluation_score, threshold=0.2)
+    def create_workexp_prompt(workexp_evaluation_score, threshold):
+        filtered_workexp = FormattingWorkExpPrompts.threshold_workexp_to_include(workexp_evaluation_score, threshold)
         filtered_workexp_object = FormattingWorkExpPrompts.threshold_workexp_db_queary(filtered_workexp)
         formatted_workexp_to_include = FormattingWorkExpPrompts.workexp_to_str(filtered_workexp_object)
         
@@ -83,7 +83,7 @@ class FormattingWorkExpPrompts():
     
 class BuildingCreateCLPrompt:
     @staticmethod
-    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement, threshold):
+    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement, threshold_project, threshold_workexp):
         
         if not job_info or not job_advertisement:
             return []  
@@ -97,8 +97,8 @@ class BuildingCreateCLPrompt:
         extra_notes = job_info.get('Added Extra', 'Unknown')
         word_count = job_info.get('Word Count', 'Unknown')
 
-        projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score, threshold)
-        workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
+        projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score, threshold_project)
+        workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score, threshold_workexp)
         
         user_prompt = (
             "Please generate a professional covering letter for the following job application:\n\n"

@@ -102,10 +102,11 @@ def ana_cre_main():
             added_extra = request.form.get('added_extra')
             recruiters_name = request.form.get('project_title')
             word_count = request.form.get('wordcount')
-            threshold_workexp = request.form.get('custonthresholdproject')
+            threshold_workexp = request.form.get('workexpthreshold')
             threshold_project = request.form.get('projectthreshold')
             
             threshold_project_float = float(threshold_project)
+            threshold_workexp_float = float(threshold_workexp)
 
             if api_key_entry:
                 
@@ -125,7 +126,7 @@ def ana_cre_main():
                 project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
                 workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
                 
-                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float)
+                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
                 covering_letter = send_api_request(api_key, covering_letter_message)
                 
                 session.clear()
