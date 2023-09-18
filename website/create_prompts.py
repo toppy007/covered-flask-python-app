@@ -31,8 +31,8 @@ class FormattingProjectPrompts:
 
         return "\n".join(project_strings)
     
-    def create_projects_prompt(project_evaluation_score):
-        filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score, threshold=0.2)
+    def create_projects_prompt(project_evaluation_score, threshold):
+        filtered_projects = FormattingProjectPrompts.threshold_projects_to_include(project_evaluation_score, threshold)
         filtered_projects_object = FormattingProjectPrompts.threshold_projects_db_queary(filtered_projects)
         formatted_projects_to_include = FormattingProjectPrompts.project_to_str(filtered_projects_object)
         
@@ -83,7 +83,7 @@ class FormattingWorkExpPrompts():
     
 class BuildingCreateCLPrompt:
     @staticmethod
-    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement):
+    def combine_input_parameters(project_evaluation_score, workexp_evaluation_score, skills_match, job_info, job_advertisement, threshold):
         
         if not job_info or not job_advertisement:
             return []  
@@ -97,7 +97,7 @@ class BuildingCreateCLPrompt:
         extra_notes = job_info.get('Added Extra', 'Unknown')
         word_count = job_info.get('Word Count', 'Unknown')
 
-        projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score)
+        projects_above_score_threshold = FormattingProjectPrompts.create_projects_prompt(project_evaluation_score, threshold)
         workexps_above_score_threshold = FormattingWorkExpPrompts.create_workexp_prompt(workexp_evaluation_score)
         
         user_prompt = (

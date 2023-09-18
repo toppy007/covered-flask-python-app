@@ -55,6 +55,25 @@ class CalculateProjectSimilarity:
             similarity_scores.append((id, project_title, similarity_score[0][0]))
 
         return similarity_scores
+    
+    @staticmethod
+    def threshold(projects, threshold=0.2):
+        
+        print(projects)
+        
+        projects_to_include = []
+        
+        for project in projects:
+            similarity_score = project[2]
+            print(similarity_score)
+            print(type(similarity_score))
+            if similarity_score >= threshold:
+                projects_to_include.append(project)
+                
+        print(projects_to_include)   
+            
+        return projects_to_include
+        
 
     @staticmethod
     def function_calculate_project_similarity(data, user_id):
