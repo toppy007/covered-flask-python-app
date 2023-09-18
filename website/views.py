@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify, session
+from flask import Blueprint, render_template, request, flash, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp
@@ -112,6 +112,10 @@ def ana_cre_main():
                 
                 api_key = api_key_entry.key
                 
+                session['recruiters_name'] = recruiters_name
+                session['threshold_workexp'] = threshold_workexp
+                session['threshold_project'] = threshold_project
+                
                 data = (session['sections'])
                 raw_data = (session['job_ad'])
                 
@@ -129,9 +133,9 @@ def ana_cre_main():
                 covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
                 covering_letter = send_api_request(api_key, covering_letter_message)
                 
-                session.clear()
+                session['covering_letter'] = covering_letter
                 
-                return render_template('results.html', user=current_user, create_covering_letter=skills_match, create_covering_project=project_match, covering_letter_message=covering_letter_message,  workexp_match=workexp_match, covering_letter=covering_letter)
+                return redirect(url_for('views.results'))
             else:
                 return "API key not found"
             
@@ -184,11 +188,9 @@ def ana_cre_main():
 @views.route('/results', methods=['GET'])
 @login_required
 def results():
-    api_response = request.args.get('api_response')
-    second_response = request.args.get('second_response')
-    personal_statement = request.args.get('personal_statement')
+    covering_letter = session['covering_letter']
     
-    return render_template('results.html', api_response=api_response, second_response=second_response, personal_statement=personal_statement, user=current_user)
+    return render_template('results.html', user=current_user, covering_letter=covering_letter)
 
 @views.route('/history', methods=['GET'])
 @login_required

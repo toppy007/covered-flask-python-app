@@ -1,31 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<br />
+<h1>Your Custom Covering Letter</h1>
+<br />
+
 <div class="container">
-    <br>
-    <h3>Skills Match</h3>
-    <p>{{ create_covering_letter }}</p>
-    <br>
-    <h3>Projects Match</h3>
-    <ul>
-        {% for _, project_name, score in create_covering_project %}
-            <li>{{ project_name }}: {{ "%.5f"|format(score) }}</li>
-        {% endfor %}
-    </ul>
-    <br>
-    <h3>Work Experience Match</h3>
-    <ul>
-        {% for _, description, score in workexp_match %}
-            <li>{{ description }}: {{ "%.5f"|format(score) }}</li>
-        {% endfor %}
-    </ul>
-    <br>
-    <h3>Covering Letter Message</h3>
-    <p>{{ covering_letter_message }}</p>
-    <br>
-    <h3>Covering Letter</h3>
-        <!-- Use the nl2br filter to convert newlines to <br> tags -->
-     <p>{{ covering_letter | nl2br }}</p>
-    <br>
+    <div class="row">
+        <div class="col-md-16">
+            <div class="card" style="width: 100%;">
+                <div class="card-body" style="padding: 50px;">
+                    <p>{{ covering_letter | nl2br }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<br />
+
+<button id="saveButton" class="btn btn-primary">Save Job Ad Details</button>
+
 {% endblock %}
