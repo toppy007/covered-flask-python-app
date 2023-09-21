@@ -18,9 +18,7 @@ def home():
 @views.route('/profile_main', methods=['GET', 'POST'])
 @login_required
 def profile_main():
-    
     session.clear()
-    
     if request.method == 'POST':
         if 'note' in request.form:
             note = request.form.get('note')
@@ -140,6 +138,9 @@ def ana_cre_main():
                 return "API key not found"
             
         elif 'job_ad' in request.form:
+            
+            session.clear()
+            
             job_ad = request.form.get('job_ad')
             user_id = current_user.id
             api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
@@ -185,16 +186,22 @@ def ana_cre_main():
     
     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
-@views.route('/results', methods=['GET'])
+@views.route('/results', methods=['GET', 'POST'])
 @login_required
 def results():
-    covering_letter = session['covering_letter']
+    if request.method == 'POST':
+
+        return redirect(url_for('views.history'))
     
+    covering_letter = session.get('covering_letter')
+
     return render_template('results.html', user=current_user, covering_letter=covering_letter)
 
 @views.route('/history', methods=['GET'])
 @login_required
 def history():
+    
+    print(session)
     
     return render_template('history.html', user=current_user)
 
@@ -270,13 +277,15 @@ def get_doughnut_core_skills_data():
     length_skills = len(skills_data)
     length_tech_skills = len(tech_skills)
     missing_tech_skills = (length_tech_skills - length_skills) 
-    percentage = (100/length_tech_skills) * length_skills
+    percentage = (100//length_tech_skills) * length_skills
 
     data = {
         'Matched': length_skills,
         'No Match': missing_tech_skills,
         'percentage': percentage
     }
+    
+    print(data)
 
     return jsonify(data)
 

@@ -49,3 +49,17 @@ class User(db.Model, UserMixin):
     api_keys = db.relationship('OpenAiApiKey', backref='user', lazy=True)
     projects = db.relationship('Project', backref='user', lazy=True)
     workexps = db.relationship('Workexp', backref='user', lazy=True)
+    
+class JobHistoryData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    covering_letter = db.Column(db.Text)
+    job_ad = db.Column(db.Text)
+    recruiters_name = db.Column(db.String(255))
+    company_name = db.Column(db.String(255))
+    keywords = db.Column(db.Text)
+    position = db.Column(db.String(255))
+    qualifications_and_requirements = db.Column(db.Text)
+    selected_notes = db.Column(db.Text)
+    technical_skills = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
