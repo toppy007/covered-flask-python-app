@@ -196,8 +196,12 @@ def results():
         keywords = session.get('keywords')
         position = session.get('position')
         qualifications_and_requirements = session.get('qualifications_and_requirements')
-        selected_notes = session.get('selected_notes')
+        selected_notes = session.get('sections', {}).get('Selected Notes')
         technical_skills = session.get('technical_skills')
+        
+        print(selected_notes)
+        
+        selected_notes = ','.join(selected_notes)
        
         new_job_history_data = JobHistoryData(
             covering_letter=covering_letter,
@@ -211,6 +215,11 @@ def results():
             technical_skills=technical_skills,
             user_id=current_user.id
         )
+        
+        print(company_name)
+        print(keywords)
+        print(selected_notes)
+        print(technical_skills)
         
         db.session.add(new_job_history_data)
         db.session.commit()
