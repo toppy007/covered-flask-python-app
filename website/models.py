@@ -49,6 +49,7 @@ class User(db.Model, UserMixin):
     api_keys = db.relationship('OpenAiApiKey', backref='user', lazy=True)
     projects = db.relationship('Project', backref='user', lazy=True)
     workexps = db.relationship('Workexp', backref='user', lazy=True)
+    job_history_data = db.relationship('JobHistoryData', backref='user', lazy=True)
     
 class JobHistoryData(db.Model):
     id = db.Column(db.Integer, primary_key=True)

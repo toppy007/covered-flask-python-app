@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
 from .api_client import send_api_request
-from .models import Note, Skill, OpenAiApiKey, Project, Workexp
+from .models import Note, Skill, OpenAiApiKey, Project, Workexp, JobHistoryData
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from .create_prompts import BuildingCreateCLPrompt
@@ -70,11 +70,9 @@ def profile_main():
             workexp_title = request.form['workexp_title']
             workexp_dates = request.form['workexp_company']
             workexp_company = f"{request.form['workexp_date_from_month']}/{request.form['workexp_date_from_year']} to {request.form['workexp_date_to_month']}/{request.form['workexp_date_to_year']}"
-            
-            print(request.form.getlist('string_array'))
+        
             workexp_responsiblities = "\n".join(request.form.getlist('string_array'))
 
-            print(workexp_responsiblities)
             new_workexp = Workexp(workexp_title=workexp_title, workexp_company=workexp_company, workexp_dates=workexp_dates, workexp_responsiblities=workexp_responsiblities, user_id=current_user.id)
             
             db.session.add(new_workexp)
@@ -190,6 +188,32 @@ def ana_cre_main():
 @login_required
 def results():
     if request.method == 'POST':
+        
+        covering_letter = session.get('covering_letter')
+        job_ad = session.get('job_ad')
+        recruiters_name = session.get('recruiters_name')
+        company_name = session.get('company_name')
+        keywords = session.get('keywords')
+        position = session.get('position')
+        qualifications_and_requirements = session.get('qualifications_and_requirements')
+        selected_notes = session.get('selected_notes')
+        technical_skills = session.get('technical_skills')
+       
+        new_job_history_data = JobHistoryData(
+            covering_letter=covering_letter,
+            job_ad=job_ad,
+            recruiters_name=recruiters_name,
+            company_name=company_name,
+            keywords=keywords,
+            position=position,
+            qualifications_and_requirements=qualifications_and_requirements,
+            selected_notes=selected_notes,
+            technical_skills=technical_skills,
+            user_id=current_user.id
+        )
+        
+        db.session.add(new_job_history_data)
+        db.session.commit()
 
         return redirect(url_for('views.history'))
     
