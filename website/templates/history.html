@@ -5,5 +5,33 @@
 <br />
 <h1 align="left">Job Application History</h1>
 <br />
+<table>
+    <thead>
+      <tr>
+        <th>Covering Letter</th>
+        <th>Job Ad</th>
+        <th>Recruiter's Name</th>
+        <th>Company Name</th>
+        <th>ATS Keywords</th>
+        <th>Position</th>
+        <th>Technical Skills</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for history_entry in job_history_data %}
+        <tr>
+          <td>{{ history_entry.covering_letter }}</td>
+          <td>{{ history_entry.job_ad }}</td>
+          <td>{{ history_entry.recruiters_name }}</td>
+          <td>{{ history_entry.company_name }}</td>
+          <td>{{ history_entry.ats_keywords }}</td>
+          <td>{{ history_entry.position }}</td>
+          <td>{{ history_entry.technical_skills }}</td>
+          <td>{{ history_entry.timestamp }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 {% endblock %}
