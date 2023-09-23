@@ -192,34 +192,26 @@ def results():
         covering_letter = session.get('covering_letter')
         job_ad = session.get('job_ad')
         recruiters_name = session.get('recruiters_name')
-        company_name = session.get('company_name')
-        keywords = session.get('keywords')
-        position = session.get('position')
-        qualifications_and_requirements = session.get('qualifications_and_requirements')
-        selected_notes = session.get('sections', {}).get('Selected Notes')
-        technical_skills = session.get('technical_skills')
+        company_name = session.get('sections', {}).get('Company Name')
+        ats_keyword = session.get('sections', {}).get('Keywords for ATS analysis')
+        position = session.get('sections', {}).get('Position', '') 
+        technical_skills = session.get('sections', {}).get('Technical Skills')
         
-        print(selected_notes)
+        company_name = ','.join(company_name)
+        position = ','.join(position)
+        technical_skills = ','.join(technical_skills)
+        ats_keyword = ','.join(ats_keyword)
         
-        selected_notes = ','.join(selected_notes)
-       
         new_job_history_data = JobHistoryData(
             covering_letter=covering_letter,
             job_ad=job_ad,
             recruiters_name=recruiters_name,
             company_name=company_name,
-            keywords=keywords,
+            ats_keywords=ats_keyword,
             position=position,
-            qualifications_and_requirements=qualifications_and_requirements,
-            selected_notes=selected_notes,
             technical_skills=technical_skills,
             user_id=current_user.id
         )
-        
-        print(company_name)
-        print(keywords)
-        print(selected_notes)
-        print(technical_skills)
         
         db.session.add(new_job_history_data)
         db.session.commit()
