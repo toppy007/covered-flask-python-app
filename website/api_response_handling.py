@@ -44,8 +44,6 @@ class ResponseHandling():
         ]
         
         def calculate_similarity(user_projects, job_ats_skills):
-            print("aaaaaaaaaaaaaaaaaaaa")
-            print(user_projects)
             
             vectorizer = TfidfVectorizer().fit(user_projects)
             user_vectors = vectorizer.transform(user_projects)
