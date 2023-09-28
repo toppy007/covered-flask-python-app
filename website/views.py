@@ -228,7 +228,7 @@ def history():
 
     job_history_data = JobHistoryData.query.filter_by(user_id=current_user.id).all()
 
-    return render_template('history.html', user=current_user, job_history_data=job_history_data)
+    return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  

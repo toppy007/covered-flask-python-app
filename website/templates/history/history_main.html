@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br />
+<h1 align="left">Job Application History</h1>
+<br />
+<button type="button" class="btn btn-primary" id="data">Job Application History</button>
+<button type="button" class="btn btn-primary" id="analytics">Job Analytics</button>
+<br />
+<div id="history-data">
+    {% include "history/history_data_table.html" %}
+</div>
+<div id="history-analytics" style="display: none;">
+    {% include "history/history_analytics.html" %}
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#data").click(function() {
+            $("#history-data").show();
+            $("#history-analytics").hide();
+        });
+    
+        $("#analytics").click(function() {
+            $("#history-data").hide();
+            $("#history-analytics").show();
+        });
+    });
+</script>
+
+{% endblock %}
+
