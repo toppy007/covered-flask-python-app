@@ -12,9 +12,10 @@
                     <th>Company Name</th>
                     <th>Position</th>
                     <th>Recruiter's Name</th>
-                    <th>Covering Letter</th>
+                    <th>CL</th>
                     <th>Job Ad</th>
-                    <th>Timestamp</th>
+                    <th>Date</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +25,7 @@
                         <td>{{ history_entry.position }}</td>
                         <td>{{ history_entry.recruiters_name }}</td>
                         <td>
-                            <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View CL</button>
+                            <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View</button>
                             <div class="modal fade" id="myModal-{{ history_entry.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
@@ -42,9 +43,14 @@
                             </div>
                         </td>
                         <td>
-                            <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View Job</button>
+                            <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View</button>
                         </td>
                         <td>{{ history_entry.timestamp }}</td>
+                        <td>
+                        <button type="button" class="btn btn-danger" onClick="deleteApplication({{ history_entry.id }})">
+                            Delete
+                        </button>
+                    </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -55,7 +61,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-6tz7No9l1T+hZx5z2w6f+JXjSMfD5Dk/fC4xBb4E/TFtF0cSrNVjQFAF8k5sdt7ZP" crossorigin="anonymous"></script>
 
 
-  <script>
+    <script>
+
     document.addEventListener("DOMContentLoaded", function() {
         const popupButtons = document.querySelectorAll(".popup-button");
         const overlay = document.getElementById("overlay");
@@ -79,10 +86,8 @@
             popup.style.display = "none";
         });
     });
-
-
+    
     </script>
-
 
 {% endblock %}
 
