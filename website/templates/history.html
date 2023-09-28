@@ -5,7 +5,7 @@
 <br />
 <h1 align="left">Job Application History</h1>
 <br />
-    <div class="container mt-5">
+    <div class="container mt-3">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -66,18 +66,15 @@
         popupButtons.forEach(function(button) {
             button.addEventListener("click", function() {
                 const text = button.getAttribute("data-text");
-    
-                // Set the popup content
+
                 popupContent.textContent = text;
-    
-                // Show the overlay and popup
+
                 overlay.style.display = "block";
                 popup.style.display = "block";
             });
         });
     
         closePopupButton.addEventListener("click", function() {
-            // Close the popup and overlay
             overlay.style.display = "none";
             popup.style.display = "none";
         });
