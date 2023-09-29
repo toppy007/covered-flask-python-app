@@ -332,3 +332,18 @@ def get_bar_workexp_score_data():
 
     return jsonify(workexp_match_with_threshold)
 
+@views.route('/delete-application', methods=['POST'])
+def delete_application():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            db.session.delete(jobHistoryinfo)
+            db.session.commit()
+
+    return jsonify({})
+
+

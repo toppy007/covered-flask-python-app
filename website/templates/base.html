@@ -20,6 +20,8 @@
       crossorigin="anonymous"
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/popper.js@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@2.11.6/dist/umd/popper.min.js" integrity="sha384-ToszPY8B9zpBb0KKhP2j3h/XyKtu8uyDVIaIwfl1q5G5Fsd5SY6f8p00JECfUKF5" crossorigin="anonymous"></script>
     <title>{% block title %}Home{% endblock %}</title>
   </head>
 
@@ -130,6 +132,16 @@
               body: JSON.stringify({ workexpId: workexpId }),
             }).then((_res) => {
               window.location.href = "/profile_main";
+            });
+          }
+
+          function deleteApplication(historyId) {
+            console.log(historyId);
+            fetch("/delete-application", {
+              method: "POST",
+              body: JSON.stringify({ historyId: historyId }),
+            }).then((_res) => {
+              window.location.href = "/history";
             });
           }
 
