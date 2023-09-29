@@ -19,28 +19,17 @@
       href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css"
       crossorigin="anonymous"
     />
+    
+    <link rel="stylesheet" href="website/css/footer.css"> 
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/popper.js@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@2.11.6/dist/umd/popper.min.js" integrity="sha384-ToszPY8B9zpBb0KKhP2j3h/XyKtu8uyDVIaIwfl1q5G5Fsd5SY6f8p00JECfUKF5" crossorigin="anonymous"></script>
+    
     <title>{% block title %}Home{% endblock %}</title>
-    <style>
-      /* Add these styles to your CSS to create a sticky footer */
-      html, body {
-        height: 100%;
-        margin: 0;
-      }
 
-      body {
-        display: flex;
-        flex-direction: column;
-      }
-
-      footer {
-        margin-top: auto; /* Push the footer to the bottom */
-      }
-    </style>
   </head>
-  {% include 'nav.html' %}
+    {% include 'nav.html' %}
   <body>
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==
@@ -58,28 +47,20 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    
     {% endif %} {% endfor %} {% endif %} {% endwith %}
 
-    <div class="container">{% block content %} {% endblock %}</div>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js"
-    ></script>
+  <div class="container">{% block content %} {% endblock %}</div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js">
+  </script>
+
       {% block javascript %}
+
         <script type="text/javascript">
+
           function deleteNote(noteId) {
             fetch("/delete-note", {
               method: "POST",
@@ -145,8 +126,11 @@
               window.scrollTo(0, parseInt(scrollPosition));
             }
           });
-        </script>
+
+        </script>\
+
       {% endblock %}
+
       {% include 'footer.html' %}
   </body>
 </html>
