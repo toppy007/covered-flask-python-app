@@ -1,4 +1,4 @@
-<div class="container mt-3">
+<div class="container">
     <table class="table table-striped">
         <thead>
             <tr>
@@ -20,7 +20,7 @@
                     <td>
                         <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">View</button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-cl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="myModalLabel">Covering Letter</h5>
@@ -29,7 +29,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        {{ history_entry.covering_letter }}
+                                        {{ history_entry.covering_letter | nl2br }}
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@
                     <td>
                         <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">View</button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-jobad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="myModalLabel">Job Advert</h5>
@@ -47,7 +47,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        {{ history_entry.job_ad }}
+                                        {{ history_entry.job_ad | nl2br }}
                                     </div>
                                 </div>
                             </div>
