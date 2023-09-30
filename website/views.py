@@ -147,6 +147,8 @@ def ana_cre_main():
             if api_key_entry:
                 api_key = api_key_entry.key
                 
+                session['loading'] = True
+                
                 messages = generate_job_info(job_ad)
                 first_api_response = send_api_request(api_key, messages)
                 
@@ -177,7 +179,9 @@ def ana_cre_main():
                     project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
                     workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
                     
-                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
+                    loading = session.get('loading', False)
+                    
+                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
             else:
                 return "API key not found"
             

@@ -1,32 +1,41 @@
-<div id="ana_cre_inputad">
-    <h3 align="left">Use this section to analyze the job advert.</h3>
-    
-    <p>SVG Image URL: {{ url_for('static', filename='loader/loader.svg') }}</p>
-    <br />
+<!-- Add Bootstrap CSS and JavaScript if not already included -->
 
+<div id="ana_cre_inputad">
+    <br />
+    <h3 align="left">Use this section to analyze the job advert.</h3>
+    <br />
     <form action="{{ url_for('views.ana_cre_main') }}" method="post" id="analyze-job-ad" onsubmit="return showLoadingAnimation()">
         <h5 align="left">Job advertisement</h5>
         <div class="form-group">
             <textarea class="form-control" id="job_ad" name="job_ad" rows="19" placeholder="Copy & paste job advert here...">{{ input_value }}</textarea>
         </div>
+        
         <div>
-            <button type="submit" id="analyze" name="analyze" class="btn btn-primary" onclick="showLoadingAnimation()">Analyze</button>
+            <input type="hidden" id="loading" name="loading" value="false">
+            <button type="submit" id="analyze" name="analyze" class="btn btn-primary">Analyze</button>
             <button type="reset" class="btn btn-danger ml-2">Reset</button>
         </div>
+
     </form>
 </div>
 
-<div id="loader" style="display: none;">
-    <object data="static/loader/loader.svg" type="image/svg+xml"></object>
-</div>
-
 <script>
-    function showLoadingAnimation() {
-        // Show the animation when the button is clicked
-        console.log("showLoadingAnimation() called");
-        document.getElementById("loader").style.display = "block";
-        
-        // Allow the form to be submitted to the server
-        return true;
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get references to the elements
+        var loadingInput = document.getElementById("loading");
+        var analyzeButton = document.getElementById("analyze");
+        var analyzeForm = document.getElementById("analyze-job-ad");
+      
+        // Add a click event listener to the analyze button
+        analyzeButton.addEventListener("click", function() {
+          // Set loading to true when the button is clicked
+          loadingInput.value = "true";
+      
+          // Optionally, you can trigger any necessary actions here before submitting the form
+          // For example, you can make an AJAX request to start the analysis
+          
+          // Submit the form
+          analyzeForm.submit();
+        });
+    });
 </script>
