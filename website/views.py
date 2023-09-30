@@ -7,6 +7,7 @@ from .api_response_handling import ResponseHandling
 from .create_prompts import BuildingCreateCLPrompt
 from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity, CalculateWorkexpsSimilarity
 from . import db
+from datetime import datetime
 import json
 
 views = Blueprint('views', __name__)

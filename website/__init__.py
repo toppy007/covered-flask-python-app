@@ -10,7 +10,7 @@ DB_NAME = "database.db"
 
 
 def create_app(testing=False):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static')
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
     app.jinja_env.filters['nl2br'] = nl2br
     
