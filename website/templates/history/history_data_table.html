@@ -1,4 +1,3 @@
-
 <div class="container mt-3">
     <table class="table table-striped">
         <thead>
@@ -19,8 +18,8 @@
                     <td>{{ history_entry.position }}</td>
                     <td>{{ history_entry.recruiters_name }}</td>
                     <td>
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View</button>
-                        <div class="modal fade" id="myModal-{{ history_entry.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">View</button>
+                        <div class="modal fade" id="myModal-{{ history_entry.id }}-cl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -37,14 +36,29 @@
                         </div>
                     </td>
                     <td>
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}">View</button>
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">View</button>
+                        <div class="modal fade" id="myModal-{{ history_entry.id }}-jobad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Job Advert</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ history_entry.job_ad }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>{{ history_entry.timestamp }}</td>
                     <td>
                         <button type="button" class="btn btn-danger" onclick="deleteApplication({{ history_entry.id }})">
                             Delete
                         </button>
-                </td>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -52,29 +66,31 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const popupButtons = document.querySelectorAll(".popup-button");
+        const overlay = document.getElementById("overlay");
 
-document.addEventListener("DOMContentLoaded", function() {
-    const popupButtons = document.querySelectorAll(".popup-button");
-    const overlay = document.getElementById("overlay");
-    const popup = document.getElementById("popup");
-    const popupContent = document.getElementById("popup-content");
-    const closePopupButton = document.getElementById("close-popup");
+        popupButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const modalId = button.getAttribute("data-target");
+                const modal = document.querySelector(modalId);
 
-    popupButtons.forEach(function(button) {
-        button.addEventListener("click", function() {
-            const text = button.getAttribute("data-text");
+                if (modal) {
+                    modal.style.display = "block";
+                    overlay.style.display = "block";
+                }
+            });
+        });
 
-            popupContent.textContent = text;
-
-            overlay.style.display = "block";
-            popup.style.display = "block";
+        const closePopupButton = document.querySelectorAll(".close");
+        closePopupButton.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const modal = button.closest(".modal");
+                if (modal) {
+                    modal.style.display = "none";
+                    overlay.style.display = "none";
+                }
+            });
         });
     });
-
-    closePopupButton.addEventListener("click", function() {
-        overlay.style.display = "none";
-        popup.style.display = "none";
-    });
-});
-
 </script>
