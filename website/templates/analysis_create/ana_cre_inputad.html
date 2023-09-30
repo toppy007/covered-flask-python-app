@@ -1,15 +1,32 @@
 <div id="ana_cre_inputad">
     <h3 align="left">Use this section to analyze the job advert.</h3>
+    
+    <p>SVG Image URL: {{ url_for('static', filename='loader/loader.svg') }}</p>
     <br />
 
-    <form action="{{ url_for('views.ana_cre_main') }}" method="post">
+    <form action="{{ url_for('views.ana_cre_main') }}" method="post" id="analyze-job-ad" onsubmit="return showLoadingAnimation()">
         <h5 align="left">Job advertisement</h5>
         <div class="form-group">
             <textarea class="form-control" id="job_ad" name="job_ad" rows="19" placeholder="Copy & paste job advert here...">{{ input_value }}</textarea>
         </div>
         <div>
-            <button type="submit" id="analyze" name="analyze" class="btn btn-primary" onclick="analyzeForm()">Analyze</button>
+            <button type="submit" id="analyze" name="analyze" class="btn btn-primary" onclick="showLoadingAnimation()">Analyze</button>
             <button type="reset" class="btn btn-danger ml-2">Reset</button>
         </div>
     </form>
 </div>
+
+<div id="loader" style="display: none;">
+    <object data="static/loader/loader.svg" type="image/svg+xml"></object>
+</div>
+
+<script>
+    function showLoadingAnimation() {
+        // Show the animation when the button is clicked
+        console.log("showLoadingAnimation() called");
+        document.getElementById("loader").style.display = "block";
+        
+        // Allow the form to be submitted to the server
+        return true;
+    }
+</script>

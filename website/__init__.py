@@ -10,9 +10,10 @@ DB_NAME = "database.db"
 
 
 def create_app(testing=False):
-    app = Flask(__name__, static_folder='static')
+    app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
     app.jinja_env.filters['nl2br'] = nl2br
+    app.static_folder = 'static'
     
     if testing:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_' + DB_NAME
