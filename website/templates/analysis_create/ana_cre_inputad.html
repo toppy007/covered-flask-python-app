@@ -1,9 +1,16 @@
-<!-- Add Bootstrap CSS and JavaScript if not already included -->
+
+<div class="container text-center" id='loader' style='display: none;'>
+    <object id="svgObject" data="{{ url_for('static', filename='loader/cssLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='70%'></object>
+    <h3>Analysing please wait...</h3>
+</div>
 
 <div id="ana_cre_inputad">
     <br />
-    <h3 align="left">Use this section to analyze the job advert.</h3>
+        <h1 align="left">Analyze & Create</h1>
     <br />
+        <h3 align="left">Use this section to analyze the job advert.</h3>
+    <br />
+
     <form action="{{ url_for('views.ana_cre_main') }}" method="post" id="analyze-job-ad" onsubmit="return showLoadingAnimation()">
         <h5 align="left">Job advertisement</h5>
         <div class="form-group">
@@ -11,31 +18,25 @@
         </div>
         
         <div>
-            <input type="hidden" id="loading" name="loading" value="false">
             <button type="submit" id="analyze" name="analyze" class="btn btn-primary">Analyze</button>
             <button type="reset" class="btn btn-danger ml-2">Reset</button>
         </div>
-
     </form>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Get references to the elements
-        var loadingInput = document.getElementById("loading");
-        var analyzeButton = document.getElementById("analyze");
-        var analyzeForm = document.getElementById("analyze-job-ad");
-      
-        // Add a click event listener to the analyze button
-        analyzeButton.addEventListener("click", function() {
-          // Set loading to true when the button is clicked
-          loadingInput.value = "true";
-      
-          // Optionally, you can trigger any necessary actions here before submitting the form
-          // For example, you can make an AJAX request to start the analysis
-          
-          // Submit the form
-          analyzeForm.submit();
+    $(document).ready(function() {
+        $("#analyze").click(function() {
+            $("#loader").show();
+            
+            $("#ana_cre_inputad").hide();
+            
+            reloadSVG();
         });
     });
+
+    function reloadSVG() {
+        const svgObject = document.getElementById('svgObject');
+        svgObject.data = svgObject.data; // Reloads the SVG by setting its 'data' attribute
+    }
 </script>

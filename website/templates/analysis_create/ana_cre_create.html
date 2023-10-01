@@ -1,3 +1,8 @@
+<div class="container text-center" id='loader' style='display: none;'>
+  <object id="svgObject" data="{{ url_for('static', filename='loader/cssLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='70%'></object>
+  <h3>Creating letter please wait...</h3>
+</div>
+
 <div id="ana_cre_create">
 
 <br id="createCover"/>
@@ -27,8 +32,6 @@
     <div id="selectedTags"></div>
     <br />
   </div>
-
-  
 
   <h5>Added extra supporting infomation.</h5>
   
@@ -70,7 +73,7 @@
   </div>
 
   <div>
-    <button type="submit" name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
+    <button type="submit" id='create' name="create" class="btn btn-primary" onclick="printSelection()">Create</button>
   </div>
 </div>
 </div>
@@ -180,5 +183,22 @@
         workexpthresholdDiv.textContent = value;
       });
     });
+
+    $(document).ready(function() {
+        $("#create").click(function() {
+            $("#loader").show();
+            
+            $("#ana_cre_create").hide();
+            $("#ana_cre_dashboard_output").hide();
+            $("#ana_cre_outputad").hide();
+            
+            reloadSVG();
+        });
+    });
+
+    function reloadSVG() {
+        const svgObject = document.getElementById('svgObject');
+        svgObject.data = svgObject.data; // Reloads the SVG by setting its 'data' attribute
+    }
     
 </script>

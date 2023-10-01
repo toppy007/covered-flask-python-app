@@ -1,7 +1,11 @@
+<div class="container mt-3" id="ana_cre_outputad">
+<br />
+<h1 align="left">Analyze & Create</h1>
+<br />
 <h3 align="left">This is what ChatGPT think are the take aways</h3>
 <br />
 
-<div class="container mt-3" id="ana_cre_outputad">
+<div class="container mt-3">
     {% if error_message %}
         <div class="alert alert-danger">
             {{ error_message }}
@@ -12,7 +16,7 @@
                 <tr>
                   <th>Job Analysis</th>
                   <th>Job Ad Information</th>
-                </tr>
+                </tr> 
               </thead>
             <tbody>
                 {% for section, content in sections.items() %}
@@ -34,4 +38,5 @@
             </tbody>
         </table>
     {% endif %}
+</div>
 </div>
