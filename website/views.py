@@ -1,13 +1,15 @@
 from flask import Blueprint, render_template, request, flash, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
+from flask_mail import Mail, Message
 from .api_client import send_api_request
+from .registration_forms import RegistrationForm
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp, JobHistoryData
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from .create_prompts import BuildingCreateCLPrompt
 from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity, CalculateWorkexpsSimilarity
 from . import db
-from datetime import datetime
+from . import mail
 import json
 
 views = Blueprint('views', __name__)
@@ -350,5 +352,38 @@ def delete_application():
             db.session.commit()
 
     return jsonify({})
+
+@views.route('/submit_form', methods=['POST'])
+def submit_form():
+    if request.method == 'POST':
+        email = request.form.get('email')  # Get the email address from the form data
+
+        # Create a prewritten email message
+        subject = 'Subject of the Email'
+        sender = 'your_email@example.com'
+        recipients = [email]
+        message_body = 'This is the prewritten email body.'
+
+        message = Message(subject, sender=sender, recipients=recipients)
+        message.body = message_body
+
+        try:
+            # Send the email
+            mail.send(message)
+
+            # Redirect to a thank you page or any other page after sending the email
+            return redirect(url_for('views.thank_you'))  # Use 'views.thank_you' for the route
+
+        except Exception as e:
+            # Handle any exceptions that might occur during email sending
+            return f"An error occurred: {str(e)}"
+
+    return '', 204
+
+
+@views.route('/thank_you')
+def thank_you():
+    return 'Thank you for submitting the form!'
+
 
 

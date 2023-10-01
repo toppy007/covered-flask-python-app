@@ -1,12 +1,14 @@
+import os
 from flask import Flask
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from .filters import nl2br 
 
-
 db = SQLAlchemy()
 DB_NAME = "database.db"
+mail = Mail()
 
 
 def create_app(testing=False):
@@ -14,6 +16,15 @@ def create_app(testing=False):
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
     app.jinja_env.filters['nl2br'] = nl2br
     app.static_folder = 'static'
+    
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # SMTP server address
+    app.config['MAIL_PORT'] = 587  # Port for SMTP (587 is TLS, 465 is SSL)
+    app.config['MAIL_USE_TLS'] = True  # Use TLS (True/False)
+    app.config['MAIL_USE_SSL'] = False  # Use SSL (True/False)
+    app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASSWORD')
+    
+    mail = Mail(app)
     
     if testing:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_' + DB_NAME
@@ -40,7 +51,7 @@ def create_app(testing=False):
     def load_user(id):
         return User.query.get(int(id))
 
-    return app
+    return app, mail
 
 def create_database(app, testing=False):
     if testing:
