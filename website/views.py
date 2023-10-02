@@ -358,24 +358,30 @@ def submit_form():
     if request.method == 'POST':
         email = request.form.get('email')  # Get the email address from the form data
 
-        # Create a prewritten email message
-        subject = 'Subject of the Email'
+        subject = 'Join the Covered project'
         sender = 'your_email@example.com'
         recipients = [email]
-        message_body = 'This is the prewritten email body.'
+        message_body = '''
+            Dear Emailer,
+
+            Thank you for your interest in joining our project. Your enthusiasm is greatly appreciated. To learn more, 
+            please visit our GitHub repository here: https://github.com/toppy007/covered-flask-python-app. 
+            Explore ongoing tasks, ask questions, and collaborate with our team. Your contributions are invaluable, and we're excited about the potential impact. 
+            If you have any queries or need assistance, feel free to reach out. We look forward to working together to achieve our shared goals.
+            
+            Best regards
+            
+            Christopher Topplisek'''
 
         message = Message(subject, sender=sender, recipients=recipients)
         message.body = message_body
 
         try:
-            # Send the email
             mail.send(message)
 
-            # Redirect to a thank you page or any other page after sending the email
-            return redirect(url_for('views.thank_you'))  # Use 'views.thank_you' for the route
+            return '', 204
 
         except Exception as e:
-            # Handle any exceptions that might occur during email sending
             return f"An error occurred: {str(e)}"
 
     return '', 204
