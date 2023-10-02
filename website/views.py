@@ -364,8 +364,10 @@ def submit_form():
         message_body = '''
             Dear Emailer,
 
-            Thank you for your interest in joining our project. Your enthusiasm is greatly appreciated. To learn more, 
-            please visit our GitHub repository here: https://github.com/toppy007/covered-flask-python-app. 
+            Thank you for your interest in joining our project. Your enthusiasm is greatly appreciated. 
+            
+            To learn more, please visit our GitHub repository here: https://github.com/toppy007/covered-flask-python-app. 
+            
             Explore ongoing tasks, ask questions, and collaborate with our team. Your contributions are invaluable, and we're excited about the potential impact. 
             If you have any queries or need assistance, feel free to reach out. We look forward to working together to achieve our shared goals.
             
@@ -378,8 +380,8 @@ def submit_form():
 
         try:
             mail.send(message)
-
-            return '', 204
+            flash('Email sent to recipient', category='success')
+            return render_template("profile/profile_main.html", user=current_user)
 
         except Exception as e:
             return f"An error occurred: {str(e)}"
@@ -387,9 +389,6 @@ def submit_form():
     return '', 204
 
 
-@views.route('/thank_you')
-def thank_you():
-    return 'Thank you for submitting the form!'
 
 
 
