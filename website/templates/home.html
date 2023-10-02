@@ -3,13 +3,17 @@
 {% block content %}
 
 <br />
-<h1 align="left">Welcome</h1>
+<div class="image-container text-center">
+    <object id="svgObject" data="{{ url_for('static', filename='loader/logoLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='40%'></object>
+    <h1 class="mt-1">Welcome to Covered</h1>
+</div>
 <br />
-<h3 align="left">Description of the project</h3>
-<br />
-<h3 align="left">Video of how to use the webapp</h3>
-<br />
-<h3 align="left">Info</h3>
+<p>
+    Covered, a Flask-based web app, simplifies the job hunt for junior software engineers. 
+    It automates job application tracking, stores profiles, skills, and projects, and generates tailored applications. 
+    By analyzing job ads and matching skills, it streamlines the process, saving time and improving application quality. 
+    Users can make data-driven decisions, optimizing their job search.
+</p>
 <br />
 
 {% endblock %}
