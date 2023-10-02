@@ -1,27 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <br />
 <h1>Your Custom Covering Letter</h1>
 <br />
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-16">
+<div class="container p-0">
+        <div class="col-md-16"> <!-- Change col-md-16 to col-md-12 -->
             <div class="card" style="width: 100%;">
                 <div class="card-body" style="padding: 50px;">
-                    <p>{{ covering_letter | nl2br }}</p>
+                    
+                    <div id="coveringLetterContent">{{ covering_letter | nl2br }}</div>
+                    <div id="coveringLetterTextareaWrapper" style="display: none;">
+                        <textarea class="form-control no-border p-0" id="expandingTextarea">{{ covering_letter | nl2br }}</textarea>
+                    </div>
                 </div>
+                <button id="editButton" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button id="saveButton" class="btn btn-success" style="display: none;">Save</button>
             </div>
         </div>
-    </div>
+        <br />
+
+        <form action="{{ url_for('views.results') }}" method="POST">
+            <button type="submit" class="btn btn-primary">Save Information</button>
+        </form>
 </div>
 
-<br />
 
-<form action="{{ url_for('views.results') }}" method="POST">
-    <button type="submit" class="btn btn-primary">Run Backend Script</button>
-</form>
+
+<style>
+    .no-border {
+        border: none;
+    }
+
+    #expandingTextarea {
+        height: 20.5rem;
+        resize: none; 
+    }
+</style>
+
+<script>
+    // Get references to the elements
+    const coveringLetterContent = document.getElementById('coveringLetterContent');
+    const coveringLetterTextareaWrapper = document.getElementById('coveringLetterTextareaWrapper');
+    const coveringLetterTextarea = document.getElementById('expandingTextarea');
+    const editButton = document.getElementById('editButton');
+    const saveButton = document.getElementById('saveButton');
+
+    // Function to enable editing
+    function enableEditing() {
+        coveringLetterContent.style.display = 'none';
+        coveringLetterTextareaWrapper.style.display = 'block';
+        editButton.style.display = 'none';
+        saveButton.style.display = 'block';
+    }
+
+    // Function to save edited content
+    function saveEditing() {
+        const editedText = coveringLetterTextarea.value;
+        coveringLetterContent.innerHTML = editedText;
+        coveringLetterContent.style.display = 'block';
+        coveringLetterTextareaWrapper.style.display = 'none';
+        editButton.style.display = 'block';
+        saveButton.style.display = 'none';
+    }
+
+    editButton.addEventListener('click', enableEditing);
+    saveButton.addEventListener('click', saveEditing);
+</script>
 
 {% endblock %}

@@ -132,6 +132,8 @@ def ana_cre_main():
                 covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
                 covering_letter = send_api_request(api_key, covering_letter_message)
                 
+                print(covering_letter)
+                
                 session['covering_letter'] = covering_letter
                 
                 return redirect(url_for('views.results'))
@@ -381,7 +383,6 @@ def submit_form():
         try:
             mail.send(message)
             flash('Email sent to recipient', category='success')
-            return render_template("home.html", user=current_user)
 
         except Exception as e:
             return f"An error occurred: {str(e)}"
