@@ -381,7 +381,7 @@ def submit_form():
         try:
             mail.send(message)
             flash('Email sent to recipient', category='success')
-            return render_template("profile/profile_main.html", user=current_user)
+            return render_template("home.html", user=current_user)
 
         except Exception as e:
             return f"An error occurred: {str(e)}"
