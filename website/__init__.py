@@ -31,6 +31,8 @@ def create_app(testing=False):
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
+    
+    # change the app config files for sqlite 
 
     from .views import views
     from .auth import auth
