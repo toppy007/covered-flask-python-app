@@ -1,0 +1,8 @@
+.no-border {
+    border: none;
+}
+
+#expandingTextarea {
+    height: 25.5rem;
+    resize: none; 
+}

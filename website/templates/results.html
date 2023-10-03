@@ -28,28 +28,15 @@
         </form>
 </div>
 
-
-
-<style>
-    .no-border {
-        border: none;
-    }
-
-    #expandingTextarea {
-        height: 25.5rem;
-        resize: none; 
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
 
 <script>
-    // Get references to the elements
     const coveringLetterContent = document.getElementById('coveringLetterContent');
     const coveringLetterTextareaWrapper = document.getElementById('coveringLetterTextareaWrapper');
     const coveringLetterTextarea = document.getElementById('expandingTextarea');
     const editButton = document.getElementById('editButton');
     const saveButton = document.getElementById('saveButton');
 
-    // Function to enable editing
     function enableEditing() {
         coveringLetterContent.style.display = 'none';
         coveringLetterTextareaWrapper.style.display = 'block';
@@ -57,7 +44,6 @@
         saveButton.style.display = 'block';
     }
 
-    // Function to save edited content
     function saveEditing() {
         const editedText = coveringLetterTextarea.value;
         coveringLetterContent.innerHTML = editedText.replace(/\n/g, '<br>'); // Preserve line breaks
@@ -67,13 +53,11 @@
         saveButton.style.display = 'none';
     }
 
-    // Automatically adjust textarea height as content changes
     coveringLetterTextarea.addEventListener('input', function () {
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
     });
 
-    // Attach event listeners
     editButton.addEventListener('click', enableEditing);
     saveButton.addEventListener('click', saveEditing);
 </script>

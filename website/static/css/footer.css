@@ -1,13 +1,13 @@
-    html, body {
+html, body {
     height: 100%;
     margin: 0;
-    }
+}
 
-    body {
+body {
     display: flex;
     flex-direction: column;
-    }
+}
 
-    footer {
+footer {
     margin-top: auto;
-    }
+}
