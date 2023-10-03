@@ -28,8 +28,9 @@ def create_app(testing=False):
     
     if testing:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_' + DB_NAME
+        # postgres://dbcovered_user:nDeDhAgxOJqLe2Wl4Um1iiRgL6gtR6fo@dpg-cke4jl4gonuc73ani8eg-a.oregon-postgres.render.com/dbcovered
     else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     db.init_app(app)
     
     # change the app config files for sqlite 
