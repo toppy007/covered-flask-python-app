@@ -389,6 +389,14 @@ def submit_form():
 
     return '', 204
 
+@views.route('/update-covering-letter', methods=['POST'])
+def save_edited_cl():
+    save_edit = json.loads(request.data)
+    new_covering_letter = save_edit.get('covering_letter')
+
+    session['covering_letter'] = new_covering_letter
+    
+    return jsonify({})
 
 
 
