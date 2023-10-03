@@ -12,7 +12,7 @@
                     
                     <div id="coveringLetterContent">{{ covering_letter | nl2br }}</div>
                     <div id="coveringLetterTextareaWrapper" style="display: none;">
-                        <textarea class="form-control no-border p-0" id="expandingTextarea">{{ covering_letter | nl2br }}</textarea>
+                        <textarea class="form-control no-border p-0" id="expandingTextarea">{{ covering_letter | escape }}</textarea>
                     </div>
                 </div>
                 <button id="editButton" class="btn btn-primary">
@@ -36,7 +36,7 @@
     }
 
     #expandingTextarea {
-        height: 20.5rem;
+        height: 25.5rem;
         resize: none; 
     }
 </style>
@@ -60,15 +60,23 @@
     // Function to save edited content
     function saveEditing() {
         const editedText = coveringLetterTextarea.value;
-        coveringLetterContent.innerHTML = editedText;
+        coveringLetterContent.innerHTML = editedText.replace(/\n/g, '<br>'); // Preserve line breaks
         coveringLetterContent.style.display = 'block';
         coveringLetterTextareaWrapper.style.display = 'none';
         editButton.style.display = 'block';
         saveButton.style.display = 'none';
     }
 
+    // Automatically adjust textarea height as content changes
+    coveringLetterTextarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+
+    // Attach event listeners
     editButton.addEventListener('click', enableEditing);
     saveButton.addEventListener('click', saveEditing);
 </script>
+
 
 {% endblock %}
