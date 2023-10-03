@@ -26,10 +26,7 @@ def create_app(testing=False):
     
     mail = Mail(app)
     
-    if testing:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_' + DB_NAME
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     
     db.init_app(app)
     
