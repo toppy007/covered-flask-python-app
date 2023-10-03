@@ -42,7 +42,7 @@ tomli==2.0.1
 tqdm==4.65.1
 typing_extensions==4.7.1
 urllib3==2.0.4
-Werkzeug==2.3.6
+Werkzeug==2.2.3
 WTForms==3.0.1
 yarl==1.9.2
 zipp==3.16.2
