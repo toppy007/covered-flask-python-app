@@ -161,8 +161,8 @@ def ana_cre_main():
             
             else:
                 job_ad = request.form.get('job_ad')
-                user_id = current_user.id
                 
+                user_id = current_user.id
                 api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
                 
                 if api_key_entry:
@@ -204,8 +204,8 @@ def ana_cre_main():
                         
                         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
     
-    session.clear()
-    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
+                session.clear()
+                return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET', 'POST'])
 @login_required
