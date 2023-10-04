@@ -53,3 +53,6 @@ The application focuses on allowing users to manage their profiles, notes, skill
 5. **Expanded Job Application History:**
 - Add more detailed options in the job application history section to track the entire application process.
 - Include status updates, interview dates, and any communication details for a comprehensive overview
+
+6. **Add Encryption to the OpenAI DB Entry:**
+- PostgreSQL built-in encryption features

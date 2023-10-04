@@ -23,7 +23,7 @@ def create_app(testing=False):
     app.config['MAIL_USE_SSL'] = False  # Use SSL (True/False)
     app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASSWORD')
-    
+
     mail = Mail(app)
     
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
