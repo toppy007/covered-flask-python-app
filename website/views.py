@@ -93,51 +93,60 @@ def ana_cre_main():
     
     if request.method == 'POST':
         if 'create' in request.form:
-            user_id = current_user.id
-            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
-
-            selected_notes = request.form.get('selectedNotes')
-            added_extra = request.form.get('added_extra')
-            recruiters_name = request.form.get('project_title')
-            word_count = request.form.get('wordcount')
-            threshold_workexp = request.form.get('workexpthreshold')
-            threshold_project = request.form.get('projectthreshold')
             
-            threshold_project_float = float(threshold_project)
-            threshold_workexp_float = float(threshold_workexp)
+            project_count = db.session.query(Project).count()
+            workexp_count = db.session.query(Workexp).count()
 
-            if api_key_entry:
-                
-                api_key = api_key_entry.key
-                
-                session['recruiters_name'] = recruiters_name
-                session['threshold_workexp'] = threshold_workexp
-                session['threshold_project'] = threshold_project
-                
-                data = (session['sections'])
-                raw_data = (session['job_ad'])
-                
-                data['Selected Notes'] = [selected_notes]
-                data['Added Extra'] = [added_extra]
-                data['recruiters_name'] = [recruiters_name]
-                data['Word Count'] = [word_count]
-                
-                dic_key = ["keywords for ats analysis", "ats keywords"]
-
-                skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
-                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
-                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
-                
-                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
-                covering_letter = send_api_request(api_key, covering_letter_message)
-                
-                print(covering_letter)
-                
-                session['covering_letter'] = covering_letter
-                
-                return redirect(url_for('views.results'))
+            if project_count == 0 or workexp_count == 0:
+                flash('For chatgpt to create a covering letter you must complete your profile.', category='error')
+                return render_template('profile/profile_main.html', user=current_user)
+            
             else:
-                return "API key not found"
+                user_id = current_user.id
+                api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+
+                selected_notes = request.form.get('selectedNotes')
+                added_extra = request.form.get('added_extra')
+                recruiters_name = request.form.get('project_title')
+                word_count = request.form.get('wordcount')
+                threshold_workexp = request.form.get('workexpthreshold')
+                threshold_project = request.form.get('projectthreshold')
+                
+                threshold_project_float = float(threshold_project)
+                threshold_workexp_float = float(threshold_workexp)
+
+                if api_key_entry:
+                    
+                    api_key = api_key_entry.key
+                    
+                    session['recruiters_name'] = recruiters_name
+                    session['threshold_workexp'] = threshold_workexp
+                    session['threshold_project'] = threshold_project
+                    
+                    data = (session['sections'])
+                    raw_data = (session['job_ad'])
+                    
+                    data['Selected Notes'] = [selected_notes]
+                    data['Added Extra'] = [added_extra]
+                    data['recruiters_name'] = [recruiters_name]
+                    data['Word Count'] = [word_count]
+                    
+                    dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                    skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
+                    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
+                    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
+                    
+                    covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
+                    covering_letter = send_api_request(api_key, covering_letter_message)
+                    
+                    print(covering_letter)
+                    
+                    session['covering_letter'] = covering_letter
+                    
+                    return redirect(url_for('views.results'))
+                else:
+                    return "API key not found"
             
         elif 'job_ad' in request.form:
             
@@ -147,11 +156,9 @@ def ana_cre_main():
             
             if api_count == 0:
                 flash('No API key exists! Please add an OpenAi API key.', category='error')
-                
                 return render_template('profile/profile_main.html', user=current_user)
             
             else:
-                
                 job_ad = request.form.get('job_ad')
                 user_id = current_user.id
                 
@@ -195,9 +202,8 @@ def ana_cre_main():
                         loading = session.get('loading', False)
                         
                         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
-            
-    session.clear()
     
+    session.clear()
     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET', 'POST'])
