@@ -203,9 +203,9 @@ def ana_cre_main():
                         loading = session.get('loading', False)
                         
                         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
-    
-                session.clear()
-                return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
+                
+        session.clear()
+        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET', 'POST'])
 @login_required
