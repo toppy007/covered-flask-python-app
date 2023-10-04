@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, flash, jsonify, session, 
 from flask_login import login_required, current_user
 from flask_mail import Mail, Message
 from .api_client import send_api_request
-from .registration_forms import RegistrationForm
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp, JobHistoryData
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
@@ -34,7 +33,7 @@ def profile_main():
                 flash('Note added!', category='success')
         elif 'skill' in request.form:
             skill_list = request.form.get('skill')
-            skills = skill_list.split(',')  # Split the comma-separated string into a list
+            skills = skill_list.split(',')
 
             for skill in skills:
                 if len(skill) < 1:
@@ -94,103 +93,118 @@ def ana_cre_main():
     
     if request.method == 'POST':
         if 'create' in request.form:
-            user_id = current_user.id
-            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
-
-            selected_notes = request.form.get('selectedNotes')
-            added_extra = request.form.get('added_extra')
-            recruiters_name = request.form.get('project_title')
-            word_count = request.form.get('wordcount')
-            threshold_workexp = request.form.get('workexpthreshold')
-            threshold_project = request.form.get('projectthreshold')
             
-            threshold_project_float = float(threshold_project)
-            threshold_workexp_float = float(threshold_workexp)
+            project_count = db.session.query(Project).count()
+            workexp_count = db.session.query(Workexp).count()
+            skills_count = db.session.query(Skill).count()
 
-            if api_key_entry:
-                
-                api_key = api_key_entry.key
-                
-                session['recruiters_name'] = recruiters_name
-                session['threshold_workexp'] = threshold_workexp
-                session['threshold_project'] = threshold_project
-                
-                data = (session['sections'])
-                raw_data = (session['job_ad'])
-                
-                data['Selected Notes'] = [selected_notes]
-                data['Added Extra'] = [added_extra]
-                data['recruiters_name'] = [recruiters_name]
-                data['Word Count'] = [word_count]
-                
-                dic_key = ["keywords for ats analysis", "ats keywords"]
-
-                skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
-                project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
-                workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
-                
-                covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
-                covering_letter = send_api_request(api_key, covering_letter_message)
-                
-                print(covering_letter)
-                
-                session['covering_letter'] = covering_letter
-                
-                return redirect(url_for('views.results'))
+            if project_count == 0 or workexp_count == 0 or skills_count == 0:
+                flash('For chatgpt to create a covering letter you must complete your profile.', category='error')
+                return render_template('profile/profile_main.html', user=current_user)
+            
             else:
-                return "API key not found"
+                user_id = current_user.id
+                api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+
+                selected_notes = request.form.get('selectedNotes')
+                added_extra = request.form.get('added_extra')
+                recruiters_name = request.form.get('project_title')
+                word_count = request.form.get('wordcount')
+                threshold_workexp = request.form.get('workexpthreshold')
+                threshold_project = request.form.get('projectthreshold')
+                
+                threshold_project_float = float(threshold_project)
+                threshold_workexp_float = float(threshold_workexp)
+
+                if api_key_entry:
+                    
+                    api_key = api_key_entry.key
+                    
+                    session['recruiters_name'] = recruiters_name
+                    session['threshold_workexp'] = threshold_workexp
+                    session['threshold_project'] = threshold_project
+                    
+                    data = (session['sections'])
+                    raw_data = (session['job_ad'])
+                    
+                    data['Selected Notes'] = [selected_notes]
+                    data['Added Extra'] = [added_extra]
+                    data['recruiters_name'] = [recruiters_name]
+                    data['Word Count'] = [word_count]
+                    
+                    dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                    skills_match = CalculateSkillsSimilarity.calculate_similarity(data, dic_key, user_id)
+                    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(raw_data, user_id)
+                    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(raw_data, user_id)
+                    
+                    covering_letter_message = BuildingCreateCLPrompt.combine_input_parameters(project_match, workexp_match, skills_match, data, raw_data, threshold_project_float, threshold_workexp_float)
+                    covering_letter = send_api_request(api_key, covering_letter_message)
+                    
+                    print(covering_letter)
+                    
+                    session['covering_letter'] = covering_letter
+                    
+                    return redirect(url_for('views.results'))
+                else:
+                    return "API key not found"
             
         elif 'job_ad' in request.form:
             
             session.clear()
             
-            job_ad = request.form.get('job_ad')
-            user_id = current_user.id
-            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+            api_count = db.session.query(OpenAiApiKey).count()
             
-            if api_key_entry:
-                api_key = api_key_entry.key
-                
-                session['loading'] = True
-                
-                messages = generate_job_info(job_ad)
-                first_api_response = send_api_request(api_key, messages)
-                
-                if ResponseHandling.is_non_conforming_response(first_api_response):
-                    error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
-                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
-                else:
-                    current_section = None
-                    for line in first_api_response.splitlines():
-                        if line.strip():
-                            if ":" in line:
-                                if line.endswith(":"):
-                                    current_section = line.strip(":")   
-                                    sections[current_section] = [] 
-                                else:
-                                    split_result = line.split(":")
-                                    sections[split_result[0]] = []
-                                    sections[split_result[0]].append(split_result[1])
-                            elif current_section is not None:
-                                sections[current_section].append(line.strip("- "))
-                                
-                    session['sections'] = sections
-                    session['job_ad'] = job_ad
-                    
-                    dic_key = ["keywords for ats analysis", "ats keywords"]
-
-                    skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
-                    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
-                    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
-                    
-                    loading = session.get('loading', False)
-                    
-                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
+            if api_count == 0:
+                flash('No API key exists! Please add an OpenAi API key.', category='error')
+                return render_template('profile/profile_main.html', user=current_user)
+            
             else:
-                return "API key not found"
-            
-    session.clear()
+                job_ad = request.form.get('job_ad')
+                user_id = current_user.id
+                
+                api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+                
+                if api_key_entry:
+                    api_key = api_key_entry.key
+                    
+                    session['loading'] = True
+                    
+                    messages = generate_job_info(job_ad)
+                    first_api_response = send_api_request(api_key, messages)
+                    
+                    if ResponseHandling.is_non_conforming_response(first_api_response):
+                        error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
+                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
+                    else:
+                        current_section = None
+                        for line in first_api_response.splitlines():
+                            if line.strip():
+                                if ":" in line:
+                                    if line.endswith(":"):
+                                        current_section = line.strip(":")   
+                                        sections[current_section] = [] 
+                                    else:
+                                        split_result = line.split(":")
+                                        sections[split_result[0]] = []
+                                        sections[split_result[0]].append(split_result[1])
+                                elif current_section is not None:
+                                    sections[current_section].append(line.strip("- "))
+                                    
+                        session['sections'] = sections
+                        session['job_ad'] = job_ad
+                        
+                        dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                        skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
+                        project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
+                        workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
+                        
+                        loading = session.get('loading', False)
+                        
+                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
     
+    session.clear()
     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET', 'POST'])
@@ -202,7 +216,20 @@ def results():
         job_ad = session.get('job_ad')
         recruiters_name = session.get('recruiters_name')
         company_name = session.get('sections', {}).get('Company Name')
-        ats_keyword = session.get('sections', {}).get('Keywords for ATS analysis')
+        
+        # build a file for error handling for this route
+        
+        possible_keys = ['Keywords for ATS analysis', 'ATS Analysis']
+
+        ats_keyword = None
+
+        for key in possible_keys:
+            try:
+                ats_keyword = session['sections'][key]
+                break
+            except KeyError:
+                continue
+            
         position = session.get('sections', {}).get('Position', '') 
         technical_skills = session.get('sections', {}).get('Technical Skills')
         
@@ -358,7 +385,7 @@ def delete_application():
 @views.route('/submit_form', methods=['POST'])
 def submit_form():
     if request.method == 'POST':
-        email = request.form.get('email')  # Get the email address from the form data
+        email = request.form.get('email')
 
         subject = 'Join the Covered project'
         sender = 'your_email@example.com'
