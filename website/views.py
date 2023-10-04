@@ -144,50 +144,56 @@ def ana_cre_main():
             
             session.clear()
             
-            job_ad = request.form.get('job_ad')
-            user_id = current_user.id
-            api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+            api_count = db.session.query(Project).count()
             
-            if api_key_entry:
-                api_key = api_key_entry.key
-                
-                session['loading'] = True
-                
-                messages = generate_job_info(job_ad)
-                first_api_response = send_api_request(api_key, messages)
-                
-                if ResponseHandling.is_non_conforming_response(first_api_response):
-                    error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
-                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
-                else:
-                    current_section = None
-                    for line in first_api_response.splitlines():
-                        if line.strip():
-                            if ":" in line:
-                                if line.endswith(":"):
-                                    current_section = line.strip(":")   
-                                    sections[current_section] = [] 
-                                else:
-                                    split_result = line.split(":")
-                                    sections[split_result[0]] = []
-                                    sections[split_result[0]].append(split_result[1])
-                            elif current_section is not None:
-                                sections[current_section].append(line.strip("- "))
-                                
-                    session['sections'] = sections
-                    session['job_ad'] = job_ad
-                    
-                    dic_key = ["keywords for ats analysis", "ats keywords"]
-
-                    skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
-                    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
-                    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
-                    
-                    loading = session.get('loading', False)
-                    
-                    return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
+            if api_count == 0:
+                flash('No API key exists! Please add an OpenAi API key.', category='error')
+                return render_template('profile/profile_main.html', user=current_user)
+            
             else:
-                return "API key not found"
+                job_ad = request.form.get('job_ad')
+                user_id = current_user.id
+                
+                api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
+                
+                if api_key_entry:
+                    api_key = api_key_entry.key
+                    
+                    session['loading'] = True
+                    
+                    messages = generate_job_info(job_ad)
+                    first_api_response = send_api_request(api_key, messages)
+                    
+                    if ResponseHandling.is_non_conforming_response(first_api_response):
+                        error_message = "I'm sorry, but the response from the AI does not conform to the expected format. Please provide a valid job advertisement."
+                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, error_message=error_message)
+                    else:
+                        current_section = None
+                        for line in first_api_response.splitlines():
+                            if line.strip():
+                                if ":" in line:
+                                    if line.endswith(":"):
+                                        current_section = line.strip(":")   
+                                        sections[current_section] = [] 
+                                    else:
+                                        split_result = line.split(":")
+                                        sections[split_result[0]] = []
+                                        sections[split_result[0]].append(split_result[1])
+                                elif current_section is not None:
+                                    sections[current_section].append(line.strip("- "))
+                                    
+                        session['sections'] = sections
+                        session['job_ad'] = job_ad
+                        
+                        dic_key = ["keywords for ats analysis", "ats keywords"]
+
+                        skills_match = CalculateSkillsSimilarity.calculate_similarity(sections, dic_key, user_id)
+                        project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
+                        workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
+                        
+                        loading = session.get('loading', False)
+                        
+                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
             
     session.clear()
     
