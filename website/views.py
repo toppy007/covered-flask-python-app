@@ -204,6 +204,8 @@ def ana_cre_main():
                         
                         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
                 
+                return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
+        
         session.clear()
         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
