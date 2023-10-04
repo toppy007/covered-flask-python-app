@@ -28,15 +28,7 @@
     $(document).ready(function() {
         $("#analyze").click(function() {
             $("#loader").show();
-            
             $("#ana_cre_inputad").hide();
-            
-            reloadSVG();
         });
     });
-
-    function reloadSVG() {
-        const svgObject = document.getElementById('svgObject');
-        svgObject.data = svgObject.data; // Reloads the SVG by setting its 'data' attribute
-    }
 </script>
