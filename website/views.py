@@ -96,10 +96,10 @@ def ana_cre_main():
             
             project_count = db.session.query(Project).count()
             workexp_count = db.session.query(Workexp).count()
+            skills_count = db.session.query(Skill).count()
 
-            if project_count == 0 or workexp_count == 0:
-                flash('For Chatgpt to create a covering letter you must complete your profile.', category='error')
-                
+            if project_count == 0 or workexp_count == 0 or skills_count == 0:
+                flash('For chatgpt to create a covering letter you must complete your profile.', category='error')
                 return render_template('profile/profile_main.html', user=current_user)
             
             else:
@@ -200,12 +200,9 @@ def ana_cre_main():
                         project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
                         workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
                         
-                        loading = session.get('loading', False)
-                        
-                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad, loading=loading,)
-            
-    session.clear()
+                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
     
+    session.clear()
     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
 @views.route('/results', methods=['GET', 'POST'])
