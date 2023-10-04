@@ -1,6 +1,6 @@
 
 <div class="container text-center" id='loader' style='display: none;'>
-    <object id="svgObject" data="{{ url_for('static', filename='loader/cssLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='70%'></object>
+    <object id="svgObject" type="image/svg+xml" class="img-fluid" width='70%'></object>
     <h3>Analysing please wait...</h3>
 </div>
 
@@ -26,9 +26,16 @@
 
 <script>
     $(document).ready(function() {
+        // Preload the CSS loader (SVG) when the page loads
+        var svgLoader = new Image();
+        svgLoader.src = "{{ url_for('static', filename='loader/cssLoader.svg') }}";
+    
         $("#analyze").click(function() {
             $("#loader").show();
             $("#ana_cre_inputad").hide();
+    
+            // Set the data attribute to display the preloaded SVG
+            $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
         });
     });
 </script>
