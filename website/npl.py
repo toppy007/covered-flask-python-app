@@ -5,6 +5,7 @@
 # similarity between user profiles and job criteria.
 
 from .models import Project, Skill, Workexp
+from . import db
 
 import nltk
 import re
@@ -187,11 +188,16 @@ class CalculateWorkexpsSimilarity:
 
     @staticmethod
     def calculate_similarity(data_dict, user_id):
-        user_workexps = CalculateWorkexpsSimilarity.create_array_of_workexp(user_id)
-        ats_keywords = CalculateWorkexpsSimilarity.create_string_workexp(data_dict) 
-        matching_workexp = CalculateWorkexpsSimilarity.calculate_similarity_workexp(user_workexps, ats_keywords)
+        workexp_count = db.session.query(Workexp).count()
         
-        return matching_workexp
+        if workexp_count == 0:
+            return None
+        else:
+            user_workexps = CalculateWorkexpsSimilarity.create_array_of_workexp(user_id)
+            ats_keywords = CalculateWorkexpsSimilarity.create_string_workexp(data_dict) 
+            matching_workexp = CalculateWorkexpsSimilarity.calculate_similarity_workexp(user_workexps, ats_keywords)
+        
+            return matching_workexp
 
 
 
