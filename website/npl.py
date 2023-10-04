@@ -1,9 +1,3 @@
-# The npl.py script utilizes NLP techniques to match user data (projects, skills, work experience)
-# with job requirements. It employs TF-IDF vectorization and cosine similarity for comparison.
-# The script is organized into classes: CalculateProjectSimilarity, CalculateSkillsSimilarity, 
-# and CalculateWorkexpsSimilarity. It aids in job matching and recommendation by assessing the 
-# similarity between user profiles and job criteria.
-
 from .models import Project, Skill, Workexp
 from . import db
 
@@ -78,11 +72,16 @@ class CalculateProjectSimilarity:
 
     @staticmethod
     def function_calculate_project_similarity(data, user_id):
-        user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
-        job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
-        similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
+        project_count = db.session.query(Project).count()
         
-        return similarity_scores
+        if project_count == 0:
+            return None
+        else:
+            user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
+            job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
+            similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
+            
+            return similarity_scores
     
 class CalculateSkillsSimilarity:
     @staticmethod
@@ -134,11 +133,16 @@ class CalculateSkillsSimilarity:
     
     @staticmethod
     def calculate_similarity(data_dict, dic_key, user_id):
-        ats_keywords = CalculateSkillsSimilarity.create_array(data_dict, dic_key)
-        user_skills = CalculateSkillsSimilarity.create_string_array_of_skills(user_id)
-        matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords)
+        skill_count = db.session.query(Skill).count()
         
-        return matching_words
+        if skill_count == 0:
+            return None
+        else:
+            ats_keywords = CalculateSkillsSimilarity.create_array(data_dict, dic_key)
+            user_skills = CalculateSkillsSimilarity.create_string_array_of_skills(user_id)
+            matching_words = CalculateSkillsSimilarity.find_matching_words(user_skills, ats_keywords)
+            
+            return matching_words
     
 class CalculateWorkexpsSimilarity:
     @staticmethod
