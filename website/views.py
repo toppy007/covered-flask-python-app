@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, flash, jsonify, session, 
 from flask_login import login_required, current_user
 from flask_mail import Mail, Message
 from .api_client import send_api_request
-from .registration_forms import RegistrationForm
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp, JobHistoryData
 from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
@@ -34,7 +33,7 @@ def profile_main():
                 flash('Note added!', category='success')
         elif 'skill' in request.form:
             skill_list = request.form.get('skill')
-            skills = skill_list.split(',')  # Split the comma-separated string into a list
+            skills = skill_list.split(',')
 
             for skill in skills:
                 if len(skill) < 1:
@@ -144,13 +143,15 @@ def ana_cre_main():
             
             session.clear()
             
-            api_count = db.session.query(Project).count()
+            api_count = db.session.query(OpenAiApiKey).count()
             
             if api_count == 0:
                 flash('No API key exists! Please add an OpenAi API key.', category='error')
+                
                 return render_template('profile/profile_main.html', user=current_user)
             
             else:
+                
                 job_ad = request.form.get('job_ad')
                 user_id = current_user.id
                 
@@ -208,7 +209,20 @@ def results():
         job_ad = session.get('job_ad')
         recruiters_name = session.get('recruiters_name')
         company_name = session.get('sections', {}).get('Company Name')
-        ats_keyword = session.get('sections', {}).get('Keywords for ATS analysis')
+        
+        # build a file for error handling for this route
+        
+        possible_keys = ['Keywords for ATS analysis', 'ATS Analysis']
+
+        ats_keyword = None
+
+        for key in possible_keys:
+            try:
+                ats_keyword = session['sections'][key]
+                break
+            except KeyError:
+                continue
+            
         position = session.get('sections', {}).get('Position', '') 
         technical_skills = session.get('sections', {}).get('Technical Skills')
         
@@ -364,7 +378,7 @@ def delete_application():
 @views.route('/submit_form', methods=['POST'])
 def submit_form():
     if request.method == 'POST':
-        email = request.form.get('email')  # Get the email address from the form data
+        email = request.form.get('email')
 
         subject = 'Join the Covered project'
         sender = 'your_email@example.com'
