@@ -3,9 +3,15 @@
 <h3 align="left">Job Ad Analysis</h3>
 <br />
 
+<div class="alert alert-danger" role="alert" id="alert">
+  <div id="message-container">
+    <!-- The message will be displayed here -->
+  </div>
+</div>
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4" id='skills-donut-chart'>
             <div class="card" style="width: 100%;">
                 <div class="card-body">
                     <canvas id="myChart1" style="width: 100%; height: 100%;"></canvas>
@@ -13,7 +19,7 @@
             </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-8" id='project-donut-chart'>
             <div class="card" style="width: 100%; height: 100%;">
                 <div class="card-body">
                     <canvas id="myChart2" style="width: 100%; height: 100%;"></canvas>
@@ -27,7 +33,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" id="workexp-donut-chart">
       <div class="card" style="width: 100%; height: 18rem;">
         <div class="card-body">
           <canvas id="myChart3" style="width: 100%; height: 100%;"></canvas>
@@ -42,65 +48,164 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
 
 <script>
-    fetch('/get-doughnut-core-skills-data')
+
+  let myChart1Initialized = false;
+
+  fetch('/get-doughnut-core-skills-data')
     .then(response => response.json())
     .then(data => {
-        percentage = data['percentage'];
+        if (data !== null) {
+            percentage = data['percentage'];
 
-        const chartData = {
-            datasets: [{
-                data: [data['Matched'], data['No Match']],
-                backgroundColor: [
-                'rgba(255, 26, 104, 0.2)',
-                'rgba(54, 162, 235, 0.2)'
-                ],
-                borderColor: [
-                'rgba(255, 26, 104, 1)',
-                'rgba(54, 162, 235, 1)'
-                ],
-                borderWidth: 1
-            }]
-        };
+            const chartData = {
+                datasets: [{
+                    data: [data['Matched'], data['No Match']],
+                    backgroundColor: [
+                        'rgba(255, 26, 104, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 26, 104, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
 
-        const doughnutLabal = {
-            id: 'doughnutLabal',
-            beforeDatasetDraw(chart, arg, pluginOptions) {
-                const { ctx, data } = chart;
+            const doughnutLabel = {
+                id: 'doughnutLabel',
+                beforeDatasetDraw(chart, arg, pluginOptions) {
+                    const { ctx, data } = chart;
 
-                ctx.save();
-                const xCoor = chart.getDatasetMeta(0).data[0].x;
-                const yCoor = chart.getDatasetMeta(0).data[0].y;
-                ctx.font = 'bold 75px sans-serif';
-                ctx.fillstyle = 'roba(54, 162, 235, 1)';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`${percentage}%`, xCoor, yCoor);
-            }
+                    ctx.save();
+                    const xCoor = chart.getDatasetMeta(0).data[0].x;
+                    const yCoor = chart.getDatasetMeta(0).data[0].y;
+                    ctx.font = 'bold 75px sans-serif';
+                    ctx.fillStyle = 'rgba(54, 162, 235, 1)';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(`${percentage}%`, xCoor, yCoor);
+                }
+            };
 
+            const config = {
+                type: 'doughnut',
+                data: chartData,
+                options: {},
+                plugins: [doughnutLabel]
+            };
+
+            const myChart1 = new Chart(
+                document.getElementById('myChart1'),
+                config
+            );
+
+            myChart1Initialized = true;
+
+        } else {
+
+            document.getElementById('skills-donut-chart').style.display = 'none';
         }
-
-        const config = {
-            type: 'doughnut',
-            data: chartData,
-            options: {},
-            plugins: [doughnutLabal]
-        };
-    
-        const myChart1 = new Chart(
-        document.getElementById('myChart1'),
-        config
-        );
     });
-
-</script>
+  </script>
 
 <script>
+
+  let myChart2Initialized = false;
+
     fetch('/get-bar-project-score-data')
     .then(response => response.json())
     .then(data => {
+      if (data !== null) {
 
-      let thresholdValue = 0.2;
+        let thresholdValue = 0.2;
+      
+        const labels = data.map(item => item[1]);
+
+        const chartData = {
+          labels: labels, // Use the second element of each tuple as labels
+          datasets: [{
+            data: data.map(item => item[2]), // Use the third element of each tuple as data
+            backgroundColor: 'rgba(255, 26, 104, 0.2)',
+            borderColor: 'rgba(255, 26, 104, 1)',
+            borderWidth: 1
+
+          },
+          {
+            data: data.map(item => item[3]), // Create an object with 'y' property
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            borderColor: 'rgba(0, 0, 0, 1)', // Color of the line
+            borderWidth: 0.5, // Width of the line
+            type: 'line' // Specify that this dataset should be a line chart
+          }
+          ]
+        };
     
+        const config = {
+          type: 'bar',
+          data: chartData,
+          options: {
+              scales: {
+                  x: {
+                    min: 0, 
+                    max: 1,   // Set the maximum value of the x-axis to 1
+                    beginAtZero: false, // Do not start the x-axis at zero
+                    ticks: {
+                      stepSize: 0.1, // Customize the step size between ticks as needed
+                    },
+                  },
+                },
+            indexAxis: 'y',
+            elements: {
+              bar: {
+                borderWidth: 2,
+              }
+            },
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              
+            }
+          },
+        };
+
+        const customThresholdRange = document.getElementById("custonthresholdproject");
+
+        function updateAndRenderChart() {
+          chartData.datasets[1].data = Array(chartData.labels.length).fill(thresholdValue);
+          myChart2.update();
+        }
+        
+        customThresholdRange.addEventListener("input", function () {
+          const value = customThresholdRange.value;
+          thresholdValue = parseFloat(value); // Update the thresholdValue
+          updateAndRenderChart(); // Call the function to update and re-render the chart
+        });
+    
+        const myChart2 = new Chart(
+          document.getElementById('myChart2'),
+          config
+        );
+
+        myChart2Initialized = true;
+
+      } else {
+        document.getElementById('project-donut-chart').style.display = 'none';
+    }
+  })
+</script>
+
+<script>
+  let myChart3Initialized = false;
+
+  fetch('/get-bar-workexp-score-data')
+  .then(response => response.json())
+  .then(data => {
+    if (data !== null) {
+      let thresholdValue = 0.2;
+      
       const labels = data.map(item => item[1]);
 
       const chartData = {
@@ -113,15 +218,15 @@
 
         },
         {
-          data: data.map(item => item[3]), // Create an object with 'y' property
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          borderColor: 'rgba(0, 0, 0, 1)', // Color of the line
-          borderWidth: 0.5, // Width of the line
-          type: 'line' // Specify that this dataset should be a line chart
-        }
+          data: Array(data.length).fill(thresholdValue), // Fill with the threshold value
+          backgroundColor: 'transparent',
+          borderColor: 'rgba(0, 0, 0, 1)',
+          borderWidth: 1,
+          type: 'line',
+        },
         ]
       };
-  
+
       const config = {
         type: 'bar',
         data: chartData,
@@ -129,10 +234,10 @@
             scales: {
                 x: {
                   min: 0, 
-                  max: 1,   // Set the maximum value of the x-axis to 1
-                  beginAtZero: false, // Do not start the x-axis at zero
+                  max: 1,  
+                  beginAtZero: false, 
                   ticks: {
-                    stepSize: 0.1, // Customize the step size between ticks as needed
+                    stepSize: 0.1, 
                   },
                 },
               },
@@ -151,12 +256,12 @@
           }
         },
       };
-
-      const customThresholdRange = document.getElementById("custonthresholdproject");
-
+      
+      const customThresholdRange = document.getElementById("custonthresholdworkexp");
+      
       function updateAndRenderChart() {
         chartData.datasets[1].data = Array(chartData.labels.length).fill(thresholdValue);
-        myChart2.update();
+        myChart3.update();
       }
       
       customThresholdRange.addEventListener("input", function () {
@@ -164,88 +269,28 @@
         thresholdValue = parseFloat(value); // Update the thresholdValue
         updateAndRenderChart(); // Call the function to update and re-render the chart
       });
-  
-      const myChart2 = new Chart(
-        document.getElementById('myChart2'),
+      
+      const myChart3 = new Chart(
+        document.getElementById('myChart3'),
         config
-      );
-    })
+        );
+
+      myChart3Initialized = true;
+
+    } else {
+      document.getElementById('workexp-donut-chart').style.display = 'none';
+  
+    }
+  })
 </script>
 
 <script>
-  fetch('/get-bar-workexp-score-data')
-  .then(response => response.json())
-  .then(data => {
-    let thresholdValue = 0.2;
-    
-    const labels = data.map(item => item[1]);
-
-    const chartData = {
-      labels: labels, // Use the second element of each tuple as labels
-      datasets: [{
-        data: data.map(item => item[2]), // Use the third element of each tuple as data
-        backgroundColor: 'rgba(255, 26, 104, 0.2)',
-        borderColor: 'rgba(255, 26, 104, 1)',
-        borderWidth: 1
-
-      },
-      {
-        data: Array(data.length).fill(thresholdValue), // Fill with the threshold value
-        backgroundColor: 'transparent',
-        borderColor: 'rgba(0, 0, 0, 1)',
-        borderWidth: 1,
-        type: 'line',
-      },
-      ]
-    };
-
-    const config = {
-      type: 'bar',
-      data: chartData,
-      options: {
-          scales: {
-              x: {
-                min: 0, 
-                max: 1,  
-                beginAtZero: false, 
-                ticks: {
-                  stepSize: 0.1, 
-                },
-              },
-            },
-        indexAxis: 'y',
-        elements: {
-          bar: {
-            borderWidth: 2,
-          }
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
-          
-        }
-      },
-    };
-
-    const customThresholdRange = document.getElementById("custonthresholdworkexp");
-
-    function updateAndRenderChart() {
-      chartData.datasets[1].data = Array(chartData.labels.length).fill(thresholdValue);
-      myChart3.update();
-    }
-    
-    customThresholdRange.addEventListener("input", function () {
-      const value = customThresholdRange.value;
-      thresholdValue = parseFloat(value); // Update the thresholdValue
-      updateAndRenderChart(); // Call the function to update and re-render the chart
-    });
-
-    const myChart3 = new Chart(
-      document.getElementById('myChart3'),
-      config
-    );
-  })
+  $(document).ready(function() {
+    if ((myChart1Initialized === false) && (myChart2Initialized === false) && (myChart3Initialized === false)) {
+      console.log("workexp-donut-chart is hidden");
+      $('#message-container').text('No data available for the chart.');
+    } 
+  });
 </script>
+
 

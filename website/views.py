@@ -330,45 +330,58 @@ def delete_workexp():
 
 @views.route('/get-doughnut-core-skills-data')
 def get_doughnut_core_skills_data():
-
-    dic_key = ["technical skills", "technical skills keywords"]
-    user_id = current_user.id
-
-    skills_data = CalculateSkillsSimilarity.calculate_similarity(session['sections'], dic_key, user_id)
-    tech_skills = CalculateSkillsSimilarity.create_array(session['sections'], dic_key)
     
-    length_skills = len(skills_data)
-    length_tech_skills = len(tech_skills)
-    missing_tech_skills = (length_tech_skills - length_skills) 
-    percentage = (100//length_tech_skills) * length_skills
+    skills_count = db.session.query(Skill).count()
+    if skills_count == 0:
+        print("no data Avalible")
+        return jsonify(None)
+    else:
+        dic_key = ["technical skills", "technical skills keywords"]
+        user_id = current_user.id
 
-    data = {
-        'Matched': length_skills,
-        'No Match': missing_tech_skills,
-        'percentage': percentage
-    }
-    
-    print(data)
+        skills_data = CalculateSkillsSimilarity.calculate_similarity(session['sections'], dic_key, user_id)
+        tech_skills = CalculateSkillsSimilarity.create_array(session['sections'], dic_key)
+        
+        length_skills = len(skills_data)
+        length_tech_skills = len(tech_skills)
+        missing_tech_skills = (length_tech_skills - length_skills) 
+        percentage = (100//length_tech_skills) * length_skills
 
-    return jsonify(data)
+        data = {
+            'Matched': length_skills,
+            'No Match': missing_tech_skills,
+            'percentage': percentage
+        }
+        
+        return jsonify(data)
 
 @views.route('/get-bar-project-score-data')
 def get_bar_project_score_data():
 
     user_id = current_user.id
-    project_match = CalculateProjectSimilarity.function_calculate_project_similarity(session['job_ad'], user_id)
-    project_match_with_threshold = [(project[0], project[1], project[2], 0.2) for project in project_match]
-    
-    return jsonify(project_match_with_threshold)
+    project_count = db.session.query(Project).count()
+    if project_count == 0:
+        print("no data avalible")
+        return jsonify(None)
+    else:
+        project_match = CalculateProjectSimilarity.function_calculate_project_similarity(session['job_ad'], user_id)
+        project_match_with_threshold = [(project[0], project[1], project[2], 0.2) for project in project_match]
+        
+        return jsonify(project_match_with_threshold)
 
 @views.route('/get-bar-workexp-score-data')
 def get_bar_workexp_score_data():
 
     user_id = current_user.id
-    workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(session['job_ad'], user_id)
-    workexp_match_with_threshold = [(workexp[0], workexp[1][:25] + '...' if len(workexp[1]) > 25 else workexp[1], workexp[2], 0.2) for workexp in workexp_match]
+    workexp_count = db.session.query(Workexp).count()
+    if workexp_count == 0:
+        print("no data avalible")
+        return jsonify(None)
+    else:   
+        workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(session['job_ad'], user_id)
+        workexp_match_with_threshold = [(workexp[0], workexp[1][:25] + '...' if len(workexp[1]) > 25 else workexp[1], workexp[2], 0.2) for workexp in workexp_match]
 
-    return jsonify(workexp_match_with_threshold)
+        return jsonify(workexp_match_with_threshold)
 
 @views.route('/delete-application', methods=['POST'])
 def delete_application():
