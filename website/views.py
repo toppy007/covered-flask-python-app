@@ -20,7 +20,6 @@ def home():
 @views.route('/profile_main', methods=['GET', 'POST'])
 @login_required
 def profile_main():
-    session.clear()
     if request.method == 'POST':
         if 'note' in request.form:
             note = request.form.get('note')
