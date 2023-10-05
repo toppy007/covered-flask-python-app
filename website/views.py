@@ -217,7 +217,7 @@ def results():
         
         # build a file for error handling for this route
         
-        possible_keys = ['Keywords for ATS analysis', 'ATS Analysis']
+        possible_keys = ['Keywords for ATS analysis', 'ATS Keywords']
 
         ats_keyword = None
 
