@@ -10,10 +10,9 @@ db = SQLAlchemy()
 DB_NAME = "database.db"
 mail = Mail()
 
-
 def create_app(testing=False):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.jinja_env.filters['nl2br'] = nl2br
     app.static_folder = 'static'
     
