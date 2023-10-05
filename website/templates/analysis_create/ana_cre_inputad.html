@@ -1,7 +1,17 @@
-
-<div class="container text-center" id='loader' style='display: none;'>
-    <object id="svgObject" data="{{ url_for('static', filename='loader/cssLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='70%'></object>
-    <h3>Analysing please wait...</h3>
+<div class="container text-center" id="loader" style="display: none;">
+    <!-- Animation container -->
+    <div class="row">
+        <div class="col-md-12">
+            <object id="svgObject" type="image/svg+xml" class="img-fluid" width="70%"></object>
+        </div>
+    </div>
+    
+    <!-- Text container -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Analysing please wait...</h3>
+        </div>
+    </div>
 </div>
 
 <div id="ana_cre_inputad">
@@ -26,17 +36,14 @@
 
 <script>
     $(document).ready(function() {
+        var svgLoader = new Image();
+        svgLoader.src = "{{ url_for('static', filename='loader/cssLoader.svg') }}";
+    
         $("#analyze").click(function() {
             $("#loader").show();
-            
             $("#ana_cre_inputad").hide();
-            
-            reloadSVG();
+    
+            $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
         });
     });
-
-    function reloadSVG() {
-        const svgObject = document.getElementById('svgObject');
-        svgObject.data = svgObject.data; // Reloads the SVG by setting its 'data' attribute
-    }
 </script>
