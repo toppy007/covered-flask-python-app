@@ -1,6 +1,8 @@
 
 <div class="container text-center" id='loader' style='display: none;'>
+    <div class='container'style="height: 200px;">
     <object id="svgObject" type="image/svg+xml" class="img-fluid" width='70%'></object>
+    </div>
     <h3>Analysing please wait...</h3>
 </div>
 
@@ -26,7 +28,6 @@
 
 <script>
     $(document).ready(function() {
-        // Preload the CSS loader (SVG) when the page loads
         var svgLoader = new Image();
         svgLoader.src = "{{ url_for('static', filename='loader/cssLoader.svg') }}";
     
@@ -34,7 +35,6 @@
             $("#loader").show();
             $("#ana_cre_inputad").hide();
     
-            // Set the data attribute to display the preloaded SVG
             $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
         });
     });

@@ -1,6 +1,6 @@
 <div class="container text-center" id='loader' style='display: none;'>
-  <object id="svgObject" data="{{ url_for('static', filename='loader/cssLoader.svg') }}" type="image/svg+xml" class="img-fluid" width='70%'></object>
-  <h3>Creating letter please wait...</h3>
+  <object id="svgObject" type="image/svg+xml" class="img-fluid" width='70%'></object>
+  <h3>Analysing please wait...</h3>
 </div>
 
 <div id="ana_cre_create">
@@ -185,20 +185,15 @@
     });
 
     $(document).ready(function() {
-        $("#create").click(function() {
-            $("#loader").show();
-            
-            $("#ana_cre_create").hide();
-            $("#ana_cre_dashboard_output").hide();
-            $("#ana_cre_outputad").hide();
-            
-            reloadSVG();
-        });
+      var svgLoader = new Image();
+      svgLoader.src = "{{ url_for('static', filename='loader/cssLoader.svg') }}";
+  
+      $("#analyze").click(function() {
+          $("#loader").show();
+          $("#ana_cre_inputad").hide();
+  
+          $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
+      });
     });
-
-    function reloadSVG() {
-        const svgObject = document.getElementById('svgObject');
-        svgObject.data = svgObject.data; // Reloads the SVG by setting its 'data' attribute
-    }
     
 </script>
