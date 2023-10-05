@@ -200,15 +200,8 @@ def ana_cre_main():
                         project_match = CalculateProjectSimilarity.function_calculate_project_similarity(job_ad, user_id)
                         workexp_match = CalculateWorkexpsSimilarity.calculate_similarity(job_ad, user_id)
                         
-<<<<<<< HEAD
-                        loading = session.get('loading', False)
-                        
-                        return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
-
-=======
                         return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections, analysisResult=first_api_response, input_value=job_ad)
     
->>>>>>> main
     session.clear()
     return render_template('analysis_create/ana_cre_main.html', user=current_user, sections=sections)
     
