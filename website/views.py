@@ -52,7 +52,7 @@ def profile_main():
                 new_api_key = OpenAiApiKey(user_id=current_user.id, key=key)
                 db.session.add(new_api_key)
                 db.session.commit()
-                flash('Api Key Added!', category='success')
+                flash('API Key added!', category='success')
                 
         elif 'project_title' in request.form:
             project_title = request.form['project_title']
@@ -60,27 +60,31 @@ def profile_main():
             project_link = request.form['project_link']
             project_description = request.form['project_description']
             project_core_skill = request.form['project_core_skill']
-
-            new_project = Project(project_title=project_title, project_date=project_date, project_link=project_link, project_description=project_description, project_core_skill=project_core_skill, user_id=current_user.id)
+            if len(project_title) < 1 or len(project_date) < 1 or len(project_link) < 1 or len(project_description) < 1 or len(project_core_skill) < 1:
+                flash('All fields must be entered!', category='error')
+            else:
+                new_project = Project(project_title=project_title, project_date=project_date, project_link=project_link, project_description=project_description, project_core_skill=project_core_skill, user_id=current_user.id)
             
-            db.session.add(new_project)
-            db.session.commit()
+                db.session.add(new_project)
+                db.session.commit()
 
-            flash('Project added!', category='success')
+                flash('Project added!', category='success')
             
         elif 'workexp_title' in request.form:
             workexp_title = request.form['workexp_title']
             workexp_dates = request.form['workexp_company']
             workexp_company = f"{request.form['workexp_date_from_month']}/{request.form['workexp_date_from_year']} to {request.form['workexp_date_to_month']}/{request.form['workexp_date_to_year']}"
-        
             workexp_responsiblities = "\n".join(request.form.getlist('string_array'))
-
-            new_workexp = Workexp(workexp_title=workexp_title, workexp_company=workexp_company, workexp_dates=workexp_dates, workexp_responsiblities=workexp_responsiblities, user_id=current_user.id)
             
-            db.session.add(new_workexp)
-            db.session.commit()
+            if  len(workexp_title) < 1 or len(workexp_dates) < 1 or len(workexp_company) < 1 or len(workexp_responsiblities) < 1:
+                flash('All fields must be entered!', category='error')
+            else:
+                new_workexp = Workexp(workexp_title=workexp_title, workexp_company=workexp_company, workexp_dates=workexp_dates, workexp_responsiblities=workexp_responsiblities, user_id=current_user.id)
+                
+                db.session.add(new_workexp)
+                db.session.commit()
 
-            flash('Project added!', category='success')
+                flash('Project added!', category='success')
     
     return render_template("profile/profile_main.html", user=current_user)
 
