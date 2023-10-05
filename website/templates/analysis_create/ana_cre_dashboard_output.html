@@ -1,6 +1,7 @@
 <div id='ana_cre_dashboard_output'>
 
 <h3 align="left">Job Ad Analysis</h3>
+
 <br />
 
 <div class="container">
@@ -45,21 +46,26 @@
     fetch('/get-doughnut-core-skills-data')
     .then(response => response.json())
     .then(data => {
-        percentage = data['percentage'];
 
-        const chartData = {
+        if (data.length > 0) {
+          percentage = data['percentage'];
+
+          const chartData = {
             datasets: [{
-                data: [data['Matched'], data['No Match']],
-                backgroundColor: [
-                'rgba(255, 26, 104, 0.2)',
-                'rgba(54, 162, 235, 0.2)'
-                ],
-                borderColor: [
-                'rgba(255, 26, 104, 1)',
-                'rgba(54, 162, 235, 1)'
-                ],
-                borderWidth: 1
+              data: [data['Matched'], data['No Match']],
+              backgroundColor: [
+              'rgba(255, 26, 104, 0.2)',
+              'rgba(54, 162, 235, 0.2)'
+              ],
+              borderColor: [
+              'rgba(255, 26, 104, 1)',
+              'rgba(54, 162, 235, 1)'
+              ],
+              borderWidth: 1
             }]
+        } else { 
+          document.getElementById('chart3Container').style.display = 'none';
+        }
         };
 
         const doughnutLabal = {
@@ -181,9 +187,9 @@
     const labels = data.map(item => item[1]);
 
     const chartData = {
-      labels: labels, // Use the second element of each tuple as labels
+      labels: labels,
       datasets: [{
-        data: data.map(item => item[2]), // Use the third element of each tuple as data
+        data: data.map(item => item[2]), 
         backgroundColor: 'rgba(255, 26, 104, 0.2)',
         borderColor: 'rgba(255, 26, 104, 1)',
         borderWidth: 1
