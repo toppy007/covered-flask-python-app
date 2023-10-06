@@ -200,6 +200,8 @@
       $("#create").click(function() {
           $("#loader").show();
           $("#ana_cre_create").hide();
+          $('#ana_cre_dashboard_output').hide();
+          $('#ana_cre_outputad').hide();
           $("#footer").hide();
   
           $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
