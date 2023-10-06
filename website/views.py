@@ -330,7 +330,7 @@ def delete_workexp():
 @views.route('/get-doughnut-core-skills-data')
 def get_doughnut_core_skills_data():
     
-    skills_count = db.session.query(Skill).count()
+    skills_count = (db.session.query(Skill).filter(Skill.user_id == user_id).count())
     if skills_count == 0:
         print("no data Avalible")
         return jsonify(None)
@@ -358,7 +358,8 @@ def get_doughnut_core_skills_data():
 def get_bar_project_score_data():
 
     user_id = current_user.id
-    project_count = db.session.query(Project).count()
+    project_count = (db.session.query(Project).filter(Project.user_id == user_id).count())
+        
     if project_count == 0:
         print("no data avalible")
         return jsonify(None)
@@ -372,7 +373,8 @@ def get_bar_project_score_data():
 def get_bar_workexp_score_data():
 
     user_id = current_user.id
-    workexp_count = db.session.query(Workexp).count()
+    workexp_count = (db.session.query(Workexp).filter(Workexp.user_id == user_id).count())
+        
     if workexp_count == 0:
         print("no data avalible")
         return jsonify(None)
