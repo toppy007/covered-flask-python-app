@@ -72,19 +72,19 @@ class CalculateProjectSimilarity:
 
     @staticmethod
     def function_calculate_project_similarity(data, user_id):
-        project_count = db.session.query(Project).count()
-        print(project_count)
+        project_count = (db.session.query(Project).filter(Project.user_id == user_id).count())
         
         if project_count == 0:
             return None
-        
-        
         else:
-            user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
-            job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
-            similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
-            
-            return similarity_scores
+            try:
+                user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
+                job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
+                similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
+                return similarity_scores
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                return None
     
 class CalculateSkillsSimilarity:
     @staticmethod
@@ -136,7 +136,7 @@ class CalculateSkillsSimilarity:
     
     @staticmethod
     def calculate_similarity(data_dict, dic_key, user_id):
-        skill_count = db.session.query(Skill).count()
+        skill_count = (db.session.query(Skill).filter(Skill.user_id == user_id).count())
         
         if skill_count == 0:
             return None
@@ -195,7 +195,7 @@ class CalculateWorkexpsSimilarity:
 
     @staticmethod
     def calculate_similarity(data_dict, user_id):
-        workexp_count = db.session.query(Workexp).count()
+        workexp_count = (db.session.query(Workexp).filter(Workexp.user_id == user_id).count())
         
         if workexp_count == 0:
             return None
