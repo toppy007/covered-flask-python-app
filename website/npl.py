@@ -77,11 +77,15 @@ class CalculateProjectSimilarity:
         if project_count == 0:
             return None
         else:
-            user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
-            job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
-            similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
-            
-            return similarity_scores
+            try:
+                user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
+                job_ats_keywords_string = CalculateProjectSimilarity.create_string(data)
+                similarity_scores = CalculateProjectSimilarity.calculate_similarity(user_projects, job_ats_keywords_string)
+                return similarity_scores
+            except Exception as e:
+                # Handle the exception here, e.g., log the error or return a specific value
+                print(f"An error occurred: {e}")
+                return None
     
 class CalculateSkillsSimilarity:
     @staticmethod
