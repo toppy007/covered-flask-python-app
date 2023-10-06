@@ -197,9 +197,9 @@
       var svgLoader = new Image();
       svgLoader.src = "{{ url_for('static', filename='loader/cssLoader.svg') }}";
   
-      $("#analyze").click(function() {
+      $("#create").click(function() {
           $("#loader").show();
-          $("#ana_cre_inputad").hide();
+          $("#ana_cre_create").hide();
           $("#footer").hide();
   
           $("#svgObject").attr("data", "{{ url_for('static', filename='loader/cssLoader.svg') }}");
