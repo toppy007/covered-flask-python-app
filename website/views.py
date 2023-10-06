@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
 from flask_mail import Mail, Message
+from datetime import datetime
 from .api_client import send_api_request
 from .models import Note, Skill, OpenAiApiKey, Project, Workexp, JobHistoryData
 from .analyzing_prompts import generate_job_info
@@ -268,38 +269,28 @@ def history():
     job_history_data = JobHistoryData.query.filter_by(user_id=current_user.id).all()
     
     for entry in job_history_data:
-        # Access the 'sessions_data' attribute of each instance
         sessions_data = entry.sessions_data
-        # Now, you can work with 'sessions_data'
-        
         lines = sessions_data.split('\n')
-
-        # Initialize an empty dictionary to store the result
         result_dict = {}
 
-        # Iterate through the lines
         for line in lines:
-            # Split each line at the colon
             parts = line.split(': ')
             
-            # Check if there are two parts (key and value)
             if len(parts) == 2:
                 key = parts[0].strip()
                 value_str = parts[1].strip()
                 
-                # Check if the value is enclosed in square brackets (indicating a list)
                 if value_str.startswith('[') and value_str.endswith(']'):
-                    # Remove the square brackets and split the values into a list
                     value = [item.strip("' ") for item in value_str[1:-1].split(',')]
                 else:
                     value = value_str
                 
-                # Add the key-value pair to the result dictionary
                 result_dict[key] = value
-                
-                print(result_dict)
+        
+        timestamp_data = entry.timestamp
+        formatted_date = timestamp_data.strftime("%Y-%m-%d")
 
-        return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data, result_dict=result_dict)
+        return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data, result_dict=result_dict, formatted_date=formatted_date)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  
