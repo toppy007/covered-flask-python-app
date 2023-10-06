@@ -76,8 +76,6 @@ class CalculateProjectSimilarity:
         
         if project_count == 0:
             return None
-        
-        
         else:
             try:
                 user_projects = CalculateProjectSimilarity.create_tuple_array_of_projects(user_id)
