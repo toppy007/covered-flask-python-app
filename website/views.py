@@ -97,16 +97,16 @@ def ana_cre_main():
     if request.method == 'POST':
         if 'create' in request.form:
             
-            project_count = db.session.query(Project).count()
-            workexp_count = db.session.query(Workexp).count()
-            skills_count = db.session.query(Skill).count()
+            user_id = current_user.id
+            project_count = (db.session.query(Project).filter(Project.user_id == user_id).count())
+            workexp_count = (db.session.query(Workexp).filter(Workexp.user_id == user_id).count())
+            skills_count = (db.session.query(Skill).filter(Skill.user_id == user_id).count())
 
             if project_count == 0 or workexp_count == 0 or skills_count == 0:
                 flash('For chatgpt to create a covering letter you must complete your profile.', category='error')
                 return redirect(url_for('views.profile_main', user=current_user))
             
             else:
-                user_id = current_user.id
                 api_key_entry = OpenAiApiKey.query.filter_by(user_id=user_id).first()
 
                 selected_notes = request.form.get('selectedNotes')
