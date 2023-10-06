@@ -297,6 +297,8 @@ def history():
                 
                 # Add the key-value pair to the result dictionary
                 result_dict[key] = value
+                
+                print(result_dict)
 
         return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data, result_dict=result_dict)
 

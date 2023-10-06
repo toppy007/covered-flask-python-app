@@ -18,7 +18,7 @@
                     <td>{{ history_entry.company_name }}</td>
                     <td>{{ history_entry.position }}</td>
                     <td>{{ history_entry.recruiters_name }}</td>
-                    <td>
+                    <td class="px-1">
                         <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ result_dict }}-data">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
@@ -55,7 +55,7 @@
                     
                                         <h6>ATS Keywords:</h6>
                                         <ul>
-                                            {% for keyword in result_dict['ATS Keywords'] %}
+                                            {% for keyword in result_dict['ATS keyword'] %}
                                                 <li>{{ keyword }}</li>
                                             {% endfor %}
                                         </ul>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </td>   
-                        <td>
+                        <td class="px-1">
                         <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
@@ -84,7 +84,7 @@
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td class="px-1">
                         <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
@@ -105,7 +105,7 @@
                         </div>
                     </td>
                     <td>{{ history_entry.timestamp }}</td>
-                    <td>
+                    <td class="px-1">
                         <button type="button" class="btn btn-danger" onclick="deleteApplication({{ history_entry.id }})">
                             <i class="bi bi-x"></i>
                         </button>
