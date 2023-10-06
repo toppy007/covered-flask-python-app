@@ -171,8 +171,6 @@ def ana_cre_main():
                 if api_key_entry:
                     api_key = api_key_entry.key
                     
-                    session['loading'] = True
-                    
                     messages = generate_job_info(job_ad)
                     first_api_response = send_api_request(api_key, messages)
                     
@@ -215,12 +213,12 @@ def results():
         
         covering_letter = session.get('covering_letter')
         job_ad = session.get('job_ad')
+        
+        position = session.get('sections', {}).get('Position', '') 
         recruiters_name = session.get('recruiters_name')
         company_name = session.get('sections', {}).get('Company Name')
         
-        # build a file for error handling for this route
-        
-        possible_keys = ['Keywords for ATS analysis', 'ATS Keywords']
+        possible_keys = ['Keywords for ATS analysis', 'ATS Analysis']
 
         ats_keyword = None
 
@@ -231,8 +229,11 @@ def results():
             except KeyError:
                 continue
             
-        position = session.get('sections', {}).get('Position', '') 
         technical_skills = session.get('sections', {}).get('Technical Skills')
+        requirements = session.get('sections', {}).get('Requirements')
+        qualifications = session.get('sections', {}).get('Qualifications')
+        
+        combined_data = f"Technical Skills: {technical_skills}\nRequirements: {requirements}\nQualifications: {qualifications}\nRequirements: {requirements}\nATS keyword: {ats_keyword}"
         
         company_name = ','.join(company_name)
         position = ','.join(position)
@@ -240,6 +241,7 @@ def results():
         ats_keyword = ','.join(ats_keyword)
         
         new_job_history_data = JobHistoryData(
+            sessions_data=combined_data,
             covering_letter=covering_letter,
             job_ad=job_ad,
             recruiters_name=recruiters_name,
@@ -264,8 +266,40 @@ def results():
 def history():
 
     job_history_data = JobHistoryData.query.filter_by(user_id=current_user.id).all()
+    
+    for entry in job_history_data:
+        # Access the 'sessions_data' attribute of each instance
+        sessions_data = entry.sessions_data
+        # Now, you can work with 'sessions_data'
+        
+        lines = sessions_data.split('\n')
 
-    return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data)
+        # Initialize an empty dictionary to store the result
+        result_dict = {}
+
+        # Iterate through the lines
+        for line in lines:
+            # Split each line at the colon
+            parts = line.split(': ')
+            
+            # Check if there are two parts (key and value)
+            if len(parts) == 2:
+                key = parts[0].strip()
+                value_str = parts[1].strip()
+                
+                # Check if the value is enclosed in square brackets (indicating a list)
+                if value_str.startswith('[') and value_str.endswith(']'):
+                    # Remove the square brackets and split the values into a list
+                    value = [item.strip("' ") for item in value_str[1:-1].split(',')]
+                else:
+                    value = value_str
+                
+                # Add the key-value pair to the result dictionary
+                result_dict[key] = value
+                
+                print(result_dict)
+
+        return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data, result_dict=result_dict)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  
