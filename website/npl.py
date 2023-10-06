@@ -72,7 +72,8 @@ class CalculateProjectSimilarity:
 
     @staticmethod
     def function_calculate_project_similarity(data, user_id):
-        project_count = db.session.query(Project).count()
+        project_count = (db.session.query(Project).filter(Project.user_id == user_id).count())
+        
         print(project_count)
         if project_count == 0:
             return None
