@@ -1,0 +1,8 @@
+.vertical-text {
+    writing-mode: vertical-rl; /* Vertical text */
+    text-orientation: mixed; /* Mixed orientation for compatibility */
+    white-space: nowrap; /* Prevent text from wrapping */
+    transform: rotate(180deg); /* Rotate text 180 degrees */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}

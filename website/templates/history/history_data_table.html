@@ -5,10 +5,11 @@
                 <th>Company Name</th>
                 <th>Position</th>
                 <th>Recruiter's Name</th>
-                <th>CL</th>
-                <th>Job Ad</th>
+                <th class="vertical-text">ChatGPT Analysis</th>
+                <th class="vertical-text">Covering Letter</th>
+                <th class="vertical-text">Job Advert</th>
                 <th>Date</th>
-                <th>Delete</th>
+                <th class="vertical-text">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -18,7 +19,55 @@
                     <td>{{ history_entry.position }}</td>
                     <td>{{ history_entry.recruiters_name }}</td>
                     <td>
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">View</button>
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ result_dict }}-data">
+                            <i class="bi bi-file-earmark-font"></i>
+                        </button>
+                        <div class="modal fade" id="myModal-{{ result_dict }}-data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Technical Skills, Requirements, Qualifications, ATS Keywords</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h6>Technical Skills:</h6>
+                                        <ul>
+                                            {% for skill in result_dict['Technical Skills'] %}
+                                                <li>{{ skill }}</li>
+                                            {% endfor %}
+                                        </ul>
+                    
+                                        <h6>Requirements:</h6>
+                                        <ul>
+                                            {% for requirement in result_dict['Requirements'] %}
+                                                <li>{{ requirement }}</li>
+                                            {% endfor %}
+                                        </ul>
+                    
+                                        <h6>Qualifications:</h6>
+                                        <ul>
+                                            {% for qualification in result_dict['Qualifications'] %}
+                                                <li>{{ qualification }}</li>
+                                            {% endfor %}
+                                        </ul>
+                    
+                                        <h6>ATS Keywords:</h6>
+                                        <ul>
+                                            {% for keyword in result_dict['ATS Keywords'] %}
+                                                <li>{{ keyword }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>   
+                        <td>
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">
+                            <i class="bi bi-file-earmark-font"></i>
+                        </button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-cl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
@@ -36,7 +85,9 @@
                         </div>
                     </td>
                     <td>
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">View</button>
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">
+                            <i class="bi bi-file-earmark-font"></i>
+                        </button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-jobad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
@@ -56,7 +107,7 @@
                     <td>{{ history_entry.timestamp }}</td>
                     <td>
                         <button type="button" class="btn btn-danger" onclick="deleteApplication({{ history_entry.id }})">
-                            Delete
+                            <i class="bi bi-x"></i>
                         </button>
                     </td>
                 </tr>
@@ -64,6 +115,8 @@
         </tbody>
     </table>
 </div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -53,6 +53,7 @@ class User(db.Model, UserMixin):
     
 class JobHistoryData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    sessions_data = db.Column(db.Text)
     covering_letter = db.Column(db.Text)
     job_ad = db.Column(db.Text)
     recruiters_name = db.Column(db.String(255))
