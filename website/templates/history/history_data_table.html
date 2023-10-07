@@ -9,20 +9,36 @@
                 <th class="vertical-text">Covering Letter</th>
                 <th class="vertical-text">Job Advert</th>
                 <th>Date</th>
+                <th class="vertical-text">Contact/Viewed</th>
+                <th class="vertical-text">Interview</th>
+                <th class="vertical-text">Tech Test</th>
+                <th></th>
                 <th class="vertical-text">Delete</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th colspan="3" class="subheading">Progress</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for history_entry in job_history_data %}
-                <tr>
+                <tr id="row{{ history_entry.id }}" class="{% if history_entry.rejected %}rejected{% endif %}">
                     <td>{{ history_entry.company_name }}</td>
                     <td>{{ history_entry.position }}</td>
                     <td>{{ history_entry.recruiters_name }}</td>
                     <td class="px-1">
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ result_dict }}-data">
+                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.result_dict }}-data">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
-                        <div class="modal fade" id="myModal-{{ result_dict }}-data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="myModal-{{ history_entry.result_dict }}-data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -34,28 +50,28 @@
                                     <div class="modal-body">
                                         <h6>Technical Skills:</h6>
                                         <ul>
-                                            {% for skill in result_dict['Technical Skills'] %}
+                                            {% for skill in history_entry.result_dict['Technical Skills'] %}
                                                 <li>{{ skill }}</li>
                                             {% endfor %}
                                         </ul>
                     
                                         <h6>Requirements:</h6>
                                         <ul>
-                                            {% for requirement in result_dict['Requirements'] %}
+                                            {% for requirement in history_entry.result_dict['Requirements'] %}
                                                 <li>{{ requirement }}</li>
                                             {% endfor %}
                                         </ul>
                     
                                         <h6>Qualifications:</h6>
                                         <ul>
-                                            {% for qualification in result_dict['Qualifications'] %}
+                                            {% for qualification in history_entry.result_dict['Qualifications'] %}
                                                 <li>{{ qualification }}</li>
                                             {% endfor %}
                                         </ul>
                     
                                         <h6>ATS Keywords:</h6>
                                         <ul>
-                                            {% for keyword in result_dict['ATS keyword'] %}
+                                            {% for keyword in history_entry.result_dict['ATS keyword'] %}
                                                 <li>{{ keyword }}</li>
                                             {% endfor %}
                                         </ul>
@@ -104,8 +120,28 @@
                             </div>
                         </div>
                     </td>
-                    <td>{{ formatted_date }}</td>
+                    <td>{{ history_entry.formatted_date }}</td>
+                    <td class="px-1" >
+                        <button type="button" class="btn btn-primary">
+                            <i class="bi bi-check"></i>
+                        </button>
+                    </td>
+                    <td class="px-1" >
+                        <button type="button" class="btn btn-primary">
+                            <i class="bi bi-check"></i>
+                        </button>
+                    </td>
+                    <td class="px-1" >
+                        <button type="button" class="btn btn-primary">
+                            <i class="bi bi-check"></i>
+                        </button>
+                    </td>
                     <td class="px-1">
+                        <button type="button" class="btn btn-warning" onclick="rejectRow({{ history_entry.id }}, {{ history_entry.rejected }})">
+                            Rejected
+                        </button>
+                    </td>
+                    <td class="px-1" >
                         <button type="button" class="btn btn-danger" onclick="deleteApplication({{ history_entry.id }})">
                             <i class="bi bi-x"></i>
                         </button>
@@ -119,6 +155,25 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
 
 <script>
+    function rejectRow(id, isRejected) {
+        console.log(`Rejecting row ${id}`);
+        const row = document.getElementById(`row${id}`);
+        if (row) {
+            if (isRejected) {
+                console.log('Row was rejected, removing "rejected" class');
+                row.classList.remove('rejected');
+            } else {
+                console.log('Row was not rejected, adding "rejected" class');
+                row.classList.add('rejected');
+            }
+            // Toggle the 'isRejected' status
+            isRejected = !isRejected;
+            // You might want to update the 'rejected' status on the server or handle it based on your application logic
+            // Example: You can make an Ajax request to update the server's data here
+        }
+    }
+    
+
     document.addEventListener("DOMContentLoaded", function() {
         const popupButtons = document.querySelectorAll(".popup-button");
         const overlay = document.getElementById("overlay");

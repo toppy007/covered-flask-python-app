@@ -268,29 +268,33 @@ def history():
 
     job_history_data = JobHistoryData.query.filter_by(user_id=current_user.id).all()
     
-    for entry in job_history_data:
-        sessions_data = entry.sessions_data
+    for history_entry in job_history_data:
+        sessions_data = history_entry.sessions_data
         lines = sessions_data.split('\n')
         result_dict = {}
 
         for line in lines:
             parts = line.split(': ')
-            
+
             if len(parts) == 2:
                 key = parts[0].strip()
                 value_str = parts[1].strip()
-                
+
                 if value_str.startswith('[') and value_str.endswith(']'):
                     value = [item.strip("' ") for item in value_str[1:-1].split(',')]
                 else:
                     value = value_str
-                
+
                 result_dict[key] = value
-        
-        timestamp_data = entry.timestamp
+
+        timestamp_data = history_entry.timestamp
         formatted_date = timestamp_data.strftime("%Y-%m-%d")
 
-        return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data, result_dict=result_dict, formatted_date=formatted_date)
+        # Append result_dict and formatted_date to history_entry
+        history_entry.result_dict = result_dict
+        history_entry.formatted_date = formatted_date
+
+    return render_template('history/history_main.html', user=current_user, job_history_data=job_history_data)
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():  
