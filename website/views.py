@@ -290,8 +290,7 @@ def history():
 
         timestamp_data = history_entry.timestamp
         formatted_date = timestamp_data.strftime("%Y-%m-%d")
-
-        # Append result_dict and formatted_date to history_entry
+        
         history_entry.result_dict = result_dict
         history_entry.formatted_date = formatted_date
 
