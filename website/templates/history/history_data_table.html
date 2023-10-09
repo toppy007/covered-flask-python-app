@@ -126,11 +126,11 @@
                             <i class="bi bi-check"></i>
                         </button>
                     </td>
-                    <td class="px-1" >
-                        <button type="button" class="btn btn-primary"onclick="trueContact({{ history_entry.id }})>
-                            <i class="bi bi-check"></i>
+                    <td class="px-1">
+                        <button type="button" class="btn {% if history_entry.interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueContact({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
-                    </td>
+                    </td>                    
                     <td class="px-1" >
                         <button type="button" class="btn btn-primary">
                             <i class="bi bi-check"></i>
@@ -199,13 +199,30 @@
     });
 
     function trueContact(historyId) {
-        console.log(historyId)
-        fetch("/true-contacted-viewed", {
-          method: "POST",
-          body: JSON.stringify({ historyId: historyId }),
-        }).then((_res) => {
-          window.location.href = "/history";
-        });
+        // Fetch the current state from the server
+        fetch(`/get-contacted-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState; // Toggle the state
+                
+                console.log(data.contactedState)
+                // Send the updated state to the server
+                fetch("/true-contacted-viewed", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
     }
+
+    
+    
+    
+    
 
 </script>
