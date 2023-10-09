@@ -468,8 +468,38 @@ def save_edited_cl():
     
     return jsonify({})
 
-@views.route('/true-contacted-viewed', methods=['POST'])
-def true_contact_viewed():
+@views.route('/true-contacted', methods=['POST'])
+def true_contacted():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.contact_viewed = contactedState  # Set interview to the value of contactedState
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/true-tech', methods=['POST'])
+def true_tech():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False) 
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.tech_interview = contactedState 
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/true-interviewed', methods=['POST'])
+def true_interview():
     jobHistory = json.loads(request.data)
     historyId = jobHistory['historyId']
     contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
@@ -489,5 +519,21 @@ def get_contacted_state(historyId):
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.contact_viewed})
+
+@views.route('/get-interviewed-state/<int:historyId>', methods=['GET'])
+def get_tech_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
             return jsonify({'contactedState': jobHistoryinfo.interview})
+
+@views.route('/get-tech-state/<int:historyId>', methods=['GET'])
+def get_interview_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.tech_interview})
 

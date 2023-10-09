@@ -122,18 +122,18 @@
                     </td>
                     <td>{{ history_entry.formatted_date }}</td>
                     <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check"></i>
+                        <button type="button" class="btn {% if history_entry.contact_viewed == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueContacted({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.contact_viewed == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>
                     <td class="px-1">
-                        <button type="button" class="btn {% if history_entry.interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueContact({{ history_entry.id }})">
-                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
+                        <button type="button" class="btn {% if history_entry.tech_interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueTech({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.tech_interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>                    
                     <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check"></i>
+                        <button type="button" class="btn {% if history_entry.interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueInterview({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>
                     <td class="px-1">
@@ -198,17 +198,17 @@
         });
     });
 
-    function trueContact(historyId) {
-        // Fetch the current state from the server
+    function trueContacted(historyId) {
+
         fetch(`/get-contacted-state/${historyId}`)
             .then((response) => response.json())
             .then((data) => {
                 const contactedState = data.contactedState;
-                const updatedState = !contactedState; // Toggle the state
+                const updatedState = !contactedState;
                 
                 console.log(data.contactedState)
-                // Send the updated state to the server
-                fetch("/true-contacted-viewed", {
+
+                fetch("/true-contacted", {
                     method: "POST",
                     body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
                     headers: {
@@ -220,9 +220,45 @@
             });
     }
 
-    
-    
-    
-    
+    function trueTech(historyId) {
+
+        fetch(`/get-tech-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState; 
+
+                fetch("/true-tech", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
+    }
+
+    function trueInterview(historyId) {
+
+        fetch(`/get-interviewed-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState;
+                
+                console.log(data.contactedState)
+                fetch("/true-interviewed", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
+    }
 
 </script>
