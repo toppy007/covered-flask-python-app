@@ -468,6 +468,18 @@ def save_edited_cl():
     
     return jsonify({})
 
+@views.route('/true-contacted-viewed', methods=['POST'])
+def true_contact_viewed():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
 
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.interview = True
+            db.session.commit()
+
+    return jsonify({})
 
 

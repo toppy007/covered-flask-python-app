@@ -127,7 +127,7 @@
                         </button>
                     </td>
                     <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary"onclick="trueContact({{ history_entry.id }})>
                             <i class="bi bi-check"></i>
                         </button>
                     </td>
@@ -166,14 +166,10 @@
                 console.log('Row was not rejected, adding "rejected" class');
                 row.classList.add('rejected');
             }
-            // Toggle the 'isRejected' status
             isRejected = !isRejected;
-            // You might want to update the 'rejected' status on the server or handle it based on your application logic
-            // Example: You can make an Ajax request to update the server's data here
         }
     }
     
-
     document.addEventListener("DOMContentLoaded", function() {
         const popupButtons = document.querySelectorAll(".popup-button");
         const overlay = document.getElementById("overlay");
@@ -201,4 +197,15 @@
             });
         });
     });
+
+    function trueContact(historyId) {
+        console.log(historyId)
+        fetch("/true-contacted-viewed", {
+          method: "POST",
+          body: JSON.stringify({ historyId: historyId }),
+        }).then((_res) => {
+          window.location.href = "/history";
+        });
+    }
+
 </script>
