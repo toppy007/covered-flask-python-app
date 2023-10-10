@@ -486,7 +486,6 @@ def true_contacted():
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
             jobHistoryinfo.contact_viewed = 1 if contactedState else 0
-            jobHistoryinfo.contact_viewed = contactedState
             db.session.commit()
 
     return jsonify({})
@@ -581,6 +580,4 @@ def get_submit_date_data():
 
     date_counts = Counter(formatted_date_data)
     
-    print({'formattedDates': formatted_date_data, 'dateCounts': date_counts})
-
     return jsonify({'formattedDates': formatted_date_data, 'dateCounts': date_counts})
