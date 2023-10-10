@@ -238,8 +238,15 @@ def results():
         
         company_name = ','.join(company_name)
         position = ','.join(position)
-        technical_skills = ','.join(technical_skills)
-        ats_keyword = ','.join(ats_keyword)
+        
+        try:
+            technical_skills = ','.join(technical_skills)
+            ats_keyword = ','.join(ats_keyword)
+        except Exception as e:
+            # Handle the exception here, you can print or log the error message
+            print(f"An error occurred while joining lists: {e}")
+            technical_skills = None
+            ats_keyword = None
         
         new_job_history_data = JobHistoryData(
             sessions_data=combined_data,
@@ -289,8 +296,7 @@ def history():
 
         timestamp_data = history_entry.timestamp
         formatted_date = timestamp_data.strftime("%Y-%m-%d")
-
-        # Append result_dict and formatted_date to history_entry
+        
         history_entry.result_dict = result_dict
         history_entry.formatted_date = formatted_date
 
@@ -468,6 +474,95 @@ def save_edited_cl():
     
     return jsonify({})
 
+@views.route('/true-contacted', methods=['POST'])
+def true_contacted():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
 
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
 
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.contact_viewed = contactedState  # Set interview to the value of contactedState
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/true-tech', methods=['POST'])
+def true_tech():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False) 
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.tech_interview = contactedState 
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/true-interviewed', methods=['POST'])
+def true_interview():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.interview = contactedState  # Set interview to the value of contactedState
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/true-rejected', methods=['POST'])
+def true_rejected():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False)  
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.rejested = contactedState  
+            db.session.commit()
+
+    return jsonify({})
+
+@views.route('/get-contacted-state/<int:historyId>', methods=['GET'])
+def get_contacted_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.contact_viewed})
+
+@views.route('/get-interviewed-state/<int:historyId>', methods=['GET'])
+def get_tech_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.interview})
+
+@views.route('/get-tech-state/<int:historyId>', methods=['GET'])
+def get_interview_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.tech_interview})
+
+@views.route('/get-rejected-state/<int:historyId>', methods=['GET'])
+def get_rejected_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.rejested})
 

@@ -30,12 +30,12 @@
         </thead>
         <tbody>
             {% for history_entry in job_history_data %}
-                <tr id="row{{ history_entry.id }}" class="{% if history_entry.rejected %}rejected{% endif %}">
-                    <td>{{ history_entry.company_name }}</td>
-                    <td>{{ history_entry.position }}</td>
+                <tr id="row{{ history_entry.id }}" class="{% if history_entry.rejested == 1 %}table-dark alert-light{% endif %}">
+                    <td style="white-space: nowrap;"><span>{{ history_entry.company_name }}</span></td>
+                    <td style="white-space: nowrap;"><span>{{ history_entry.position }}</span></td>
                     <td>{{ history_entry.recruiters_name }}</td>
                     <td class="px-1">
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.result_dict }}-data">
+                        <button class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-primary{% endif %}" data-toggle="modal" data-target="#myModal-{{ history_entry.result_dict }}-data">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
                         <div class="modal fade" id="myModal-{{ history_entry.result_dict }}-data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -81,7 +81,7 @@
                         </div>
                     </td>   
                         <td class="px-1">
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">
+                        <button class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-primary{% endif %}" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-cl">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-cl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -101,7 +101,7 @@
                         </div>
                     </td>
                     <td class="px-1">
-                        <button class="btn btn-primary popup-button" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">
+                        <button class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-primary{% endif %}" data-toggle="modal" data-target="#myModal-{{ history_entry.id }}-jobad">
                             <i class="bi bi-file-earmark-font"></i>
                         </button>
                         <div class="modal fade" id="myModal-{{ history_entry.id }}-jobad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -120,29 +120,29 @@
                             </div>
                         </div>
                     </td>
-                    <td>{{ history_entry.formatted_date }}</td>
+                    <td style="white-space: nowrap;"><span>{{ history_entry.formatted_date }}</span></td>
                     <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check"></i>
-                        </button>
-                    </td>
-                    <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check"></i>
-                        </button>
-                    </td>
-                    <td class="px-1" >
-                        <button type="button" class="btn btn-primary">
-                            <i class="bi bi-check"></i>
+                        <button type="button" class="btn {% if history_entry.contact_viewed == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueContacted({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.contact_viewed == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>
                     <td class="px-1">
-                        <button type="button" class="btn btn-warning" onclick="rejectRow({{ history_entry.id }}, {{ history_entry.rejected }})">
+                        <button type="button" class="btn {% if history_entry.tech_interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueTech({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.tech_interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
+                        </button>
+                    </td>                    
+                    <td class="px-1" >
+                        <button type="button" class="btn {% if history_entry.interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueInterview({{ history_entry.id }})">
+                            <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
+                        </button>
+                    </td>
+                    <td class="px-1">
+                        <button type="button" class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-outline-warning{% endif %}" onclick="rejectRow({{ history_entry.id }})">
                             Rejected
                         </button>
                     </td>
                     <td class="px-1" >
-                        <button type="button" class="btn btn-danger" onclick="deleteApplication({{ history_entry.id }})">
+                        <button type="button" class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-danger{% endif %}" onclick="deleteApplication({{ history_entry.id }})">
                             <i class="bi bi-x"></i>
                         </button>
                     </td>
@@ -155,25 +155,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
 
 <script>
-    function rejectRow(id, isRejected) {
-        console.log(`Rejecting row ${id}`);
-        const row = document.getElementById(`row${id}`);
-        if (row) {
-            if (isRejected) {
-                console.log('Row was rejected, removing "rejected" class');
-                row.classList.remove('rejected');
-            } else {
-                console.log('Row was not rejected, adding "rejected" class');
-                row.classList.add('rejected');
-            }
-            // Toggle the 'isRejected' status
-            isRejected = !isRejected;
-            // You might want to update the 'rejected' status on the server or handle it based on your application logic
-            // Example: You can make an Ajax request to update the server's data here
-        }
-    }
     
-
     document.addEventListener("DOMContentLoaded", function() {
         const popupButtons = document.querySelectorAll(".popup-button");
         const overlay = document.getElementById("overlay");
@@ -201,4 +183,86 @@
             });
         });
     });
+
+    function trueContacted(historyId) {
+
+        fetch(`/get-contacted-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState;
+                
+                console.log(data.contactedState)
+
+                fetch("/true-contacted", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
+        }
+
+    function trueTech(historyId) {
+
+        fetch(`/get-tech-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState; 
+
+                fetch("/true-tech", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
+        }
+
+    function trueInterview(historyId) {
+        fetch(`/get-interviewed-state/${historyId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const contactedState = data.contactedState;
+                const updatedState = !contactedState;
+
+                fetch("/true-interviewed", {
+                    method: "POST",
+                    body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((_res) => {
+                    window.location.href = "/history";
+                });
+            });
+        }
+
+    function rejectRow(historyId) {
+    fetch(`/get-rejected-state/${historyId}`)
+        .then((response) => response.json())
+        .then((data) => {
+            const contactedState = data.contactedState;
+            const updatedState = !contactedState;
+
+            fetch("/true-rejected", {
+                method: "POST",
+                body: JSON.stringify({ historyId: historyId, contactedState: updatedState }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((_res) => {
+                window.location.href = "/history";
+            });
+        });
+    }
+
+
 </script>

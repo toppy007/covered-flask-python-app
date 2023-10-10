@@ -108,7 +108,6 @@
           }
 
           function deleteApplication(historyId) {
-            console.log(historyId);
             fetch("/delete-application", {
               method: "POST",
               body: JSON.stringify({ historyId: historyId }),
