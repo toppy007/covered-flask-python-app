@@ -478,13 +478,13 @@ def save_edited_cl():
 def true_contacted():
     jobHistory = json.loads(request.data)
     historyId = jobHistory['historyId']
-    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
+    contactedState = jobHistory.get('contactedState', False)
 
     jobHistoryinfo = JobHistoryData.query.get(historyId)
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            jobHistoryinfo.contact_viewed = contactedState  # Set interview to the value of contactedState
+            jobHistoryinfo.contact_viewed = 1 if contactedState else 0
             db.session.commit()
 
     return jsonify({})
@@ -534,13 +534,13 @@ def true_rejected():
 
     return jsonify({})
 
-@views.route('/get-contacted-state/<int:historyId>', methods=['GET'])
 def get_contacted_state(historyId):
     jobHistoryinfo = JobHistoryData.query.get(historyId)
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            return jsonify({'contactedState': jobHistoryinfo.contact_viewed})
+            contactedState = 1 if jobHistoryinfo.contact_viewed else 0
+            return jsonify({'contactedState': contactedState})
 
 @views.route('/get-interviewed-state/<int:historyId>', methods=['GET'])
 def get_tech_state(historyId):

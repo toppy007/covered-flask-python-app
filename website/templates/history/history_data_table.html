@@ -127,22 +127,22 @@
                         </button>
                     </td>
                     <td class="px-1">
-                        <button type="button" class="btn {% if history_entry.tech_interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueTech({{ history_entry.id }})">
+                        <button type="button" class="btn {% if history_entry.tech_interview == false %}btn-primary{% else %}btn-light{% endif %}" onclick="trueTech({{ history_entry.id }})">
                             <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.tech_interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>                    
                     <td class="px-1" >
-                        <button type="button" class="btn {% if history_entry.interview == 1 %}btn-primary{% else %}btn-light{% endif %}" onclick="trueInterview({{ history_entry.id }})">
+                        <button type="button" class="btn {% if history_entry.interview == false %}btn-primary{% else %}btn-light{% endif %}" onclick="trueInterview({{ history_entry.id }})">
                             <i id="icon{{ history_entry.id }}" class="bi {% if history_entry.interview == 1 %}bi-check{% else %}bi-x{% endif %}"></i>
                         </button>
                     </td>
                     <td class="px-1">
-                        <button type="button" class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-outline-warning{% endif %}" onclick="rejectRow({{ history_entry.id }})">
+                        <button type="button" class="btn {% if history_entry.rejested == false %}btn-outline-secondary{% else %}btn-outline-warning{% endif %}" onclick="rejectRow({{ history_entry.id }})">
                             Rejected
                         </button>
                     </td>
                     <td class="px-1" >
-                        <button type="button" class="btn {% if history_entry.rejested == 1 %}btn-outline-secondary{% else %}btn-danger{% endif %}" onclick="deleteApplication({{ history_entry.id }})">
+                        <button type="button" class="btn {% if history_entry.rejested == false %}btn-outline-secondary{% else %}btn-danger{% endif %}" onclick="deleteApplication({{ history_entry.id }})">
                             <i class="bi bi-x"></i>
                         </button>
                     </td>
