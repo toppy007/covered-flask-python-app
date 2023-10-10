@@ -499,7 +499,7 @@ def true_tech():
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            jobHistoryinfo.tech_interview = contactedState 
+            jobHistoryinfo.tech_interview = 1 if contactedState else 0
             db.session.commit()
 
     return jsonify({})
@@ -508,13 +508,13 @@ def true_tech():
 def true_interview():
     jobHistory = json.loads(request.data)
     historyId = jobHistory['historyId']
-    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
+    contactedState = jobHistory.get('contactedState', False)
 
     jobHistoryinfo = JobHistoryData.query.get(historyId)
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            jobHistoryinfo.interview = contactedState  # Set interview to the value of contactedState
+            jobHistoryinfo.interview = 1 if contactedState else 0
             db.session.commit()
 
     return jsonify({})
@@ -529,17 +529,17 @@ def true_rejected():
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            jobHistoryinfo.rejested = contactedState  
+            jobHistoryinfo.rejested = 1 if contactedState else 0  
             db.session.commit()
 
     return jsonify({})
 
+@views.route('/get-contacted-state/<int:historyId>', methods=['GET'])
 def get_contacted_state(historyId):
     jobHistoryinfo = JobHistoryData.query.get(historyId)
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            contactedState = 1 if jobHistoryinfo.contact_viewed else 0
             return jsonify({'contactedState': contactedState})
 
 @views.route('/get-interviewed-state/<int:historyId>', methods=['GET'])
