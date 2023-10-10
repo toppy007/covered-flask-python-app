@@ -540,7 +540,7 @@ def get_contacted_state(historyId):
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            return jsonify({'contactedState': contactedState})
+            return jsonify({'contactedState': jobHistoryinfo.contact_viewed})
 
 @views.route('/get-interviewed-state/<int:historyId>', methods=['GET'])
 def get_tech_state(historyId):
