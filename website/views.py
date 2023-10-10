@@ -8,6 +8,7 @@ from .analyzing_prompts import generate_job_info
 from .api_response_handling import ResponseHandling
 from .create_prompts import BuildingCreateCLPrompt
 from .npl import CalculateSkillsSimilarity, CalculateProjectSimilarity, CalculateWorkexpsSimilarity
+from collections import Counter
 from . import db
 from . import mail
 import json
@@ -567,3 +568,19 @@ def get_rejected_state(historyId):
         if jobHistoryinfo.user_id == current_user.id:
             return jsonify({'contactedState': jobHistoryinfo.rejested})
 
+@views.route('/get-line-jobapplication-submit-date-data', methods=['GET'])
+def get_submit_date_data():
+    user_id = current_user.id
+    job_history_records = JobHistoryData.query.filter_by(user_id=user_id).all()
+    
+    formatted_date_data = []
+
+    for record in job_history_records:
+        formatted_date = record.timestamp.strftime("%Y-%m-%d")
+        formatted_date_data.append(formatted_date)
+
+    date_counts = Counter(formatted_date_data)
+    
+    print({'formattedDates': formatted_date_data, 'dateCounts': date_counts})
+
+    return jsonify({'formattedDates': formatted_date_data, 'dateCounts': date_counts})

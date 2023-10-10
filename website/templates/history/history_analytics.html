@@ -1,1 +1,57 @@
+<div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card" style="width: 100%; height: 100%;">
+          <div class="card-body">
+            <canvas id="lineJobDate" style="width: 100%; height: 100%;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const fetchChart3Data = fetch('/get-line-jobapplication-submit-date-data')
+            .then(response => response.json())
+            .then(data => {
+                if (data !== null) {
+                    const dateCounts = data.dateCounts;
+
+                    const xLabels = Object.keys(dateCounts);
+                    const yValues = Object.values(dateCounts);
+                
+                    const dataset = {
+                        label: 'application submitted',
+                        data: yValues,
+                        borderColor: 'rgba(255, 0, 0, 1)', 
+                        borderWidth: 2,
+                        fill: false,
+                    };
+    
+                    const ctx = document.getElementById('lineJobDate').getContext('2d');
+                    console.log('Chart data:', xLabels, yValues);
+                    console.log(ctx)
+                    const lineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: xLabels,
+                            datasets: [dataset],
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                },
+                            },
+                        },
+                    });
+                }
+            });
+    });
+    
+
+</script>
