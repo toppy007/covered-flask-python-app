@@ -239,8 +239,15 @@ def results():
         
         company_name = ','.join(company_name)
         position = ','.join(position)
-        technical_skills = ','.join(technical_skills)
-        ats_keyword = ','.join(ats_keyword)
+        
+        try:
+            technical_skills = ','.join(technical_skills)
+            ats_keyword = ','.join(ats_keyword)
+        except Exception as e:
+            # Handle the exception here, you can print or log the error message
+            print(f"An error occurred while joining lists: {e}")
+            technical_skills = None
+            ats_keyword = None
         
         new_job_history_data = JobHistoryData(
             sessions_data=combined_data,
@@ -513,6 +520,21 @@ def true_interview():
 
     return jsonify({})
 
+@views.route('/true-rejected', methods=['POST'])
+def true_rejected():
+    jobHistory = json.loads(request.data)
+    historyId = jobHistory['historyId']
+    contactedState = jobHistory.get('contactedState', False)  
+
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            jobHistoryinfo.rejested = contactedState  
+            db.session.commit()
+
+    return jsonify({})
+
 @views.route('/get-contacted-state/<int:historyId>', methods=['GET'])
 def get_contacted_state(historyId):
     jobHistoryinfo = JobHistoryData.query.get(historyId)
@@ -536,4 +558,12 @@ def get_interview_state(historyId):
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
             return jsonify({'contactedState': jobHistoryinfo.tech_interview})
+
+@views.route('/get-rejected-state/<int:historyId>', methods=['GET'])
+def get_rejected_state(historyId):
+    jobHistoryinfo = JobHistoryData.query.get(historyId)
+
+    if jobHistoryinfo:
+        if jobHistoryinfo.user_id == current_user.id:
+            return jsonify({'contactedState': jobHistoryinfo.rejested})
 

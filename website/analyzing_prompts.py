@@ -18,6 +18,7 @@ def generate_job_info(job_advertisement):
         f"- {company_name_question}\n"
         f"- {position_question}\n"
         f"- {keywords_question}\n"
+        f"you must split qualifications, requirements, and technical skills into three groups:\n\n"
     )
 
     messages = [
