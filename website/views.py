@@ -479,13 +479,13 @@ def save_edited_cl():
 def true_contacted():
     jobHistory = json.loads(request.data)
     historyId = jobHistory['historyId']
-    contactedState = jobHistory.get('contactedState', False)  # Get the contactedState value, default to False
+    contactedState = jobHistory.get('contactedState', False)
 
     jobHistoryinfo = JobHistoryData.query.get(historyId)
 
     if jobHistoryinfo:
         if jobHistoryinfo.user_id == current_user.id:
-            jobHistoryinfo.contact_viewed = contactedState  # Set interview to the value of contactedState
+            jobHistoryinfo.contact_viewed = contactedState
             db.session.commit()
 
     return jsonify({})
